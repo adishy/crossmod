@@ -7,7 +7,7 @@ Cross-Community Learning-based System to Assist Reddit Moderators. Proc. ACM Hum
 ### Code directory: 
 
 *code/* - contains the codebase for the system:
-  * config.py: configuration file that allows mods to control the system using IFTTT rules---if <condition>: then <action>
+  * config.py: configuration file that allows mods to control the system using **IFTTT rules**
   * getPrediction.py: modules to query back-end models in order to score incoming comments
   * crossmod.py: system code that creates a bot moderator for the test subreddit, taking moderations actions based on the configuration file.
 
