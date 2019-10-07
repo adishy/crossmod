@@ -14,3 +14,14 @@ Cross-Community Learning-based System to Assist Reddit Moderators. Proc. ACM Hum
 **data/** - contains the list of subreddits and norm violations that comprise the system's AI back-end.
 
 Contact authors to obtain the ensemble of classifiers for Crossmod's back-end.
+
+# Installation instructions:
+
+* Crossmod depends on flask, pandas, praw (python reddit api wrapper) and the google api python client 
+  [(Preferably use a virtual environment)](https://realpython.com/python-virtual-environments-a-primer/)
+```
+pip3 install flask
+pip3 install pandas     
+pip3 install praw  
+pip3 install google-api-python-client
+```
