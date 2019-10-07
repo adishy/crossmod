@@ -7,7 +7,7 @@ from config import *
 from googleapiclient import discovery
 
 # use_classifiers = 0
-use_classifiers = 1
+use_classifiers = 0
 
 def get_toxicity_score(comment):
     analyze_request = {
@@ -18,6 +18,7 @@ def get_toxicity_score(comment):
     response = service.comments().analyze(body=analyze_request).execute()
     toxicity_score = response['attributeScores']['TOXICITY']['summaryScore']['value']
     return toxicity_score
+
 
 ###main()
 #generate Perspective API client object dynamically based on service name and version.
@@ -35,6 +36,8 @@ reddit = praw.Reddit(user_agent='Testing Crossmod (by /u/CrossModerator)',
 
 staging_subreddit = "modbot_staging"
 subreddit = reddit.subreddit(staging_subreddit) #Select the subreddit for Crossmod to work on 
+
+db = CrossmodDB()
 
 print(subreddit.title) #Prints title of subreddit
 print(subreddit.description)  #Prints description of subreddit
@@ -115,6 +118,10 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	### Compute the appropriate action to be performed from the config file based on back-end predictions! 
 	ACTION = check_config(backend_predictions)
 	print("Action = ", ACTION)
+
+	### Write to CrossmodDB
+	db.write(time.time(), comment.id, comment.body, toxicity_score, ACTION)
+	
 	if ACTION == "remove":
 		###REMOVE: if toxicity score returned by the Perspective API > 90%, directly remove from thread and send to mod queue.
 		print("Removing comment, and alerting moderator by modmail at t=", time.time())

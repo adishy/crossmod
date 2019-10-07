@@ -1,2 +1,2 @@
 CLIENT_ID,CLIENT_SECRET,PASSWORD,USERNAME
-x,x,x,x
+c-CJEfb9Pwvi3Q,GvXlWW7BsqnZpMaiyDL9wx1dxHs,Crossm0d_rulez,CrossModerator
