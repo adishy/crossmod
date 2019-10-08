@@ -9,7 +9,8 @@ class CrossmodDB:
         ### Check if file had previously been created
         file_existed = os.path.isfile(self.output_file_name)
 
-        self.csv_file = open(self.output_file_name, 'a')
+        self.csv_file_write = open(self.output_file_name, 'a')
+        self.csv_file_read = open(self.output_file_name, 'r')
 
         '''
             Schema:
@@ -22,8 +23,8 @@ class CrossmodDB:
         self.schema = ['timestamp', 'comment_id', 'comment_body', 'toxicity_score', 'crossmod_action']
 
         ### Open CSV file for reading/writing
-        self.csv_writer = csv.DictWriter(self.csv_file, fieldnames = self.schema)
-        self.csv_reader = csv.DictReader(self.csv_file, fieldnames = self.schema)
+        self.csv_writer = csv.DictWriter(self.csv_file_write, fieldnames = self.schema)
+        self.csv_reader = csv.DictReader(self.csv_file_read, fieldnames = self.schema)
         
         ### Write column names to CSV file if the file did not exist previously
         if not file_existed:
@@ -34,11 +35,15 @@ class CrossmodDB:
         for column_name in self.schema:
             self.crossmod_details[column_name] = []
 
+    ### Used to ensure the CSV file cannot be written to by any other instance 
+    ### of CrossmodDB after it has been locked  
     def lock_file(self):
-        fcntl.flock(self.csv_file, fcntl.LOCK_EX)
+        fcntl.flock(self.csv_file_write, fcntl.LOCK_EX)
 
+    ### Used to ensure the lock for the CSV file is released so any instance of
+    ### CrossmodDB can also write to the file
     def unlock_file(self):
-        fcntl.flock(self.csv_file, fcntl.LOCK_UN)
+        fcntl.flock(self.csv_file_write, fcntl.LOCK_UN)
 
     def write_args(self, *argv):
         row = {}
@@ -64,11 +69,12 @@ class CrossmodDB:
             self.crossmod_details['toxicity_score'].append(row['toxicity_score'])
             self.crossmod_details['crossmod_action'].append(row['crossmod_action'])
 
-            print(row['timestamp'], row['comment_id'], row['comment'], row['toxicity_score'], row['crossmod_action'])
+            print(row['timestamp'], row['comment_id'], row['comment_body'], row['toxicity_score'], row['crossmod_action'])
             
 
     def exit(self):
-        self.csv_file.close()
+        self.csv_file_write.close()
+        self.csv_file_read.close()
 
 def main():
     db = CrossmodDB()
@@ -78,6 +84,7 @@ def main():
              comment_body = 'c',
              toxicity_score = 'e',
              crossmod_action = 'e')
+    db.read()
     db.exit()
     
 if __name__ == "__main__":
