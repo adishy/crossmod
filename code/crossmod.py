@@ -2,6 +2,7 @@ import praw
 import pandas as pd
 from getPredictions import *
 from config import *
+from crossmoddb import CrossmodDB
 
 ###get toxicity score from Perspective API
 from googleapiclient import discovery
@@ -120,7 +121,11 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	print("Action = ", ACTION)
 
 	### Write to CrossmodDB
-	db.write(time.time(), comment.id, comment.body, toxicity_score, ACTION)
+	db.write(timestamp = time.time(), 
+			 comment_id = comment.id, 
+			 comment_body = comment.body, 
+			 toxicity_score = toxicity_score, 
+			 crossmod_action = ACTION)
 	
 	if ACTION == "remove":
 		###REMOVE: if toxicity score returned by the Perspective API > 90%, directly remove from thread and send to mod queue.
@@ -145,5 +150,7 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	else:
 		continue
 		
+db.exit()
+
 print("Modbot = INACTIVE, ending at t = ", time.time())
 print(total_num_comments, num_processed)
