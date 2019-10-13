@@ -14,17 +14,19 @@ class CrossmodDB:
 
         '''
             Schema:
-                * Moderated At Timestamp  (column name: moderated_at)       (Timestamp in UTC at which the comment was posted)
+                * Created At Timestamp    (column name: created_at)         (Timestamp in UTC at which the comment was posted)
+                * Ingested At Timestamp   (column_name: ingested_at)        (Timestamp in UTC at which Crossmod ingested the comment)
                 * Comment ID              (column name: comment_id)         (Reddit Comment ID)
                 * Comment Body            (column name: comment_body)
                 * Toxicity Score          (column name: toxicity_score)
                 * Crossmod Action         (column name: crossmod_action)
                 * Author                  (column name: author)             (Reddit username of comment author)
                 * Subreddit               (column name: subreddit)          (Subreddit name where the moderated Reddit comment was posted in)
-                * Banned By               (column name: banned_by)          (The name of the moderator who removed the comment)
-                * Banned At               (column name: banned_at)          (Timestamp in UTC at which the comment was moderated on)
+                * Banned By               (column name: banned_by)          (The name of the human moderator who removed the comment after Crossmod flagged the comment)
+                * Banned At Timestamp     (column name: banned_at)          (Timestamp in UTC at which the comment was moderated on by a human moderator)
         '''
-        self.schema = ['moderated_at', 
+        self.schema = ['created_at', 
+                       'ingested_at',
                        'comment_id', 
                        'comment_body', 
                        'toxicity_score', 
@@ -94,8 +96,9 @@ class CrossmodDB:
 
 def main():
     db = CrossmodDB()
-    db.write_args('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i')
-    db.write(moderated_at = 'a',
+    db.write_args('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
+    db.write(created_at = 'a',
+             ingested_at = 'b',
              comment_id = 'b',
              comment_body = 'c',
              toxicity_score = 'e',

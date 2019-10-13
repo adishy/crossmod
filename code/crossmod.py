@@ -27,6 +27,8 @@ API_KEY = pd.read_csv('../keys/perspective-api-key.txt', names = ['key'])['key']
 service = discovery.build('commentanalyzer', 'v1alpha1', developerKey=API_KEY)
 ###
 
+perform_action = False
+
 #load credentials for Reddit bot
 creds = pd.read_csv('../keys/crossmod-creds.txt')
 
@@ -121,12 +123,20 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	print("Action = ", ACTION)
 
 	### Write to CrossmodDB
-	db.write(timestamp = time.time(), 
-			 comment_id = comment.id, 
-			 comment_body = comment.body, 
-			 toxicity_score = toxicity_score, 
-			 crossmod_action = ACTION)
+	db.write(created_at = comment.created_utc,
+			 ingested_at = time.time(),
+             comment_id = comment.id,
+             comment_body = comment.body,
+             toxicity_score = toxicity_score,
+             crossmod_action = ACTION,
+             author = comment.author.name,
+             subreddit = comment.subreddit.name,
+             banned_by = 'not_available',
+             banned_at = 'not_available')
 	
+	if not perform_action:
+		continue
+
 	if ACTION == "remove":
 		###REMOVE: if toxicity score returned by the Perspective API > 90%, directly remove from thread and send to mod queue.
 		print("Removing comment, and alerting moderator by modmail at t=", time.time())
