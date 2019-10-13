@@ -14,13 +14,25 @@ class CrossmodDB:
 
         '''
             Schema:
-                * Timestamp         (column name: timestamp)
-                * Comment ID        (column name: comment_id) (Reddit Comment ID)
-                * Comment Body        (column name: comment_bidy)
-                * Toxicity Score    (column name: toxicity_score)
-                * Crossmod Action   (column name: crossmod_action)
+                * Moderated At Timestamp  (column name: moderated_at)       (Timestamp in UTC at which the comment was posted)
+                * Comment ID              (column name: comment_id)         (Reddit Comment ID)
+                * Comment Body            (column name: comment_body)
+                * Toxicity Score          (column name: toxicity_score)
+                * Crossmod Action         (column name: crossmod_action)
+                * Author                  (column name: author)             (Reddit username of comment author)
+                * Subreddit               (column name: subreddit)          (Subreddit name where the moderated Reddit comment was posted in)
+                * Banned By               (column name: banned_by)          (The name of the moderator who removed the comment)
+                * Banned At               (column name: banned_at)          (Timestamp in UTC at which the comment was moderated on)
         '''
-        self.schema = ['timestamp', 'comment_id', 'comment_body', 'toxicity_score', 'crossmod_action']
+        self.schema = ['moderated_at', 
+                       'comment_id', 
+                       'comment_body', 
+                       'toxicity_score', 
+                       'crossmod_action', 
+                       'author', 
+                       'subreddit',
+                       'banned_by', 
+                       'banned_at']
 
         ### Open CSV file for reading/writing
         self.csv_writer = csv.DictWriter(self.csv_file_write, fieldnames = self.schema)
@@ -62,28 +74,36 @@ class CrossmodDB:
         self.unlock_file()
 
     def read(self):
+        self.crossmod_details = {}
+
+        self.lock_file()
+        header_row = False
+
         for row in self.csv_reader:
-            self.crossmod_details['timestamp'].append(row['timestamp'])
-            self.crossmod_details['comment_id'].append(row['comment_id'])
-            self.crossmod_details['comment_body'].append(row['comment_body'])
-            self.crossmod_details['toxicity_score'].append(row['toxicity_score'])
-            self.crossmod_details['crossmod_action'].append(row['crossmod_action'])
+            if not header_row:
+                header_row = True
+                continue
 
-            print(row['timestamp'], row['comment_id'], row['comment_body'], row['toxicity_score'], row['crossmod_action'])
-            
-
+            for column_name in self.schema:
+                self.crossmod_details[column_name].append(row[column_name])
+        self.unlock_file()
+    
     def exit(self):
         self.csv_file_write.close()
         self.csv_file_read.close()
 
 def main():
     db = CrossmodDB()
-    db.write_args('a', 'b', 'c', 'd', 'e')
-    db.write(timestamp = 'a',
+    db.write_args('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i')
+    db.write(moderated_at = 'a',
              comment_id = 'b',
              comment_body = 'c',
              toxicity_score = 'e',
-             crossmod_action = 'e')
+             crossmod_action = 'e',
+             author='f',
+             subreddit='g',
+             banned_by='h',
+             banned_at='i',)
     db.read()
     db.exit()
     
