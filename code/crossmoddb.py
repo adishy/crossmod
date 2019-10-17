@@ -90,25 +90,7 @@ class CrossmodDB:
                 self.crossmod_details[column_name].append(row[column_name])
         self.unlock_file()
     
+
     def exit(self):
         self.csv_file_write.close()
         self.csv_file_read.close()
-
-def main():
-    db = CrossmodDB()
-    db.write_args('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
-    db.write(created_at = 'a',
-             ingested_at = 'b',
-             comment_id = 'b',
-             comment_body = 'c',
-             toxicity_score = 'e',
-             crossmod_action = 'e',
-             author='f',
-             subreddit='g',
-             banned_by='h',
-             banned_at='i',)
-    db.read()
-    db.exit()
-    
-if __name__ == "__main__":
-    main()

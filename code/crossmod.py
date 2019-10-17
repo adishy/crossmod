@@ -37,7 +37,7 @@ reddit = praw.Reddit(user_agent='Testing Crossmod (by /u/CrossModerator)',
                      client_id=creds["CLIENT_ID"][0], client_secret=creds["CLIENT_SECRET"][0],
                      username=creds["USERNAME"][0], password=creds["PASSWORD"][0])
 
-staging_subreddit = "modbot_staging"
+staging_subreddit = "Futurology"
 subreddit = reddit.subreddit(staging_subreddit) #Select the subreddit for Crossmod to work on 
 
 db = CrossmodDB()
