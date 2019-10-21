@@ -1,4 +1,6 @@
 import praw
+import sys
+import datetime
 import pandas as pd
 from getPredictions import *
 from config import *
@@ -37,7 +39,7 @@ reddit = praw.Reddit(user_agent='Testing Crossmod (by /u/CrossModerator)',
                      client_id=creds["CLIENT_ID"][0], client_secret=creds["CLIENT_SECRET"][0],
                      username=creds["USERNAME"][0], password=creds["PASSWORD"][0])
 
-staging_subreddit = "Futurology"
+staging_subreddit = "nba"
 subreddit = reddit.subreddit(staging_subreddit) #Select the subreddit for Crossmod to work on 
 
 db = CrossmodDB()
@@ -123,16 +125,16 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	print("Action = ", ACTION)
 
 	### Write to CrossmodDB
-	db.write(created_at = comment.created_utc,
-			 ingested_at = time.time(),
-             comment_id = comment.id,
-             comment_body = comment.body,
+	db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
+			 ingested_at = datetime.datetime.now(),
+             id = comment.id,
+             body = comment.body,
              toxicity_score = toxicity_score,
              crossmod_action = ACTION,
              author = comment.author.name,
-             subreddit = comment.subreddit.name,
+             subreddit = comment.subreddit.display_name, 
              banned_by = 'not_available',
-             banned_at = 'not_available')
+             banned_at = None)
 	
 	if not perform_action:
 		continue
