@@ -90,5 +90,7 @@ def main():
 
     row = db.database_session.query(CrossmodDBData).filter(CrossmodDBData.author == 'd')
 
+    db.write_to_CSV()
+
 if __name__ == "__main__":
     main()
