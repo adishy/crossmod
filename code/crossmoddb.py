@@ -78,13 +78,8 @@ class CrossmodDB:
         #close the file after reading
         output_file.close()
 
-
-
-
 def main():
     db = CrossmodDB()
-
-    db.write_to_CSV()
 
 if __name__ == "__main__":
     main()
