@@ -1,3 +1,4 @@
+import datetime
 import praw
 import pandas as pd
 from crossmoddb import *
@@ -22,15 +23,25 @@ class CrossmodDBUpdater:
     def update_database_values(self):
         rows = self.db.database_session.query(CrossmodDBData)
 
+        count = 0
+        total = rows.count()
+
         for row in rows:
-            self.update_moderated_value(row)
+            self.change_moderated_value(row)
+            print("{} rows of {}\r\n".format(count, total))
+            count += 1
 
-    def update_moderated_value(self, row):
-        comment_id = row['id']
-        comment = self.reddit.comment(id = comment_id)
+    def change_moderated_value(self, row):
+        comment = self.reddit.comment(id = row.id)
 
-        if str(comment.body) == self.REMOVED and str(comment.author) == self.DELETED:
-            print(comment.id, comment.body, comment.author, comment.created_utc, comment.banned_at_utc, comment.banned_by)
+        if comment.banned_at_utc != None and comment.banned_by != None:
             row.banned_by = comment.banned_by
-            row.banned_at_utc = comment.banned_at_utc
+            row.banned_at_utc = datetime.datetime.fromtimestamp(comment.banned_at_utc)
             self.db.database_session.commit()
+
+def main():
+    updater = CrossmodDBUpdater()
+    updater.update_database_values()
+
+if __name__ == "__main__":
+    main()

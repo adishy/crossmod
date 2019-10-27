@@ -8,6 +8,11 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 
+# UPDATE crossmoddbdata SET created_utc = datetime(created_utc, 'unixepoch', 'localtime');
+# UPDATE crossmoddbdata SET ingested_utc = datetime(ingested_utc, 'unixepoch', 'localtime');
+# UPDATE crossmoddbdata SET banned_at_utc = NULL;
+# UPDATE crossmoddbdata SET banned_by = NULL;
+
 '''
     Schema:
         CrossmodDBData:
