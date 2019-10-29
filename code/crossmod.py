@@ -126,15 +126,15 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 
 	### Write to CrossmodDB
 	db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
-			 ingested_at = datetime.datetime.now(),
+			 ingested_utc = datetime.datetime.now(),
              id = comment.id,
              body = comment.body,
              toxicity_score = toxicity_score,
              crossmod_action = ACTION,
              author = comment.author.name,
              subreddit = comment.subreddit.display_name, 
-             banned_by = 'not_available',
-             banned_at = None)
+             banned_by = None,
+             banned_at_utc = None)
 	
 	if not perform_action:
 		continue
