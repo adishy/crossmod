@@ -139,12 +139,8 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
              author = comment.author.name,
              subreddit = comment.subreddit.display_name, 
              banned_by = None,
-<<<<<<< HEAD
              banned_at_utc = None,
 			 agreement_score = agreement_score)
-=======
-             banned_at_utc = None)
->>>>>>> crossmod-db-sqlalchemy-credentials
 	
 	if not perform_action:
 		continue
