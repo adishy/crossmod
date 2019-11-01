@@ -42,6 +42,7 @@ class CrossmodDBData(Base):
       subreddit = Column(String(50))
       banned_by = Column(String(50))
       banned_at_utc = Column(DateTime)
+      agreement_score = Column(Float)
 
 
 class CrossmodDB:
