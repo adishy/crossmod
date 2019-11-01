@@ -1,6 +1,6 @@
 import datetime
 import praw
-import pandas as pd
+from crossmodconsts import *
 from crossmoddb import *
 
 class CrossmodDBUpdater:
@@ -10,15 +10,12 @@ class CrossmodDBUpdater:
 
         self.db = CrossmodDB()
 
-        #load credentials for Reddit bot
-        creds = pd.read_csv('../keys/crossmod-creds.txt')
-
         #setup the Reddit bot
-        self.reddit = praw.Reddit(user_agent = 'Updating Crossmod database values (by /u/CrossModerator)',
-                                  client_id = creds["CLIENT_ID"][0], 
-                                  client_secret = creds["CLIENT_SECRET"][0],
-                                  username = creds["USERNAME"][0], 
-                                  password = creds["PASSWORD"][0])
+        self.reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
+                                  client_id = CrossmodConsts.REDDIT_CLIENT_ID, 
+                                  client_secret = CrossmodConsts.REDDIT_CLIENT_SECRETS,
+                                  username = CrossmodConsts.REDDIT_USERNAME, 
+                                  password = CrossmodConsts.REDDIT_PASSWORD)
 
     def update_database_values(self):
         rows = self.db.database_session.query(CrossmodDBData)
