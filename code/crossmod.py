@@ -124,6 +124,11 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	ACTION = check_config(backend_predictions)
 	print("Action = ", ACTION)
 
+	if use_classifiers == 1:
+		agreement_score = backend_predictions['agreement_score']
+	else:
+		agreement_score = None
+
 	### Write to CrossmodDB
 	db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
 			 ingested_utc = datetime.datetime.now(),
@@ -134,7 +139,8 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
              author = comment.author.name,
              subreddit = comment.subreddit.display_name, 
              banned_by = None,
-             banned_at_utc = None)
+             banned_at_utc = None,
+			 agreement_score = agreement_score)
 	
 	if not perform_action:
 		continue
