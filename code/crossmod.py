@@ -4,6 +4,7 @@ import datetime
 import pandas as pd
 from getPredictions import *
 from config import *
+from crossmodconsts import CrossmodConsts
 from crossmoddb import CrossmodDB
 
 ###get toxicity score from Perspective API
@@ -25,19 +26,18 @@ def get_toxicity_score(comment):
 
 ###main()
 #generate Perspective API client object dynamically based on service name and version.
-API_KEY = pd.read_csv('../keys/perspective-api-key.txt', names = ['key'])['key'][0]
+API_KEY = CrossmodConsts.PERSPECTIVE_API_SECRET
 service = discovery.build('commentanalyzer', 'v1alpha1', developerKey=API_KEY)
 ###
 
 perform_action = False
 
-#load credentials for Reddit bot
-creds = pd.read_csv('../keys/crossmod-creds.txt')
-
 #setup the Reddit bot
-reddit = praw.Reddit(user_agent='Testing Crossmod (by /u/CrossModerator)',
-                     client_id=creds["CLIENT_ID"][0], client_secret=creds["CLIENT_SECRET"][0],
-                     username=creds["USERNAME"][0], password=creds["PASSWORD"][0])
+reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
+                     client_id = CrossmodConsts.REDDIT_CLIENT_ID, 
+					 client_secret = CrossmodConsts.REDDIT_CLIENT_SECRET,
+                     username = CrossmodConsts.REDDIT_USERNAME, 
+					 password = CrossmodConsts.REDDIT_PASSWORD)
 
 staging_subreddit = "nba"
 subreddit = reddit.subreddit(staging_subreddit) #Select the subreddit for Crossmod to work on 
@@ -126,15 +126,15 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 
 	### Write to CrossmodDB
 	db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
-			 ingested_at = datetime.datetime.now(),
+			 ingested_utc = datetime.datetime.now(),
              id = comment.id,
              body = comment.body,
              toxicity_score = toxicity_score,
              crossmod_action = ACTION,
              author = comment.author.name,
              subreddit = comment.subreddit.display_name, 
-             banned_by = 'not_available',
-             banned_at = None)
+             banned_by = None,
+             banned_at_utc = None)
 	
 	if not perform_action:
 		continue
