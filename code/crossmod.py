@@ -11,7 +11,7 @@ from crossmoddb import CrossmodDB
 from googleapiclient import discovery
 
 # use_classifiers = 0
-use_classifiers = 0
+use_classifiers = 1
 
 def get_toxicity_score(comment):
     analyze_request = {
@@ -39,7 +39,7 @@ reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
                      username = CrossmodConsts.REDDIT_USERNAME, 
 					 password = CrossmodConsts.REDDIT_PASSWORD)
 
-staging_subreddit = "nba"
+staging_subreddit = "Futurology"
 subreddit = reddit.subreddit(staging_subreddit) #Select the subreddit for Crossmod to work on 
 
 db = CrossmodDB()
@@ -59,7 +59,7 @@ for moderator in moderators_list:
 
 ###list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
 subreddits_limit = 100
-subreddit_list = pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit]
+subreddit_list = pd.read_csv("../data/single_study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit]
 macro_norm_list = pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms']
 
 total_num_comments = 0
@@ -114,7 +114,10 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 		print("Number of subreddit classifiers agreeing to remove comment = ", agreement_score)
 		### Type 3: Score using ensemble of macro norm classifiers in back-end
 		###score comment using macro norm classifier predictions - currently supports batch queries, i.e., a list of comments
-		predictions = get_macronorm_classifier_predictions(comment_list, macro_norm_list)
+		
+		# This version is currently without macronorm
+		# predictions = get_macronorm_classifier_predictions(comment_list, macro_norm_list)
+		
 		for col in predictions.drop('comment', axis = 1).columns:
 			backend_predictions[col] = predictions[col][0]
 		predictions['sum_votes'] = predictions.drop('comment', axis = 1).sum(axis = 1)
