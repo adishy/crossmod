@@ -59,7 +59,7 @@ for moderator in moderators_list:
 
 ###list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
 subreddits_limit = 100
-subreddit_list = pd.read_csv("../data/single_study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit]
+subreddit_list = pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit]
 macro_norm_list = pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms']
 
 total_num_comments = 0
@@ -72,6 +72,8 @@ start_time = time.time()
 print("Crossmod = ACTIVE, starting at t = ", start_time)
 
 for comment in subreddit.stream.comments(): #to iterate through the comments and stream it live
+	start = time.time()
+	
 	total_num_comments += 1
 	
 	if (comment.created_utc < start_time) | (comment.author in whitelisted_authors):
@@ -114,10 +116,7 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 		print("Number of subreddit classifiers agreeing to remove comment = ", agreement_score)
 		### Type 3: Score using ensemble of macro norm classifiers in back-end
 		###score comment using macro norm classifier predictions - currently supports batch queries, i.e., a list of comments
-		
-		# This version is currently without macronorm
-		# predictions = get_macronorm_classifier_predictions(comment_list, macro_norm_list)
-		
+		predictions = get_macronorm_classifier_predictions(comment_list, macro_norm_list)
 		for col in predictions.drop('comment', axis = 1).columns:
 			backend_predictions[col] = predictions[col][0]
 		predictions['sum_votes'] = predictions.drop('comment', axis = 1).sum(axis = 1)
@@ -127,8 +126,11 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	ACTION = check_config(backend_predictions)
 	print("Action = ", ACTION)
 
+	end = time.time()
+	print("processing time =", end-start, "seconds")
+
 	if use_classifiers == 1:
-		agreement_score = backend_predictions['agreement_score']
+		agreement_score = backend_predictions['agreement_score']/100
 	else:
 		agreement_score = None
 
@@ -143,7 +145,7 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
              subreddit = comment.subreddit.display_name, 
              banned_by = None,
              banned_at_utc = None,
-			 agreement_score = agreement_score)
+	    agreement_score = agreement_score)
 	
 	if not perform_action:
 		continue
