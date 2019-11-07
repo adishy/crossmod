@@ -41,7 +41,7 @@ def get_classifier_predictions(input_comments, subreddit_list):
     for study_sub in subreddit_list:
         # print(count, ") Expert: " , study_sub)
         count+=1
-        command = ["../../fastText-0.9.1/fasttext", "predict", "../../models/" + study_sub + ".bin", "temp_comments.txt", "1"]
+        command = ["../../fastText-0.9.1/fasttext", "predict", "/data/backend-ml/subreddit-clfs/model_" + study_sub + ".bin", "temp_comments.txt", "1"]
         result = subprocess.run(command, stdout=subprocess.PIPE)
         output = result.stdout.decode('utf-8')
         expert_decision = output.split('\n')[:-1]
@@ -70,7 +70,7 @@ def get_macronorm_classifier_predictions(input_comments, norms_list):
     for norm in norms_list:
         # print(count, ") Expert: " , study_sub)
         count+=1
-        command = ["../../fastText-0.9.1/fasttext", "predict", "../../models/" + norm + ".bin", "temp_comments.txt", "1"]
+        command = ["../../fastText-0.9.1/fasttext", "predict", "/data/backend-ml/norm-clfs/model_" + norm + ".bin", "temp_comments.txt", "1"]
         result = subprocess.run(command, stdout=subprocess.PIPE)
         output = result.stdout.decode('utf-8')
         expert_decision = output.split('\n')[:-1]
