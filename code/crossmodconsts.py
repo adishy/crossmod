@@ -8,13 +8,30 @@ class CrossmodConsts:
     REDDIT_PASSWORD = os.environ['REDDIT_PASSWORD']
     REDDIT_USERNAME = os.environ['REDDIT_USERNAME']
 
+    FASTTEXT_BINARY = "../data/fastText-0.9.1/fasttext"
+    MODELS_DIRECTORY = "../data/models"
+
+    @staticmethod
+    def get_norms_classifier(norm):
+        NORMS_CLASSIFIERS = CrossmodConsts.MODELS_DIRECTORY + "/norms-clfs/"
+        return NORMS_CLASSIFIERS + "model_" + norm + ".bin"
+
+    @staticmethod
+    def get_subreddit_classifier(subreddit):
+        SUBREDDIT_CLASSIFIERS = CrossmodConsts.MODELS_DIRECTORY + "/subreddit-clfs/"
+        return SUBREDDIT_CLASSIFIERS + "model_" + subreddit + ".bin"
+
 def main():
     print("Perpective API Key: ",      CrossmodConsts.PERSPECTIVE_API_SECRET)
-    print("Reddit Client UserAgent:", CrossmodConsts.REDDIT_USER_AGENT)
+    print("Reddit Client UserAgent:",  CrossmodConsts.REDDIT_USER_AGENT)
     print("Reddit Client ID: ",        CrossmodConsts.REDDIT_CLIENT_ID)
     print("Reddit Client Secret",      CrossmodConsts.REDDIT_CLIENT_SECRET)
     print("Reddit Password: ",         CrossmodConsts.REDDIT_PASSWORD)
     print("Reddit Username: ",         CrossmodConsts.REDDIT_USERNAME)
+
+    print("fastText binary: ",         CrossmodConsts.FASTTEXT_BINARY)
+    print("Norms model: ",             CrossmodConsts.get_norms_classifier('verbal-attacks-on-Reddit'))
+    print("Subreddit model: ",         CrossmodConsts.get_subreddit_classifier('Futurology'))
 
 if __name__ == "__main__":
     main()

@@ -20,9 +20,10 @@ def preprocessing(input_comments):
 #     train_text["text"] = train_text['text'].str.apply(lambda x : " ".join(re.findall('[\w]+',x)))
 
     return train_text['text']
-
+    
 def get_classifier_predictions(input_comments, subreddit_list):
     #preprocess comments
+    
     comments = preprocessing(input_comments)
     #write comment to a file
     comment_to_file = open("temp_comments.txt", "w")
