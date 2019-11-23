@@ -7,11 +7,12 @@ from crossmodconsts import *
 
 class CrossmodClassifiers:    
     SUBREDDIT_CLASSIFIERS = "subreddit"
-    NORMS_CLASSIFIERS = "norms"
+    NORM_CLASSIFIERS = "norms"
 
     UNREMOVED_COMMENT = "__label__unremoved"
     REMOVED_COMMENT = "__label__removed"
     
+    ## { 'agreement_score': 0.95, 'norm_violations_score': 5, 'subreddits_that_remove': ["science", "space"], 'norms_violated': ["violence"] }
     ## input_comment, clfs_type, clfs_ids
     def __init__(self, **kwargs):
         input_comment = kwargs['input_comment']
@@ -22,13 +23,36 @@ class CrossmodClassifiers:
         self.clfs_arguments = [{'clfs_type': clfs_type, 
                                 'clfs_id': clf, 
                                 'input_comment': input_comment} for clf in clfs_ids]
+
+        # [ {'clfs_id': 'science', 'clfs_prediction': 1, 'clfs_type': SUBREDDIT }, {'clfs_id': 'space', 'clfs_prediction': 1, 'clfs_type': SUBREDDIT } ]
         self.clfs_predictions = self.clfs_pool.map(CrossmodClassifiers.run_classifier, self.clfs_arguments)
-        
+    
         self.total_clfs = len(clfs_ids)
-        self.agreement_score = 0
+
+        result = {
+            'agreement_score': 0,
+            'norm_violation_score': 0,
+            'subreddits_that_remove': [],
+            'norms_violated': []
+        }
+
+
         for clfs_prediction in self.clfs_predictions:
-            if clfs_prediction[0][0] == CrossmodClassifiers.REMOVED_COMMENT:
-                self.agreement_score += 1
+            if clfs_prediction['clfs_prediction'] == 1:
+                if clfs_prediction['clfs_type'] == CrossmodClassifiers.SUBREDDIT_CLASSIFIERS:
+                    result['agreement_score'] += 1
+                    result['subreddits_that_remove'].append(clfs_prediction['clfs_id'])
+
+                elif clfs_prediction['clfs_type'] == CrossmodClassifiers.NORM_CLASSIFIERS:
+                    result['norm_violation_score'] += 1
+                    result['norms_violated'].append(clfs_prediction['clfs_id'])
+                
+                result['prediction_' + clfs_prediction['clfs_id']] = True
+
+            else:
+                result['prediction_' + clfs_prediction['clfs_id']] = False
+
+        self.result = result
 
     @staticmethod
     def process_input_comment(input_comment):
@@ -50,17 +74,23 @@ class CrossmodClassifiers:
         if clfs_type == CrossmodClassifiers.SUBREDDIT_CLASSIFIERS:
             clf_path = CrossmodConsts.get_subreddit_classifier(clfs_id)
 
-        elif clfs_type == CrossmodClassifiers.NORMS_CLASSIFIERS:
+        elif clfs_type == CrossmodClassifiers.NORM_CLASSIFIERS:
             clf_path = CrossmodConsts.get_norms_classifier(clfs_id)
 
         clf = fasttext.load_model(clf_path)
         input_comment = CrossmodClassifiers.process_input_comment(input_comment)
         clf_prediction = clf.predict(input_comment)
 
-        return clf_prediction
+        if clf_prediction[0][0] == CrossmodClassifiers.REMOVED_COMMENT:
+            clf_prediction = 1
+        else:
+            clf_prediction = 0
+
+        # {'clfs_id': 'science', 'clfs_prediction': 1, 'clfs_type': SUBREDDIT }
+        return { 'clfs_id': clfs_id, 'clfs_prediction': clf_prediction, 'clfs_type': clfs_type }
         
-    def get_agreement_score(self):
-        return self.agreement_score / self.total_clfs
+    def get_result(self):
+        return self.result
 
 def preprocessing(input_comments):
     
@@ -113,11 +143,11 @@ def get_classifier_predictions(input_comments, subreddit_list):
     return test_comments
 
 def main():
-    print(CrossmodClassifiers(input_comment = "just a comment", 
-                        clfs_type = CrossmodClassifiers.SUBREDDIT_CLASSIFIERS, 
-                        clfs_ids = ["technology", "Futurology", "space"]).get_agreement_score())
+    print(CrossmodClassifiers(input_comment = "you suck", 
+                              clfs_type = CrossmodClassifiers.SUBREDDIT_CLASSIFIERS, 
+                              clfs_ids = ["technology", "Futurology", "space"]).get_result())
 
-    print(get_classifier_predictions(["space is really awesome!"], ["technology", "Futurology", "space"]))
+    # print(get_classifier_predictions(["space is really awesome!"], ["technology", "Futurology", "space"]))
 
 if __name__ == '__main__':
     main()
