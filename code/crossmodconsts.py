@@ -9,7 +9,7 @@ class CrossmodConsts:
     REDDIT_USERNAME = os.environ['REDDIT_USERNAME']
 
     FASTTEXT_BINARY = "../../fastText-0.9.1/fasttext"
-    MODELS_DIRECTORY = "/data/backend-ml/"
+    MODELS_DIRECTORY = "/data/backend-ml"
 
     @staticmethod
     def get_norm_classifier(norm):
