@@ -63,22 +63,6 @@ class CrossmodDB:
             print("Could not write comment id: {} to the database".format(kwargs['id']))
             return
 
-    def write_to_CSV(self):
-        output_file = open('db_crossmod.csv', 'w')
-        out = csv.writer(output_file)
-
-        #includes column headers
-        out.writerow(['created_utc', 'ingested_at', 'id', 'body', 'toxicity_score', 
-        'crossmod_action', 'author', 'subreddit', 'banned_by', 'banned_at'])
-
-        for row in db.database_session.query.all():
-            out.writerow([row.created_utc, row.ingested_at, row.id, row.body, 
-            row.toxicity_score, row.crossmod_action, row.author, row.subreddit, 
-            row.banned_by, row.banned_at])
-        
-        #close the file after reading
-        output_file.close()
-
 def main():
     db = CrossmodDB()
 

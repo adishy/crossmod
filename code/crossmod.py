@@ -72,6 +72,9 @@ start_time = time.time()
 print("Crossmod = ACTIVE, starting at t = ", start_time)
 
 for comment in subreddit.stream.comments(): #to iterate through the comments and stream it live
+	if comment == None:
+		continue
+
 	start = time.time()
 	
 	total_num_comments += 1
@@ -136,16 +139,17 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 
 	### Write to CrossmodDB
 	db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
-			 ingested_utc = datetime.datetime.now(),
-             id = comment.id,
-             body = comment.body,
-             toxicity_score = toxicity_score,
-             crossmod_action = ACTION,
-             author = comment.author.name,
-             subreddit = comment.subreddit.display_name, 
-             banned_by = None,
-             banned_at_utc = None,
-	    agreement_score = agreement_score)
+			ingested_utc = datetime.datetime.now(),
+			id = comment.id,
+			body = comment.body,
+			toxicity_score = toxicity_score,
+			crossmod_action = ACTION,
+			author = comment.author.name,
+			subreddit = comment.subreddit.display_name, 
+			banned_by = None,
+			banned_at_utc = None,
+		agreement_score = agreement_score)
+
 	
 	if not perform_action:
 		continue
