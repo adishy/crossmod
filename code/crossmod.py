@@ -72,6 +72,8 @@ start_time = time.time()
 print("Crossmod = ACTIVE, starting at t = ", start_time)
 
 for comment in subreddit.stream.comments(): #to iterate through the comments and stream it live
+	
+	# do not process the comment if the comment is None
 	if comment == None:
 		continue
 
