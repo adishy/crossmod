@@ -7,6 +7,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from CrossmodConsts import *
+
 Base = declarative_base()
 
 # UPDATE crossmoddbdata SET created_utc = datetime(created_utc, 'unixepoch', 'localtime');
@@ -46,7 +48,7 @@ class CrossmodDBData(Base):
 
 
 class CrossmodDB:
-    def __init__(self, database_uri = 'sqlite:///../data/crossmoddbdata.db'):
+    def __init__(self, database_uri = 'sqlite:///' + CrossmodConsts.DB_PATH):
         self.database_uri = database_uri
         self.database = create_engine(self.database_uri)
         Base.metadata.bind = self.database

@@ -8,6 +8,7 @@ class CrossmodConsts:
     REDDIT_PASSWORD = os.environ['REDDIT_PASSWORD']
     REDDIT_USERNAME = os.environ['REDDIT_USERNAME']
 
+    DB_PATH = '../data/crossmoddbdata.db'
     FASTTEXT_BINARY = "../../fastText-0.9.1/fasttext"
     MODELS_DIRECTORY = "/data/backend-ml"
 
