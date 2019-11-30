@@ -13,7 +13,7 @@ class CrossmodDBUpdater:
         #setup the Reddit bot
         self.reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
                                   client_id = CrossmodConsts.REDDIT_CLIENT_ID, 
-                                  client_secret = CrossmodConsts.REDDIT_CLIENT_SECRETS,
+                                  client_secret = CrossmodConsts.REDDIT_CLIENT_SECRET,
                                   username = CrossmodConsts.REDDIT_USERNAME, 
                                   password = CrossmodConsts.REDDIT_PASSWORD)
 
