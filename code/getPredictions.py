@@ -1,5 +1,6 @@
 import pandas as pd
 import subprocess
+from crossmodconsts import *
 
 def preprocessing(input_comments):
     
@@ -42,7 +43,7 @@ def get_classifier_predictions(input_comments, subreddit_list):
     for study_sub in subreddit_list:
         # print(count, ") Expert: " , study_sub)
         count+=1
-        command = ["../../../../../Downloads/fastText-0.1.0/fasttext", "predict", "../../../../../Downloads/fastText-0.1.0/models/model_" + study_sub + ".bin", "temp_comments.txt", "1"]
+        command = [CrossmodConsts.FASTTEXT_BINARY, "predict", CrossmodConsts.get_subreddit_classifier(study_sub), "temp_comments.txt", "1"]
         result = subprocess.run(command, stdout=subprocess.PIPE)
         output = result.stdout.decode('utf-8')
         expert_decision = output.split('\n')[:-1]
@@ -71,7 +72,7 @@ def get_macronorm_classifier_predictions(input_comments, norms_list):
     for norm in norms_list:
         # print(count, ") Expert: " , study_sub)
         count+=1
-        command = ["../../../../../Downloads/fastText-0.1.0/fasttext", "predict", "../models/model_" + norm + ".bin", "temp_comments.txt", "1"]
+        command = [CrossmodConsts.FASTTEXT_BINARY, "predict", CrossmodConsts.get_norms_classifier(norm), "temp_comments.txt", "1"]
         result = subprocess.run(command, stdout=subprocess.PIPE)
         output = result.stdout.decode('utf-8')
         expert_decision = output.split('\n')[:-1]
@@ -81,16 +82,27 @@ def get_macronorm_classifier_predictions(input_comments, norms_list):
         # print(expert_decision)
     return test_comments
 
-# if __name__ == '__main__':
-#     # main code
-#     print("Get predictions from pre-trained experts on test comments!")
+if __name__ == '__main__':
+    # main code
+    print("Get predictions from pre-trained experts on test comments!")
 
-#     comment_list = ["I agree!", "This is lame!", "Just kill yourself"]
-#     # test_comments = pd.read_csv('test_comments.csv', names = ['comment'])
-#     # subreddit_list = ["science", "politics"]
-#     subreddit_list = pd.read_csv("study_subreddits.csv", names = ["subreddit"])["subreddit"][:5]
+    classifiers = []
 
-#     predictions = get_classifier_predictions(comment_list, subreddit_list)
+    classifiers_file = open("sample2.in", "r")
+    clfs_ids = classifiers_file.readlines()
 
-#     print(predictions)
-#     print("Predictions from pre-trained exports on test comments = COMPLETE!")
+    for clfs_id in clfs_ids:
+        classifiers.append(clfs_id.replace('\n', ''))
+    
+    comment_list = []
+
+    comments_file = open("batch_sample_1000.in", "r")
+    comments = comments_file.readlines()
+
+    for comment in comments:
+        comment_list.append(comment)
+    
+    predictions = get_classifier_predictions(comment_list, classifiers)
+
+    print(predictions)
+    print("Predictions from pre-trained exports on test comments = COMPLETE!")
