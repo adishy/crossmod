@@ -71,6 +71,8 @@ start_time = time.time()
 
 print("Crossmod = ACTIVE, starting at t = ", start_time)
 
+comment_list = []
+
 for comment in subreddit.stream.comments(): #to iterate through the comments and stream it live
 	total_num_comments += 1
 	
@@ -94,19 +96,23 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	backend_predictions['toxicity_score'] = toxicity_score
 
 	if use_classifiers == 1:
-		### Type 2: Score using ensemble of subreddit classifiers in back-end (cross-community learning)
-		###score comment using subreddit classifier predictions - currently supports batch queries, i.e., a list of comments
-		comment_list = []
-		comment_list.append(comment.body)
+	    ### Type 2: Score using ensemble of subreddit classifiers in back-end (cross-community learning)
+	    ###score comment using subreddit classifier predictions - currently supports batch queries, i.e., a list of comments    
+	    
+            comment_list.append(comment.body)
+               
+            if len(comment_list) < 100:
+                continue
 
-		###obtain predictions from subreddit classifiers
-		try:
-			predictions = get_classifier_predictions(comment_list, subreddit_list)
-		except Exception as ex:
-			print(ex)
-			continue
-		for col in predictions.drop('comment', axis = 1).columns:
-			backend_predictions[col] = predictions[col][0]
+	    ###obtain predictions from subreddit classifiers
+	    try:
+	        predictions = get_classifier_predictions(comment_list, subreddit_list)
+	    except Exception as ex:
+	        print(ex)
+	        continue
+		
+            for col in predictions.drop('comment', axis = 1).columns:
+    		backend_predictions[col] = predictions[col][0]
 		###calculate sum of votes from subreddit classifier predictions (agreement_score)
 		predictions['sum_votes'] = predictions.drop('comment', axis = 1).sum(axis = 1)
 		agreement_score = predictions['sum_votes'][0]
@@ -120,7 +126,10 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 		predictions['sum_votes'] = predictions.drop('comment', axis = 1).sum(axis = 1)
 		norm_violation_score = predictions['sum_votes'][0]
 		backend_predictions['norm_violation_score'] = norm_violation_score
-	### Compute the appropriate action to be performed from the config file based on back-end predictions! 
+
+        comment_list = []
+
+        ### Compute the appropriate action to be performed from the config file based on back-end predictions! 
 	ACTION = check_config(backend_predictions)
 	print("Action = ", ACTION)
 
