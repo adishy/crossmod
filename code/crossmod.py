@@ -19,7 +19,7 @@ if len(sys.argv) != 4:
 
 else:
 	staging_subreddit = sys.argv[1]
-	perform_action = bool(sys.argv[2])
+	perform_action = bool(int(sys.argv[2]))
 	use_classifiers = int(sys.argv[3])
 
 print("Staging subredddit: ", staging_subreddit)
