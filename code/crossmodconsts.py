@@ -11,6 +11,9 @@ class CrossmodConsts:
     FASTTEXT_BINARY = "../../fastText-0.9.1/fasttext"
     MODELS_DIRECTORY = "/data/backend-ml"
 
+    SUBREDDIT_CLASSIFIERS = "subreddit"
+    NORM_CLASSIFIERS = "norms"
+
     @staticmethod
     def get_norms_classifier(norm):
         NORMS_CLASSIFIERS = CrossmodConsts.MODELS_DIRECTORY + "/norms-clfs/"
@@ -20,6 +23,15 @@ class CrossmodConsts:
     def get_subreddit_classifier(subreddit):
         SUBREDDIT_CLASSIFIERS = CrossmodConsts.MODELS_DIRECTORY + "/subreddit-clfs/"
         return SUBREDDIT_CLASSIFIERS + "model_" + subreddit + ".bin"
+
+    @staticmethod
+    def get_classifier(clf_id, type):
+        if type == CrossmodConsts.SUBREDDIT_CLASSIFIERS:
+            return CrossmodConsts.get_subreddit_classifier(clf_id)
+        elif type == CrossmodConsts.NORM_CLASSIFIERS:
+            return CrossmodConsts.get_norms_classifier(clf_id)
+        
+        raise RuntimeError("Could not find classifier: ", clf_id, " of type: ", type)
 
 def main():
     print("Perpective API Key: ",      CrossmodConsts.PERSPECTIVE_API_SECRET)
