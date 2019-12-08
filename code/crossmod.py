@@ -6,12 +6,13 @@ from getPredictions import *
 from config import *
 from crossmodconsts import CrossmodConsts
 from crossmoddb import CrossmodDB
+from crossmodclassifiers import CrossmodClassifiers
 
 ###get toxicity score from Perspective API
 from googleapiclient import discovery
 
 # use_classifiers = 0
-use_classifiers = 0
+use_classifiers = 1
 
 def get_toxicity_score(comment):
     analyze_request = {
@@ -59,8 +60,11 @@ for moderator in moderators_list:
 
 ###list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
 subreddits_limit = 100
-subreddit_list = pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit]
-macro_norm_list = pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms']
+subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
+macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
+
+classifiers = CrossmodClassifiers(subreddits = subreddit_list, 
+								  norms = macro_norm_list)
 
 total_num_comments = 0
 num_processed = 0
@@ -96,45 +100,21 @@ for comment in subreddit.stream.comments(): #to iterate through the comments and
 	backend_predictions['toxicity_score'] = toxicity_score
 
 	if use_classifiers == 1:
-	    ### Type 2: Score using ensemble of subreddit classifiers in back-end (cross-community learning)
-	    ###score comment using subreddit classifier predictions - currently supports batch queries, i.e., a list of comments    
-	    
-            comment_list.append(comment.body)
-               
-            if len(comment_list) < 100:
-                continue
-
-	    ###obtain predictions from subreddit classifiers
-	    try:
-	        predictions = get_classifier_predictions(comment_list, subreddit_list)
-	    except Exception as ex:
-	        print(ex)
-	        continue
+		try:
+			comment_value = comment.body
+			backend_predictions.update(classifiers.get_result(comment_value))
+			print("Number of subreddit classifiers agreeing to remove comment = ", backend_predictions['agreement_score'])
+			print("Number of norms violated = ", backend_predictions['norm_violation_score'])
+		except Exception as ex:
+			print(ex)
+			continue
 		
-            for col in predictions.drop('comment', axis = 1).columns:
-    		backend_predictions[col] = predictions[col][0]
-		###calculate sum of votes from subreddit classifier predictions (agreement_score)
-		predictions['sum_votes'] = predictions.drop('comment', axis = 1).sum(axis = 1)
-		agreement_score = predictions['sum_votes'][0]
-		backend_predictions['agreement_score'] = agreement_score
-		print("Number of subreddit classifiers agreeing to remove comment = ", agreement_score)
-		### Type 3: Score using ensemble of macro norm classifiers in back-end
-		###score comment using macro norm classifier predictions - currently supports batch queries, i.e., a list of comments
-		predictions = get_macronorm_classifier_predictions(comment_list, macro_norm_list)
-		for col in predictions.drop('comment', axis = 1).columns:
-			backend_predictions[col] = predictions[col][0]
-		predictions['sum_votes'] = predictions.drop('comment', axis = 1).sum(axis = 1)
-		norm_violation_score = predictions['sum_votes'][0]
-		backend_predictions['norm_violation_score'] = norm_violation_score
-
-        comment_list = []
-
         ### Compute the appropriate action to be performed from the config file based on back-end predictions! 
 	ACTION = check_config(backend_predictions)
 	print("Action = ", ACTION)
 
 	if use_classifiers == 1:
-		agreement_score = backend_predictions['agreement_score']
+		agreement_score = backend_predictions['agreement_score'] / len(subreddit_list)
 	else:
 		agreement_score = None
 
