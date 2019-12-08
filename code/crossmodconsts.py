@@ -16,7 +16,7 @@ class CrossmodConsts:
 
     @staticmethod
     def get_norms_classifier(norm):
-        NORMS_CLASSIFIERS = CrossmodConsts.MODELS_DIRECTORY + "/norms-clfs/"
+        NORMS_CLASSIFIERS = CrossmodConsts.MODELS_DIRECTORY + "/norm-clfs/"
         return NORMS_CLASSIFIERS + "model_" + norm + ".bin"
 
     @staticmethod
