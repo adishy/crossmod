@@ -11,8 +11,20 @@ from crossmodclassifiers import CrossmodClassifiers
 ###get toxicity score from Perspective API
 from googleapiclient import discovery
 
-# use_classifiers = 0
-use_classifiers = 1
+# Usage: python3 crossmod.py modbot_staging 1 1
+if len(sys.argv) != 4:
+	staging_subreddit = "modbot_staging"
+	perform_action = False
+	use_classifiers = 1
+
+else:
+	staging_subreddit = sys.argv[1]
+	perform_action = bool(sys.argv[2])
+	use_classifiers = int(sys.argv[3])
+
+print("Staging subredddit: ", staging_subreddit)
+print("Perform action: ", perform_action)
+print("Use classifiers: ", use_classifiers)
 
 def get_toxicity_score(comment):
     analyze_request = {
@@ -31,7 +43,6 @@ API_KEY = CrossmodConsts.PERSPECTIVE_API_SECRET
 service = discovery.build('commentanalyzer', 'v1alpha1', developerKey=API_KEY)
 ###
 
-perform_action = False
 
 #setup the Reddit bot
 reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
@@ -40,7 +51,6 @@ reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
                      username = CrossmodConsts.REDDIT_USERNAME, 
 					 password = CrossmodConsts.REDDIT_PASSWORD)
 
-staging_subreddit = "nba"
 subreddit = reddit.subreddit(staging_subreddit) #Select the subreddit for Crossmod to work on 
 
 db = CrossmodDB()
