@@ -81,7 +81,7 @@
             $ make clean && make
 """
 
-from getPredictions import *
+from crossmodclassifiers import *
 
 from flask import Flask, request, jsonify
 import pandas as pd

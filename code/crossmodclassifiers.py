@@ -7,32 +7,41 @@ from crossmodconsts import *
 import time
 
 class CrossmodClassifiers:    
-    SUBREDDIT_CLASSIFIERS = "subreddit"
-    NORM_CLASSIFIERS = "norms"
-
     UNREMOVED_COMMENT = "__label__unremoved"
     REMOVED_COMMENT = "__label__removed"
     
     subreddit_clfs = {}
+    norm_clfs = {}
 
     ## { 'agreement_score': 0.95, 'norm_violations_score': 5, 'subreddits_that_remove': ["science", "space"], 'norms_violated': ["violence"] }
     ## input_comment, clfs_type, clfs_ids
     def __init__(self, **kwargs):
-        count = 0
-           
-        self.clfs_type = kwargs['clfs_type']
-        self.clfs_ids = kwargs['clfs_ids']
-       
-        if(self.clfs_type == CrossmodClassifiers.SUBREDDIT_CLASSIFIERS):
-            start = time.time()
-            for clfs_id in self.clfs_ids:
-                if clfs_id not in CrossmodClassifiers.subreddit_clfs:
-                    CrossmodClassifiers.subreddit_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_subreddit_classifier(clfs_id))
-                    print("Loaded classifier: ", count)
-                    count += 1
+        subreddit_count = 0
+        norm_count = 0
 
-            end = time.time()
-            print("Loaded classifiers: ", int(round(end - start)), "s") 
+        # List of subreddit classifiers
+        self.subreddit_clfs_ids = kwargs['subreddits']
+        
+        # List of norm classifiers
+        self.norm_clfs_ids = kwargs['norms']
+
+        start = time.time()
+
+        # Load subreddit classifiers
+        for clfs_id in self.subreddit_clfs_ids:
+            if clfs_id not in CrossmodClassifiers.subreddit_clfs:
+                CrossmodClassifiers.subreddit_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_subreddit_classifier(clfs_id))
+                subreddit_count += 1
+
+        # Load norm classifiers
+        for clfs_id in self.norm_clfs_ids:
+            if clfs_id not in CrossmodClassifiers.norm_clfs:
+                CrossmodClassifiers.norm_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_norms_classifier(clfs_id))
+                norm_count += 1
+
+        end = time.time()
+        print("Loaded classifiers: ", int(round(end - start)), "s") 
+        print("Loaded ", subreddit_count, " subreddit classifiers, ", norm_count, " norm classifiers")
 
     @staticmethod
     def process_input_comment(input_comment):
@@ -52,7 +61,12 @@ class CrossmodClassifiers:
         input_comment = arguments['input_comment']
         clfs_id = arguments['clfs_id']
         clfs_type = arguments['clfs_type']
-        clf = CrossmodClassifiers.subreddit_clfs[clfs_id]
+
+        if clfs_type == CrossmodConsts.SUBREDDIT_CLASSIFIERS:
+            clf = CrossmodClassifiers.subreddit_clfs[clfs_id]
+
+        elif clfs_type == CrossmodConsts.NORM_CLASSIFIERS:
+            clf = CrossmodClassifiers.norm_clfs[clfs_id]
 
         input_comment = CrossmodClassifiers.process_input_comment(input_comment)
         
@@ -67,12 +81,17 @@ class CrossmodClassifiers:
         
     def get_result(self, input_comment):
         clfs_pool = Pool()
-        clfs_arguments = [{'clfs_type': self.clfs_type, 
-                           'clfs_id': clf,
-                           'input_comment': input_comment} for clf in self.clfs_ids]
+
+        subreddit_clfs_arguments = [{'clfs_type': CrossmodConsts.SUBREDDIT_CLASSIFIERS, 
+                                    'clfs_id': clf,
+                                    'input_comment': input_comment} for clf in self.subreddit_clfs_ids]
+
+        norm_clfs_arguments = [{'clfs_type': CrossmodConsts.NORM_CLASSIFIERS, 
+                                'clfs_id': clf,
+                                'input_comment': input_comment} for clf in self.norm_clfs_ids]
 
         # [ {'clfs_id': 'science', 'clfs_prediction': 1, 'clfs_type': SUBREDDIT }, {'clfs_id': 'space', 'clfs_prediction': 1, 'clfs_type': SUBREDDIT } ]
-        clfs_predictions = clfs_pool.map(CrossmodClassifiers.run_classifier, clfs_arguments)
+        clfs_predictions = clfs_pool.map(CrossmodClassifiers.run_classifier, subreddit_clfs_arguments + norm_clfs_arguments)
         clfs_pool.close()
         clfs_pool.join()
         
@@ -86,11 +105,11 @@ class CrossmodClassifiers:
 
         for clfs_prediction in clfs_predictions:
             if clfs_prediction['clfs_prediction'] == 1:
-                if clfs_prediction['clfs_type'] == CrossmodClassifiers.SUBREDDIT_CLASSIFIERS:
+                if clfs_prediction['clfs_type'] == CrossmodConsts.SUBREDDIT_CLASSIFIERS:
                     result['agreement_score'] += 1
                     result['subreddits_that_remove'].append(clfs_prediction['clfs_id'])
 
-                elif clfs_prediction['clfs_type'] == CrossmodClassifiers.NORM_CLASSIFIERS:
+                elif clfs_prediction['clfs_type'] == CrossmodConsts.NORM_CLASSIFIERS:
                     result['norm_violation_score'] += 1
                     result['norms_violated'].append(clfs_prediction['clfs_id'])
                 
@@ -112,16 +131,26 @@ def main():
 
     print("Currently using: ", len(classifiers), " classifiers")
 
-    subreddit_classifiers = CrossmodClassifiers(clfs_type = CrossmodClassifiers.SUBREDDIT_CLASSIFIERS, 
-                                                clfs_ids = classifiers)
-  
+    subreddit_classifiers = ["AskReddit", "Futurology", "space", "technology"]
+
+    norm_classifiers = ["abusing-and-criticisizing-mods", 
+                        "hatespeech-racist-homophobic", 
+                        "misogynistic-slurs", 
+                        "namecalling-claiming-other-too-sensitive", 
+                        "opposing-political-views-trump", 
+                        "personal-attacks",
+                        "porno-links",
+                        "verbal-attacks-on-Reddit"]
+
+    classifiers = CrossmodClassifiers(subreddits = subreddit_classifiers,
+                                      norms = norm_classifiers)
   
     while(True):
         input_comment = input("input a comment for a subreddit: ")
     
         start = time.time()
 
-        print(subreddit_classifiers.get_result(input_comment))
+        print(classifiers.get_result(input_comment))
 
         end = time.time()
 
