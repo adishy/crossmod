@@ -25,4 +25,5 @@ pip3 install sqlalchemy
 pip3 install pandas     
 pip3 install praw  
 pip3 install google-api-python-client
+pip3 install fasttext
 ```
