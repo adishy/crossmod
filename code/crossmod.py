@@ -13,10 +13,11 @@ from googleapiclient import discovery
 
 # Usage: python3 crossmod.py modbot_staging 1 1
 if len(sys.argv) != 4:
-	staging_subreddit = "modbot_staging"
-	perform_action = False
-	use_classifiers = 1
-
+	print("Usage: python3 crossmod.py <subreddit-name> <perform-action [1, 0]> <use-classifiers [1, 0]>")
+	print("Example:")
+	print("  python3 crossmod.py modbot_staging 1 1")
+	print("  starts Crossmod to run on the subreddit modbot_staging, will actively flag comments and use Crossmod's ML backend")
+	exit(1);	
 else:
 	staging_subreddit = sys.argv[1]
 	perform_action = bool(int(sys.argv[2]))
