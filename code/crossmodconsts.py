@@ -8,12 +8,15 @@ class CrossmodConsts:
     REDDIT_PASSWORD = os.environ['REDDIT_PASSWORD']
     REDDIT_USERNAME = os.environ['REDDIT_USERNAME']
 
-    DB_PATH = '../data/crossmoddbdata.db'
     FASTTEXT_BINARY = "../../fastText-0.9.1/fasttext"
-    MODELS_DIRECTORY = "/data/backend-ml"
+    DB_PATH = '../data/crossmoddbdata.db'
+    MODELS_DIRECTORY = os.environ['MODELS_DIRECTORY']
+
+    SUBREDDIT_CLASSIFIERS = "subreddit"
+    NORM_CLASSIFIERS = "norms"
 
     @staticmethod
-    def get_norm_classifier(norm):
+    def get_norms_classifier(norm):
         NORMS_CLASSIFIERS = CrossmodConsts.MODELS_DIRECTORY + "/norm-clfs/"
         return NORMS_CLASSIFIERS + "model_" + norm + ".bin"
 
