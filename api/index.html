@@ -58,7 +58,16 @@
     <a class="current" href="./">API</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#api">API</a></li>
+    <li class="toctree-l2"><a href="#quick-start">Quick Start</a></li>
+    
+
+    <li class="toctree-l2"><a href="#requests">Requests</a></li>
+    
+
+    <li class="toctree-l2"><a href="#example-requests">Example Requests</a></li>
+    
+
+    <li class="toctree-l2"><a href="#responses">Responses</a></li>
     
 
     </ul>
@@ -96,7 +105,117 @@
           <div role="main">
             <div class="section">
               
-                <h3 id="api">API</h3>
+                <h2 id="quick-start">Quick Start</h2>
+<ul>
+<li>install DEPENDENCIES</li>
+<li>Navigate to crossmod_api/code</li>
+</ul>
+<pre><code>export FLASK_APP=api.py
+flask run
+</code></pre>
+
+<h2 id="requests">Requests</h2>
+<ul>
+<li>The JSON request is an object with the following fields:</li>
+</ul>
+<pre><code>    {
+        &quot;comments&quot;: [ comment1, comment2, ... ],
+        &quot;subreddit_list&quot;: [ classifier1, classifier2, ... ],
+        &quot;macro_norm_list&quot;: [ norm1, norm2, ... ],
+        &quot;key&quot;: KEY
+    }
+</code></pre>
+
+<ul>
+<li><code>comments:</code> array of comment strings to be evaulated by Crossmod</li>
+<li><code>subreddit_list:</code> (OPTIONAL) list of subreddit classifiers used to predict scores.<ul>
+<li>If field is left blank, the default classifiers in ../data/study_subreddits.csv will all be used</li>
+<li>If field is passed a blank list [], no classifiers will be used, and no  agreement score will be found</li>
+</ul>
+</li>
+<li><code>macro_norm_list:</code> (OPTIONAL) list of macro norms used to predict scores.
+        * If field is left blank, the default macro norms in ../data/macro-norms.txt will all be used
+        * If field is passed a blank list [], no macro norms will be used, and no norm violation score will be found</li>
+<li><code>key</code>: string used for authentication.
+        * currently, for debugging, key is set to <code>ABCDEFG</code></li>
+</ul>
+<h2 id="example-requests">Example Requests</h2>
+<ul>
+<li>
+<p>While flask is running:</p>
+<ul>
+<li>
+<p>rating comments with all classifiers and no macro norms
+~~~
+curl -d '{"comments": ["you really suck!", "this is just a comment"], "macro_norm_list": [], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:5000/get-prediction-scores
+~~~</p>
+</li>
+<li>
+<p>rating comments with only select classifiers and all macro norms</p>
+</li>
+</ul>
+<p>~~~
+curl -d '{"comments": ["you really suck!", "this is just a comment"], "subreddit_list": ["Futurology", "nba", "AskReddit", "science", "politics", "pokemongo"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:5000/get-prediction-scores
+~~~</p>
+<ul>
+<li>rating comments with all classifiers and all macro norms</li>
+</ul>
+<p>~~~
+curl -d '{"comments": ["you really suck!", "this is just a comment"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:5000/get-prediction-scores
+~~~</p>
+</li>
+</ul>
+<h2 id="responses">Responses</h2>
+<ul>
+<li>The JSON response is an array of JSON objects, where the index of each JSON object
+  corresponds to the index of the original comment in the request.</li>
+</ul>
+<p>~~~
+    [
+        {
+            'agreement_score': AGREEMENT_SCORE,
+            'norm_violation_score': NORM_VIOLATION_SCORE,
+            'subreddits_that_remove': [ subreddit1, subreddit2, ... ],
+            'norms_violated': [ norm1, norm2, ... ]
+        },
+        ....
+    ]
+  ~~~</p>
+<pre><code>* `agreement_score: ` prediction score from subreddit classifiers.
+    * if no classifiers were used, is a `NULL` value.
+* `norm_violation_score: ` prediction score from macro norms.
+    * if no macro norms were used, is a `NULL` value.
+* `subreddits_that_remove: ` list of classifiers that would have removed the comment.
+    * if no classifiers were used, is an empty list
+* `norms_violated: ` list of norms that were violated by the comment.
+    * if no macro norms were used, is an empty listed
+* CHECK IF agreement_score OR norm_violation_score IS NULL
+        NOT IF subreddits_that_remove OR norms_violated IS EMPTY
+         because a NULL value implies that classifiers and/or macro norms were not used
+         whereas an EMPTY list does NOT NECESSARILY imply the above
+</code></pre>
+<ul>
+<li>
+<p>Dependencies</p>
+<ul>
+<li><code>getPredictions.py</code></li>
+<li><code>flask</code></li>
+<li><code>pandas</code></li>
+<li><code>traceback</code></li>
+<li><code>json</code></li>
+</ul>
+</li>
+<li>
+<p>Common Troubleshooting</p>
+<ul>
+<li>Make sure getPredictions.py points to the correct paths for the norm/reddit models and the fastText directory</li>
+<li>Make sure fastText binaries are compiled on local machine.<ul>
+<li>If not, navigate to <code>/fastText-0.9.1</code> and <code>make clean &amp;&amp; make</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
               
             </div>
           </div>
