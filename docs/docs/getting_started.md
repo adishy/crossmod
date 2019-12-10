@@ -27,8 +27,9 @@ If using a python virtual environment, replace `pip3` with `pip` when installing
 
 Getting Credentials for Crossmod
 
-Crossmod currently uses Google’s Perspective API for moderation tasks. A personal Perspective API Key can be obtained following [these instructions](https://github.com/conversationai/perspectiveapi/tree/master/1-get-started). After obtaining the API key, paste it into `keys/perspective-api-key.txt`
-Obtain Reddit API credentials by creating an app [here](https://www.reddit.com/prefs/apps) and paste the client ID and client secret along with the username and password for the Reddit account used for creating the app as comma separated values on the second line of `keys/crossmod-creds.txt` (no spaces necessary between each comma separated value.
+* Crossmod currently uses Google’s Perspective API for moderation tasks. 
+A personal Perspective API Key can be obtained following [these instructions](https://github.com/conversationai/perspectiveapi/tree/master/1-get-started). After obtaining the API key, paste it into `crossmod_credentials.sh` as described below.
+* Obtain Reddit API credentials by creating an app [here](https://www.reddit.com/prefs/apps) and paste the client ID and client secret along with the username and password for the Reddit account used for creating the app in `crossmod credentials.sh` as described below.
 
 ## Set up keys
 
@@ -44,6 +45,24 @@ Assuming the Crossmod repository was cloned to the home directory of the user
 ~~~
 
 * Open crossmod_credentials.sh and replace the keys with credentials obtained previously. The crossmod_credentials.sh file should also contain the path to the directory containing fasttext models that Crossmod requires for cross-community predictions.
+* `PERSPECTIVE_API_SECRET` is the API key for Perspective API
+* `REDDIT_USER_AGENT` is the User-Agent value for Crossmod, this can be set to any value that makes sense, for example, "Testing Crossmod (by /u/CrossModerator)"
+* `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET` are obtained by [creating an app]() on Reddit as described previously.  
+
+* `REDDIT_PASSWORD`, `REDDIT_USERNAME` are the password and the username of the Reddit account that was used to obtain the API credentials
+
+* `MODELS_DIRECTORY` is the path to fasttext classifiers required by Crossmod
+
+* A complete `crossmod_credentials.sh` file looks like this:
+~~~
+export PERSPECTIVE_API_SECRET=GFDKHJN43jkngrjkegbjkbgfdkj
+export REDDIT_USER_AGENT="Testing Crossmod (by /u/CrossModerator)"
+export REDDIT_CLIENT_ID=s-GFKNGlngkfd
+export REDDIT_CLIENT_SECRET=JBGFDJLGDFGJ
+export REDDIT_PASSWORD=your_password_for_reddit
+export REDDIT_USERNAME=YourUsernameForReddit
+export MODELS_DIRECTORY="/models/directory"
+~~~
 
 * Edit ~/.profile to load Crossmod credentials into the environment on login
 ~~~
@@ -54,7 +73,7 @@ Assuming the Crossmod repository was cloned to the home directory of the user
 ## Starting Crossmod
 * Crossmod can be started by running the `crossmod.py` script with the required arguments:
     * The name of the subreddit
-    * An indicator to actually perform actions spepcified in config.py [0, 1]
+    * An indicator to actually perform actions specified in config.py [0, 1]
     * An indicator to use Crossmod's backend classifers [0, 1]
 ~~~
     cd ~/crossmod/code

@@ -1,21 +1,21 @@
 ## Quick Start
 * install DEPENDENCIES
 * Navigate to crossmod_api/code
-~~~~
+```~
 export FLASK_APP=api.py
 flask run
-~~~~
+```~
 ## Requests
 
 * The JSON request is an object with the following fields:
-~~~
+```
     {
         "comments": [ comment1, comment2, ... ],
         "subreddit_list": [ classifier1, classifier2, ... ],
         "macro_norm_list": [ norm1, norm2, ... ],
         "key": KEY
     }
-~~~
+```
 
 * `comments: ` array of comment strings to be evaulated by Crossmod
 * `subreddit_list: ` (OPTIONAL) list of subreddit classifiers used to predict scores.
@@ -30,28 +30,29 @@ flask run
 ## Example Requests
 * While flask is running:
     * rating comments with all classifiers and no macro norms
-    ~~~
+
+```bash
     curl -d '{"comments": ["you really suck!", "this is just a comment"], "macro_norm_list": [], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:5000/get-prediction-scores
-    ~~~
+```
     
     * rating comments with only select classifiers and all macro norms
     
-    ~~~
+```
     curl -d '{"comments": ["you really suck!", "this is just a comment"], "subreddit_list": ["Futurology", "nba", "AskReddit", "science", "politics", "pokemongo"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:5000/get-prediction-scores
-    ~~~
+```
 
     * rating comments with all classifiers and all macro norms
 
-    ~~~
+```
     curl -d '{"comments": ["you really suck!", "this is just a comment"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:5000/get-prediction-scores
-    ~~~
+```
 
 ## Responses
 
 * The JSON response is an array of JSON objects, where the index of each JSON object
   corresponds to the index of the original comment in the request.
 
-  ~~~
+  ```
     [
         {
             'agreement_score': AGREEMENT_SCORE,
@@ -61,7 +62,7 @@ flask run
         },
         ....
     ]
-  ~~~
+```
 
     * `agreement_score: ` prediction score from subreddit classifiers.
         * if no classifiers were used, is a `NULL` value.
@@ -76,14 +77,14 @@ flask run
              because a NULL value implies that classifiers and/or macro norms were not used
              whereas an EMPTY list does NOT NECESSARILY imply the above
 
-* Dependencies
+## Dependencies
     * `getPredictions.py`
     * `flask`
     * `pandas`
     * `traceback`
     * `json`
 
-* Common Troubleshooting
+## Common Troubleshooting
     * Make sure getPredictions.py points to the correct paths for the norm/reddit models and the fastText directory
     * Make sure fastText binaries are compiled on local machine.
         * If not, navigate to `/fastText-0.9.1` and `make clean && make`
