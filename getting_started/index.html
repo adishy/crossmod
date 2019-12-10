@@ -141,8 +141,11 @@ If using a python virtual environment, replace <code>pip3</code> with <code>pip<
 </li>
 </ul>
 <p>Getting Credentials for Crossmod</p>
-<p>Crossmod currently uses Google’s Perspective API for moderation tasks. A personal Perspective API Key can be obtained following <a href="https://github.com/conversationai/perspectiveapi/tree/master/1-get-started">these instructions</a>. After obtaining the API key, paste it into <code>keys/perspective-api-key.txt</code>
-Obtain Reddit API credentials by creating an app <a href="https://www.reddit.com/prefs/apps">here</a> and paste the client ID and client secret along with the username and password for the Reddit account used for creating the app as comma separated values on the second line of <code>keys/crossmod-creds.txt</code> (no spaces necessary between each comma separated value.</p>
+<ul>
+<li>Crossmod currently uses Google’s Perspective API for moderation tasks. 
+A personal Perspective API Key can be obtained following <a href="https://github.com/conversationai/perspectiveapi/tree/master/1-get-started">these instructions</a>. After obtaining the API key, paste it into <code>crossmod_credentials.sh</code> as described below.</li>
+<li>Obtain Reddit API credentials by creating an app <a href="https://www.reddit.com/prefs/apps">here</a> and paste the client ID and client secret along with the username and password for the Reddit account used for creating the app in <code>crossmod credentials.sh</code> as described below.</li>
+</ul>
 <h2 id="set-up-keys">Set up keys</h2>
 <ul>
 <li>
@@ -159,12 +162,33 @@ Assuming the Crossmod repository was cloned to the home directory of the user</p
 </code></pre>
 
 <ul>
+<li>Open crossmod_credentials.sh and replace the keys with credentials obtained previously. The crossmod_credentials.sh file should also contain the path to the directory containing fasttext models that Crossmod requires for cross-community predictions.</li>
+<li><code>PERSPECTIVE_API_SECRET</code> is the API key for Perspective API</li>
+<li><code>REDDIT_USER_AGENT</code> is the User-Agent value for Crossmod, this can be set to any value that makes sense, for example, "Testing Crossmod (by /u/CrossModerator)"</li>
 <li>
-<p>Open crossmod_credentials.sh and replace the keys with credentials obtained previously. The crossmod_credentials.sh file should also contain the path to the directory containing fasttext models that Crossmod requires for cross-community predictions.</p>
+<p><code>REDDIT_CLIENT_ID</code>, <code>REDDIT_CLIENT_SECRET</code> are obtained by <a href="">creating an app</a> on Reddit as described previously.  </p>
 </li>
 <li>
-<p>Edit ~/.profile to load Crossmod credentials into the environment on login</p>
+<p><code>REDDIT_PASSWORD</code>, <code>REDDIT_USERNAME</code> are the password and the username of the Reddit account that was used to obtain the API credentials</p>
 </li>
+<li>
+<p><code>MODELS_DIRECTORY</code> is the path to fasttext classifiers required by Crossmod</p>
+</li>
+<li>
+<p>A complete <code>crossmod_credentials.sh</code> file looks like this:</p>
+</li>
+</ul>
+<pre><code>export PERSPECTIVE_API_SECRET=GFDKHJN43jkngrjkegbjkbgfdkj
+export REDDIT_USER_AGENT=&quot;Testing Crossmod (by /u/CrossModerator)&quot;
+export REDDIT_CLIENT_ID=s-GFKNGlngkfd
+export REDDIT_CLIENT_SECRET=JBGFDJLGDFGJ
+export REDDIT_PASSWORD=your_password_for_reddit
+export REDDIT_USERNAME=YourUsernameForReddit
+export MODELS_DIRECTORY=&quot;/models/directory&quot;
+</code></pre>
+
+<ul>
+<li>Edit ~/.profile to load Crossmod credentials into the environment on login</li>
 </ul>
 <pre><code>    echo &quot;source ~/crossmod/crossmod_credentials.sh&quot; &gt;&gt; ~/.profile
     source ~/.profile
@@ -174,7 +198,7 @@ Assuming the Crossmod repository was cloned to the home directory of the user</p
 <ul>
 <li>Crossmod can be started by running the <code>crossmod.py</code> script with the required arguments:<ul>
 <li>The name of the subreddit</li>
-<li>An indicator to actually perform actions spepcified in config.py [0, 1]</li>
+<li>An indicator to actually perform actions specified in config.py [0, 1]</li>
 <li>An indicator to use Crossmod's backend classifers [0, 1]</li>
 </ul>
 </li>
