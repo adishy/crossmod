@@ -1,0 +1,7 @@
+pandas
+praw
+google-api-client
+flask
+sqlalchemy
+fasttext
+seaborn
