@@ -3,7 +3,7 @@ import sys
 import datetime
 import pandas as pd
 import time
-import tenacity
+from tenacity import retry, wait_exponential
 from getPredictions import *
 from config import *
 from crossmodconsts import CrossmodConsts
@@ -188,3 +188,6 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 
 		print("Modbot = INACTIVE, ending at t = ", time.time())
 		print(total_num_comments, num_processed)
+
+if __name__ == '__main__':
+	main()
