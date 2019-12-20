@@ -1,0 +1,6 @@
+site_name: Crossmod
+nav:
+    - Home: index.md
+    - API: api.md
+    - Getting Started: getting_started.md
+theme: readthedocs
