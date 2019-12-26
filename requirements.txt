@@ -1,6 +1,6 @@
 pandas
 praw
-google-api-client
+google-api-python-client
 flask
 sqlalchemy
 fasttext
