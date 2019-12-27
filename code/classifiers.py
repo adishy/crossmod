@@ -118,6 +118,9 @@ class CrossmodClassifiers:
             else:
                 result['prediction_' + clfs_prediction['clfs_id']] = False
 
+        result['agreement_score'] /=  len(self.subreddit_clfs_ids)
+        result['norm_violation_score'] /= len(self.norm_clfs_ids)
+        
         return result
 
 def main():

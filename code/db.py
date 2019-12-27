@@ -31,7 +31,7 @@ class CrossmodDBData(Base):
       __tablename__ = 'crossmoddbdata'
       created_utc = Column(DateTime)
       ingested_utc = Column(DateTime)
-      id = Column(String(50), primary_key=True)
+      id = Column(String(50), primary_key = True)
       body = Column(UnicodeText)
       toxicity_score = Column(Float)
       crossmod_action = Column(String(50))
@@ -40,7 +40,22 @@ class CrossmodDBData(Base):
       banned_by = Column(String(50))
       banned_at_utc = Column(DateTime)
       agreement_score = Column(Float)
+      norm_violation_score = Column(Float)
 
+class CrossmodDBUpdateStatus(Base):
+    __tablename__ = 'crossmod_db_update_status'
+    id = Column(Integer, primary_key = True)
+    update_start_utc = Column(DateTime)
+    update_end_utc = Column(DateTime)
+    rows_updated = Column(Integer)
+    last_row_id = Column(String(50))
+
+class CrossmodProfiles(Base):
+    __tablename__ = 'crossmod_profiles'
+    id = Column(String(28), primary_key = True)
+    name = Column(String(50))
+    subreddits = Column(UnicodeText)
+    norms = Column(UnicodeText)
 
 class CrossmodDB:
     def __init__(self, database_uri = 'sqlite:///' + CrossmodConsts.DB_PATH):
