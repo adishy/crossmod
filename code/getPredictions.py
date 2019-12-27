@@ -1,6 +1,6 @@
 import pandas as pd
 import subprocess
-from crossmodconsts import *
+from consts import *
 
 def preprocessing(input_comments):
 
