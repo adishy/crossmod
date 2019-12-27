@@ -74,7 +74,7 @@ def main():
 
 	###list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
 	subreddits_limit = 100
-	subreddit_list = list(pd.read_csv("../data/single_study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
+	subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
 	macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
 
 	classifiers = CrossmodClassifiers(subreddits = subreddit_list, 
@@ -141,9 +141,11 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 		print("processing time =", end-start, "seconds")
 
 		if use_classifiers == 1:
-			agreement_score = backend_predictions['agreement_score'] / len(subreddit_list)
+			agreement_score = backend_predictions['agreement_score']
+			norm_violation_score = backend_predictions['norm_violation_score']
 		else:
 			agreement_score = None
+			norm_violation_score = None
 
 		### Write to CrossmodDB
 		db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
@@ -156,7 +158,8 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 				subreddit = comment.subreddit.display_name, 
 				banned_by = None,
 				banned_at_utc = None,
-				agreement_score = agreement_score)
+				agreement_score = agreement_score,
+				norm_violation_score = norm_violation_score)
 
 		
 		if not perform_action:
