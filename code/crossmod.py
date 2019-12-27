@@ -6,9 +6,9 @@ import time
 from tenacity import retry, wait_exponential
 from getPredictions import *
 from config import *
-from crossmodconsts import CrossmodConsts
-from crossmoddb import CrossmodDB
-from crossmodclassifiers import CrossmodClassifiers
+from consts import CrossmodConsts
+from db import CrossmodDB
+from classifiers import CrossmodClassifiers
 
 ###get toxicity score from Perspective API
 from googleapiclient import discovery
@@ -74,7 +74,7 @@ def main():
 
 	###list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
 	subreddits_limit = 100
-	subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
+	subreddit_list = list(pd.read_csv("../data/single_study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
 	macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
 
 	classifiers = CrossmodClassifiers(subreddits = subreddit_list, 
@@ -83,7 +83,7 @@ def main():
 
 	process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_list, macro_norm_list)
 			
-	db.exit()
+	db.database_session.exit()
 
 @retry(wait=wait_exponential(multiplier=1, min=4, max=10))
 def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_list, macro_norm_list):
