@@ -1,6 +1,4 @@
-keys/*
 code/__pycache__/*
-keys/crossmod-cred.txt
-keys/perspective-api-key.txt
 models/*
 crossmod_credentials.sh
+.venv/*
