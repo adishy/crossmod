@@ -68,7 +68,7 @@ def main():
 	whitelisted_authors.append(reddit.user.me())
 
 	mod_list_string = ""
-	moderators_list = ["thebiglebowskiii"] #add mods to list of whitelisted_authors
+	moderators_list = ["thebiglebowskiii", "AutoModerator"] #add mods to list of whitelisted_authors
 	for moderator in moderators_list:
 		mod_list_string = mod_list_string + "/u/" + moderator + " , "
 
@@ -104,7 +104,9 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 		
 		total_num_comments += 1
 		
-		if (comment.created_utc < start_time) | (comment.author in whitelisted_authors):
+		if (comment.created_utc < start_time) or \ 
+		   (comment.author in whitelisted_authors) or \ 
+		   CrossmodFilters.apply_filters(comment.body):
 			continue
 		
 		num_processed += 1
