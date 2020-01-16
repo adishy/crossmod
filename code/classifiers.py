@@ -42,12 +42,19 @@ class CrossmodClassifiers:
         end = time.time()
         print("Loaded classifiers: ", int(round(end - start)), "s") 
         print("Loaded ", subreddit_count, " subreddit classifiers, ", norm_count, " norm classifiers")
-
+        
     @staticmethod
     def process_input_comment(input_comment):
-        ### 1) remove newlines
-        ##  2) convert to lowercase
-        ### 3) remove punct and numbers
+        ### 1) remove URLs
+        ### 2) remove newlines
+        ##  3) convert to lowercase
+        ### 4) remove punct and numbers
+        urls_in_comment = re.findall('((?:https?://)?(?:(?:www\.)?(?:[\da-z\.-]+)\.(?:[a-z]{2,6})|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|(?:(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])))(?::[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])?(?:/[\w\.-]*)*/?)', 
+                                     input_comment)
+
+        for url in urls_in_comment:
+            input_comment = input_comment.replace(url, '')
+        
         input_comment = input_comment.replace('\n', ' ')
         input_comment = input_comment.lower()
         input_comment = re.sub('[^A-Za-z]+', ' ', input_comment)
@@ -123,7 +130,29 @@ class CrossmodClassifiers:
         
         return result
 
+def input_comments_tests():
+    input_with_urls = [ "add1 http://mit.edu.com you really kind of suck0",
+                        "add2 https://facebook.jp.com.2. blah blah bleep bloop nooooo go away",
+                        "add3 www.google.be. uvw",
+                        "add4 https://www.google.be. 123",
+                        "add5 www.website.gov.us test2",
+                        "Hey bob on www.test.com." ,
+                        "another test with ipv4 http://192.168.1.1/test.jpg. toto2",
+                        "website with different port number www.test.com:8080/test.jpg not port 80",
+                        "www.website.gov.us/login.html",
+                        "test with ipv4 192.168.1.1/test.jpg.",
+                        "search at google.co.jp/maps.",
+                        "test with ipv6 2001:0db8:0000:85a3:0000:0000:ac1f:8001/test.jpg." ]
+
+    for input_comment in input_with_urls:
+        print(CrossmodClassifiers.process_input_comment(input_comment))
+
 def main():
+    input_comments_tests()
+
+
+    return
+    
     classifiers = []
 
     classifiers_file = open("sample.in", "r")
