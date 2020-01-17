@@ -7,28 +7,32 @@ class CrossmodFilters:
                            input_comment)
 
     @staticmethod
-    def url_filter(input_comment):
-        return len(CrossmodFilters.get_urls(input_comment)) > 0
-
-    @staticmethod
     def get_subreddit_names(input_comment):
         return re.findall("r/([^\s/]+)", input_comment)
+
+    @staticmethod
+    def only_urls_filter(input_comment):
+        """Returns True if the comment contains only a list of URLs"""
+        urls_in_comment = CrossmodFilters.get_urls(input_comment)
+        return len(urls_in_comment) > 0 and len(input_comment) == len(" ".join(urls_in_comment))
     
     @staticmethod
     def any_subreddit_name_filter(input_comment):
+        """Returns True if the comment contains any subreddit names"""
         return len(CrossmodFilters.get_subreddit_names(input_comment)) > 0
 
     @staticmethod
     def only_subreddit_reference_filter(input_comment):
+        """Returns True if the comment contains only a subreddit name"""
+        # Potentially incomplete, could lead to false positives: for instance: "r/bullshit"
         subreddit_names_in_comment = CrossmodFilters.get_subreddit_names(input_comment)
         return len(subreddit_names_in_comment) == 1 and len(input_comment) == len("r/" + subreddit_names_in_comment[0])
 
     @staticmethod
     def apply_filters(input_comment):
-        filters = [CrossmodFilters.url_filter, 
-                   # CrossmodFilters.any_subreddit_name_filter, 
+        filters = [
+                   CrossmodFilters.only_urls_filter, 
                    CrossmodFilters.only_subreddit_reference_filter,
-                   # CrossmodFilters.author_filter
                   ]
 
         for filter in filters:
@@ -53,6 +57,7 @@ def main():
                             "test with ipv6 2001:0db8:0000:85a3:0000:0000:ac1f:8001/test.jpg.",
                             "r/science",
                             "this post was also seen in r/science" 
+                            "http://google.com http://youtube.com"
                             ]
 
     for input_comment in test_input_comments:
