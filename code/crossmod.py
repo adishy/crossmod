@@ -104,9 +104,7 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 		
 		total_num_comments += 1
 		
-		if (comment.created_utc < start_time) or \ 
-		   (comment.author in whitelisted_authors) or \ 
-		   CrossmodFilters.apply_filters(comment.body):
+		if (comment.created_utc < start_time) or (comment.author in whitelisted_authors) or CrossmodFilters.apply_filters(comment.body):
 			continue
 		
 		num_processed += 1
