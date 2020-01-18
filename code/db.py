@@ -25,6 +25,9 @@ Base = declarative_base()
             * Moderator Action        (column name: moderator_action)   (Action taken by moderator after Crossmod flagged a comment)
             * Banned By               (column name: banned_by)          (The name of the human moderator who removed the comment after Crossmod flagged the comment)
             * Banned At Timestamp     (column name: banned_at)          (Timestamp in UTC at which the comment was moderated on by a human moderator)
+            * Agreement Score         (column name: agreement_score)
+            * Norm Violation Score    (column name: norm_violation_score)
+
 '''
 
 class CrossmodDBData(Base):
@@ -70,6 +73,7 @@ class CrossmodDB:
             return
 
 def main():
+    print(CrossmodConsts.DB_PATH)
     db = CrossmodDB()
 
 if __name__ == "__main__":

@@ -67,26 +67,29 @@ def main():
 	###list of white-listed authors whose content the bot would ignore
 	whitelisted_authors = []
 	whitelisted_authors.append(reddit.user.me())
-
+        
 	mod_list_string = ""
-	moderators_list = ["thebiglebowskiii", "AutoModerator"] #add mods to list of whitelisted_authors
+	moderators_list = ["thebiglebowskiii", "AutoModerator", "Trans-Jovian Injection"] #add mods to list of whitelisted_authors
 	for moderator in moderators_list:
 		mod_list_string = mod_list_string + "/u/" + moderator + " , "
 
 	###list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
+        
 	subreddits_limit = 100
 	subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
 	macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
 
 	classifiers = CrossmodClassifiers(subreddits = subreddit_list, 
-									  norms = macro_norm_list)
+					  norms = macro_norm_list)
 
+
+	whitelisted_authors += moderators_list
 
 	process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_list, macro_norm_list)
 			
 	db.database_session.exit()
 
-#@retry(wait=wait_exponential(multiplier=1, min=4, max=10))
+@retry(wait=wait_exponential(multiplier=1, min=4, max=10))
 def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_list, macro_norm_list):
 	total_num_comments = 0
 	num_processed = 0
