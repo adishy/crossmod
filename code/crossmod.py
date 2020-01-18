@@ -9,6 +9,7 @@ from config import *
 from consts import CrossmodConsts
 from db import CrossmodDB
 from classifiers import CrossmodClassifiers
+from filters import CrossmodFilters
 
 ###get toxicity score from Perspective API
 from googleapiclient import discovery
@@ -85,7 +86,7 @@ def main():
 			
 	db.database_session.exit()
 
-@retry(wait=wait_exponential(multiplier=1, min=4, max=10))
+#@retry(wait=wait_exponential(multiplier=1, min=4, max=10))
 def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_list, macro_norm_list):
 	total_num_comments = 0
 	num_processed = 0

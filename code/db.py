@@ -71,7 +71,8 @@ class CrossmodDB:
             crossmod_data_entry = CrossmodDBData(**kwargs)
             self.database_session.add(crossmod_data_entry)
             self.database_session.commit()
-        except:
+        except Exception as e:
+            print(e)
             print("Could not write comment id: {} to the database".format(kwargs['id']))
             return
 
