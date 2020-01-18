@@ -20,8 +20,6 @@ def check_config(comment):
 			ACTION = remove
 		elif comment['agreement_score'] >= 85: 
 			ACTION = report
-		elif comment['prediction_science'] == True:
-			ACTION = report
 		elif comment['agreement_score'] >= 90 and comment['prediction_The_Donald'] == False:
 			ACTION = remove
 		elif comment['prediction_hatespeech-racist-homophobic'] == True and comment['norm_violation_score'] >= 6: 
