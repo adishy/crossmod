@@ -50,13 +50,6 @@ class CrossmodDBUpdateStatus(Base):
     rows_updated = Column(Integer)
     last_row_id = Column(String(50))
 
-class CrossmodProfiles(Base):
-    __tablename__ = 'crossmod_profiles'
-    id = Column(String(28), primary_key = True)
-    name = Column(String(50))
-    subreddits = Column(UnicodeText)
-    norms = Column(UnicodeText)
-
 class CrossmodDB:
     def __init__(self, database_uri = 'sqlite:///' + CrossmodConsts.DB_PATH):
         self.database_uri = database_uri
