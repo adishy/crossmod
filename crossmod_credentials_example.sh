@@ -8,3 +8,4 @@ export REDDIT_CLIENT_SECRET=d
 export REDDIT_PASSWORD=e
 export REDDIT_USERNAME=f
 export MODELS_DIRECTORY=g
+export DB_PATH=h
