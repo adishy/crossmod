@@ -66,7 +66,7 @@ def main():
 
 	###list of white-listed authors whose content the bot would ignore
 	whitelisted_authors = []
-	whitelisted_authors.append(reddit.user.me())
+	whitelisted_authors.append(reddit.user.me().name)
         
 	mod_list_string = ""
 	moderators_list = ["thebiglebowskiii", 
@@ -109,6 +109,7 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 	start_time = time.time()
 
 	print("Crossmod = ACTIVE, starting at t = ", start_time)
+	print("Whitelisted authors:", whitelisted_authors)
 
 	for comment in subreddit.stream.comments(): #to iterate through the comments and stream it live
 		# do not process the comment if the comment is None
@@ -119,7 +120,13 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 		
 		total_num_comments += 1
 		
-		if (comment.created_utc < start_time) or (comment.author in whitelisted_authors) or CrossmodFilters.apply_filters(comment.body):
+		if (comment.created_utc < start_time):
+			continue
+
+		print("Comment: ", comment.body)
+
+		if comment.author != reddit.me().name and (comment.author in whitelisted_authors or CrossmodFilters.apply_filters(comment.body)):
+			print("Filtering comment:", comment.id, comment.body)
 			### Write to CrossmodDB
 			db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
 					ingested_utc = datetime.datetime.now(),
