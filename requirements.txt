@@ -6,3 +6,4 @@ sqlalchemy
 fasttext
 seaborn
 tenacity
+click

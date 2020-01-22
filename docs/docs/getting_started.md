@@ -11,6 +11,7 @@
 * `sqlalchemy` (Object Relational Mapping interface for database)
 * `fasttext` (Python wrapper for fasttext binaries)
 * `seaborn` (Used for styling plots)
+* `click` (Used for parsing command line arguments)
 
 * Install these dependencies by running the following commands:
   ```
@@ -21,6 +22,7 @@
   pip3 install sqlalchemy
   pip3 install fasttext
   pip3 install seaborn
+  pip3 install click
   ```
 Note that using a Python virtual environment is highly recommended (but not necessary). A guide to set up a Python virtual environment can be found [here](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/).
 If using a python virtual environment, replace `pip3` with `pip` when installing Crossmod dependencies. 
