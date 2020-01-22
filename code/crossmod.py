@@ -169,6 +169,18 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 		if not perform_action:
 			continue
 
+		if ACTION != "EMPTY":
+			comment = reddit.comment(id = comment.id)
+			if comment.banned_by != None and comment.banned_at_utc != None:
+				row = db.database_session.query(CrossmodDBData.id == comment.id)
+				row.banned_at_utc = comment.banned_at_utc
+				row.banned_by = comment.banned_by
+				db.database_session.commit()
+				print("========")
+				print("Comment", comment.id, "removed before processing!")
+				print("========")
+				continue
+
 		if ACTION == "remove":
 			###REMOVE: if toxicity score returned by the Perspective API > 90%, directly remove from thread and send to mod queue.
 			print("Removing comment, and alerting moderator by modmail at t=", time.time())
