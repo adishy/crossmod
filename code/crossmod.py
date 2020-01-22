@@ -120,6 +120,19 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 		total_num_comments += 1
 		
 		if (comment.created_utc < start_time) or (comment.author in whitelisted_authors) or CrossmodFilters.apply_filters(comment.body):
+			### Write to CrossmodDB
+			db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
+					ingested_utc = datetime.datetime.now(),
+					id = comment.id,
+					body = comment.body,
+					toxicity_score = -1.0,
+					crossmod_action = "filtered",
+					author = comment.author.name,
+					subreddit = comment.subreddit.display_name, 
+					banned_by = None,
+					banned_at_utc = None,
+					agreement_score = -1.0,
+					norm_violation_score = -1.0)
 			continue	
 		
 		num_processed += 1
@@ -176,7 +189,6 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 				agreement_score = agreement_score,
 				norm_violation_score = norm_violation_score)
 
-		
 		if not perform_action:
 			continue
 
