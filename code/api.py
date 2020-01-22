@@ -1,3 +1,7 @@
+## @TODO Tidy up code
+## @TODO Update documentation
+
+## @TODO TRANSFER TO PRODUCTION AND TEST WITH MANY DIFFERENT REQUESTS
 ## @TODO Add rate limit for each key
 ## @TODO Deploy FLASK to a production server
 """
@@ -7,6 +11,9 @@
     - Navigate to crossmod_api/code
     $ export FLASK_APP=api.py
     $ flask run
+
+    - If you run into [Errno 98] Address already in use, try a different port such as 6000:
+    $ flask run -h localhost -p 6000
 
 
 ::Requests::
@@ -38,6 +45,8 @@
         - rating comments with all classifiers and all macro norms
             $ curl -d '{"comments": ["FUCK YOU YOU LITTLE PIECE OF FUCKING SHIT", "And why wouldnt they be? He has done nothing but shart his way up to the top time and time again and even managed to become POTUS. Even if he does face repercussions, hes old as fuck already. He got to live like royalty all his life.", "You are just a woman. Go back to the kitchen where you belong, scum"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:5000/get-prediction-scores
 
+            *** If you ran Flask on a different port than 5000, you will need to change the routing.
+            *** Change http://localhost:5000/get-prediction-scores to http://localhost:YOURPORT/get-prediction-scores
 
 ::Responses::
     The JSON response is an array of JSON objects, where the index of each JSON object
@@ -83,14 +92,25 @@
 
 from crossmodclassifiers import *
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 import pandas as pd
 import traceback
 import json
 
 
 application = Flask(__name__)
+application.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
+### GLOBAL LOADING OF CLASSIFIERS
+auth_key = "ABCDEFG"
+call_rate_limit = 0 #@TODO: Time rate limit not yet implemented
+
+subreddits_limit = 100
+full_subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
+full_macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
+
+classifiers = CrossmodClassifiers(subreddits = full_subreddit_list,
+                                  norms = full_macro_norm_list) # Load Classifiers
 
 ### REQUEST: JSON Object ###
 """
@@ -115,15 +135,11 @@ application = Flask(__name__)
 """
 @application.route('/get-prediction-scores', methods=['POST'])
 def getPredictionScores():
-    ## CONFIG VARIABLES ##
-    subreddits_limit = 100
-    auth_key = "ABCDEFG"
-    call_rate_limit = 0 #@TODO: Time rate limit not yet implemented
 
     ## JSON REQUEST FIELDS ##
     comments = []
-    subreddit_list = pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit]     #default classifiers
-    macro_norm_list = pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms']                          #default macro norms
+    subreddit_list = full_subreddit_list     #by default, use all classifiers
+    macro_norm_list = full_macro_norm_list   #by default, use all macro norms
     key = ""
 
     try:
@@ -133,6 +149,7 @@ def getPredictionScores():
         json_ = request.json
         comments = json_["comments"]
         key = json_["key"]
+
         # If JSON request contains values for optional fields "subreddit_list" and "macro_norm_list",
         # evaluate comment using those values.
         # Otherwise use the all default classifiers and/or macro norms
@@ -160,25 +177,11 @@ def getPredictionScores():
 
 
         ## GET classifier_predictions ##
-        # which is a pandas series which contains a means to obtain
-        # agreement_score AND subreddits_that_remove
-        try:
-            classifier_predictions = get_classifier_predictions(comments, subreddit_list)
-        except Exception as ex:
-            print(ex)
-            return jsonify({'exception': ex})
-        classifier_predictions['sum_votes'] = classifier_predictions.drop('comment', axis = 1).sum(axis = 1)
+        # ex {'agreement_score': 1, 'norm_violation_score': 0, 'subreddits_that_remove': ['Futurology'], 'norms_violated': [], 'prediction_Futurology': True}
+        backend_predictions = []
+        for i in range(len(comments)):
+            backend_predictions.append(classifiers.get_result(comments[i]))
 
-
-        ## GET macro_norm_predictions ##
-        # a pandas series which contains a means to obtain
-        # norm_violation_score AND norms_violated
-        try:
-            macro_norm_predictions = get_macronorm_classifier_predictions(comments, macro_norm_list)
-        except Exception as ex:
-            print (ex)
-            return jsonify({'exception': ex})
-        macro_norm_predictions['sum_votes'] = macro_norm_predictions.drop('comment', axis = 1).sum(axis = 1)
 
 
         ## ADD i comments JSON objects to response JSON array ##
@@ -190,33 +193,37 @@ def getPredictionScores():
             json_comment["subreddits_that_remove"] = []
             json_comment["norms_violated"] = []
 
-
             ## CALCULATE ith comment's agreement_score ##
+            agreement_score = 0
             if number_of_classifiers != 0:
                 # agreement_score = number of subreddits that would remove/total number of subreddits
-                json_comment["agreement_score"] = classifier_predictions['sum_votes'][i] / number_of_classifiers
+                for classifier in subreddit_list:
+                    if backend_predictions[i]["prediction_" + classifier] == True:
+                        agreement_score += 1
 
-            ## FIND ith comment's subreddits_that_remove ##
-            temp_classifier_predictions = classifier_predictions.drop('comment', axis = 1).drop('sum_votes', axis = 1)
-            for subreddit in temp_classifier_predictions.columns:
-                if temp_classifier_predictions.get(subreddit).values[i] == 1:
-                    json_comment["subreddits_that_remove"].append(subreddit.split("prediction_")[1])
+                        ## Find subreddits_that_remove ##
+                        json_comment["subreddits_that_remove"].append(classifier)
+
+                json_comment["agreement_score"] = agreement_score / number_of_classifiers
 
 
             ## CALCULATE ith comment's norm_violation_score ##
+            norm_violation_score = 0
             if number_of_macro_norms != 0:
                 # norm_violation_score = number of norms violated / total number of norms
-                json_comment["norm_violation_score"] = macro_norm_predictions['sum_votes'][i] / number_of_macro_norms
+                for norm in macro_norm_list:
+                    if backend_predictions[i]["prediction_" + norm] == True:
+                        norm_violation_score += 1
 
-            ## FIND ith comment's norms_violated ##
-            temp_macro_norm_predictions = macro_norm_predictions.drop('comment', axis = 1).drop('sum_votes', axis = 1)
-            for norm in temp_macro_norm_predictions.columns:
-                if temp_macro_norm_predictions.get(norm).values[i] == 1:
-                    json_comment["norms_violated"].append(norm)
+                        ## Find norms violated ##
+                        json_comment["norms_violated"].append(norm)
 
-            print("Number of subreddit classifiers agreeing to remove comment = ", classifier_predictions['sum_votes'][i], "/", number_of_classifiers)
+                json_comment["norm_violation_score"] = norm_violation_score / number_of_macro_norms
+
+
+            print("Number of subreddit classifiers agreeing to remove comment = ", agreement_score, "/", number_of_classifiers)
             print("Agreement Score = ", json_comment["agreement_score"])
-            print("Number of macro norms violated = ", macro_norm_predictions['sum_votes'][i], "/", number_of_macro_norms)
+            print("Number of macro norms violated = ", norm_violation_score, "/", number_of_macro_norms)
             print("norm violation score = ", json_comment["norm_violation_score"])
 
 
