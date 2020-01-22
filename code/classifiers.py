@@ -5,6 +5,7 @@ import subprocess
 import re
 from consts import *
 import time
+from filters import *
 
 class CrossmodClassifiers:    
     UNREMOVED_COMMENT = "__label__unremoved"
@@ -46,15 +47,14 @@ class CrossmodClassifiers:
     @staticmethod
     def process_input_comment(input_comment):
         ### 1) remove URLs
-        ### 2) remove newlines
-        ##  3) convert to lowercase
-        ### 4) remove punct and numbers
-        urls_in_comment = re.findall('((?:https?://)?(?:(?:www\.)?(?:[\da-z\.-]+)\.(?:[a-z]{2,6})|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|(?:(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])))(?::[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])?(?:/[\w\.-]*)*/?)', 
-                                     input_comment)
-
-        for url in urls_in_comment:
+        ### 2) remove subreddit names
+        ### 3) remove newlines
+        ##  4) convert to lowercase
+        ### 5) remove punct and numbers
+        for url in CrossmodFilters.get_urls(input_comment):
             input_comment = input_comment.replace(url, '')
-        
+        for subreddit_name in CrossmodFilters.get_subreddit_names(input_comment):
+            input_comment = input_comment.replace()
         input_comment = input_comment.replace('\n', ' ')
         input_comment = input_comment.lower()
         input_comment = re.sub('[^A-Za-z]+', ' ', input_comment)
