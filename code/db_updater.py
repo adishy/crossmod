@@ -1,7 +1,9 @@
-import datetime
-import praw
 from consts import *
 from db import *
+import datetime
+import praw
+import sys
+import click
 
 class CrossmodDBUpdater:
     def __init__(self):
@@ -41,9 +43,9 @@ class CrossmodDBUpdater:
 
         if rows_updated > 0:
             status_entry = CrossmodDBUpdateStatus(id = status_count + 1,
-                                                update_end_utc = update_end_utc,
-                                                rows_updated = rows_updated,
-                                                last_row_id = last_row_id)
+                                                  update_end_utc = update_end_utc,
+                                                  rows_updated = rows_updated,
+                                                  last_row_id = last_row_id)
             self.session.add(status_entry)
             self.session.commit()
 
@@ -57,9 +59,43 @@ class CrossmodDBUpdater:
             if count % 20 == 0:
                 self.db.database_session.commit()
 
-def main():
+    def simple_update(self, interval_in_secs):
+        while(True):
+            current_requery_timestamp = datatime.datetime.now()
+            last_requery_timestamp = self.session.query(CrossmodDBUpdateStatus).order_by(CrossmodDBUpdateStatus.id.desc()).first().update_end_utc
+            comments = self.session.query(CrossmodDBData.created_utc < current_requery_timestamp, CrossmodDBData.created_utc > last_requery_timestamp)
+            count = 0
+            total = comments.count()
+            for comment in comments:
+                if count == total - 1:
+                    last_comment_id = comment.id
+                change_moderated_value(comment)
+                count += 1
+            status_entry = CrossmodDBUpdateStatus(id = status_count + 1,
+                                                  update_end_utc = update_end_utc,
+                                                  rows_updated = rows_updated,
+                                                  last_row_id = last_comment_id)
+            self.session.add(status_entry)
+            sleep(interval_in_secs)
+
+@click.command()
+@click.option('-m', '--mode',
+              type=click.Choice(['simple', 'repeated'], case_sensitive=False),
+              help='Choose which mode to start requerying in: \'simple\' or \'repeated\'')
+@click.option('-i', '--interval', help='Update interval in hours', default=2.0, show_default=True)
+def main(mode, interval):
+    interval_in_secs = interval * 60 * 60 # hours to seconds
     updater = CrossmodDBUpdater()
-    updater.update_database_values()
+    if mode == 'simple':
+        print("Mode:", "simple")
+        print("Interval:", interval, "hours")
+        updater.simple_update(interval_in_secs)
+    elif mode == 'repeated':    
+        print("Mode:", "repeated")
+        print("Intervals:", interval, interval * 8, interval * "hours")
+        updater.update_database_values()
+    else:
+        click.echo(click.get_current_context().get_help())
 
 if __name__ == "__main__":
     main()

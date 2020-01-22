@@ -69,7 +69,18 @@ def main():
 	whitelisted_authors.append(reddit.user.me())
         
 	mod_list_string = ""
-	moderators_list = ["thebiglebowskiii", "AutoModerator", "Trans-Jovian Injection"] #add mods to list of whitelisted_authors
+	moderators_list = ["thebiglebowskiii", 
+					   "AutoModerator", 
+					   "TransPlanetInjection", 
+					   "Xenophon1", 
+					   "ion-tom", 
+					   "mind_bomber",
+					   "Gobi_The_Mansoe",
+					   "multi-mod",
+					   "Buck-Nasty",
+					   "Yosarian2",
+					   "ImLivingAmongYou",
+					   "lughnasadh"] #add mods to list of whitelisted_authors
 	for moderator in moderators_list:
 		mod_list_string = mod_list_string + "/u/" + moderator + " , "
 
