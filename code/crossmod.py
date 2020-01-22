@@ -111,6 +111,8 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 	print("Crossmod = ACTIVE, starting at t = ", start_time)
 	print("Whitelisted authors:", whitelisted_authors)
 
+	me = whitelisted_authors[0]
+
 	for comment in subreddit.stream.comments(): #to iterate through the comments and stream it live
 		# do not process the comment if the comment is None
 		if comment == None:
@@ -125,7 +127,7 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 
 		print("Comment: ", comment.body)
 
-		if comment.author != reddit.me().name and (comment.author in whitelisted_authors or CrossmodFilters.apply_filters(comment.body)):
+		if comment.author != me and (comment.author in whitelisted_authors or CrossmodFilters.apply_filters(comment.body)):
 			print("Filtering comment:", comment.id, comment.body)
 			### Write to CrossmodDB
 			db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
