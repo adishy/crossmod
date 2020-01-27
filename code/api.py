@@ -220,11 +220,13 @@ def getPredictionScores():
 
                 json_comment["norm_violation_score"] = norm_violation_score / number_of_macro_norms
 
-
-            print("Number of subreddit classifiers agreeing to remove comment = ", agreement_score, "/", number_of_classifiers)
-            print("Agreement Score = ", json_comment["agreement_score"])
-            print("Number of macro norms violated = ", norm_violation_score, "/", number_of_macro_norms)
+            print("COMMENT:", comments[i][0:100], "...")
+            print("# of classifiers removing comment = ", agreement_score, "/", number_of_classifiers)
+            print("agreement_score = ", json_comment["agreement_score"])
+            print("---")
+            print("# of macro norms violated = ", norm_violation_score, "/", number_of_macro_norms)
             print("norm violation score = ", json_comment["norm_violation_score"])
+            print("________________________")
 
 
             ## ADD ith comment to JSON response ##
