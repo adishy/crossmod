@@ -29,11 +29,19 @@ data = {"comments": ["FUCK YOU YOU LITTLE PIECE OF FUCKING SHIT", "THIS IS A BEN
 '''
 
 # Score comments with all subreddit classifiers and no macro norm classifiers
-
+'''
 data = {"comments": ["FUCK YOU YOU LITTLE PIECE OF FUCKING SHIT", "THIS IS A BENIGN COMMENT, NO TOXCIITY HERE!", "To be fair, Donald Trumps policy may not be the best decisions in the world, but at least he tweets out really cool things", "Youre just a woman feminist feminazi"],
         "macro_norm_list": [],
         "key": API_KEY}
+'''
 
+# Stress testing
+num_of_comments = 100 # Adjust for stress testing
+comments = [];
+for i in range(0, num_of_comments):
+    comments.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+data = {"comments": comments,
+        "key": API_KEY}
 
 ## Get request
 r = requests.post(url= API_ENDPOINT, json = data)

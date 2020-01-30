@@ -1,9 +1,11 @@
 ## @TODO Tidy up code
-## @TODO Update documentation
+## @TODO Update documentation on githubpages document and push
+##  --Make sure every thing's public except for key, port 80 for crossmod.ml
 
-## @TODO TRANSFER TO PRODUCTION AND TEST WITH MANY DIFFERENT REQUESTS
+## @TODO Add new option to api_demo to generate comment list of x comments (for stress testing)
 ## @TODO Add rate limit for each key
-## @TODO Deploy FLASK to a production server
+##  -Research how other people do rate limits
+## @TODO Queueing system
 """
 ==Documentation==
 ::Quick Start::
