@@ -1,8 +1,7 @@
 ## @TODO Tidy up code
 ## @TODO Update crossmod.ml documentation
-##  --Make sure key isn't public
-##  --crossmod.ml is port 80
-
+##       Make sure key isn't public
+##       crossmod.ml is port 80
 ## @TODO Rate limit for each key
 ## @TODO Queueing system
 
@@ -15,18 +14,18 @@ import json
 
 
 application = Flask(__name__)
-application.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-### GLOBAL LOADING OF CLASSIFIERS
+### CONFIG ###
 auth_key = "ABCDEFG"
-call_rate_limit = 0 #@TODO: Time rate limit not yet implemented
+call_rate_limit = 0 #@TODO: Rate limit for each key
 
 subreddits_limit = 100
 full_subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
 full_macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
 
 classifiers = CrossmodClassifiers(subreddits = full_subreddit_list,
-                                  norms = full_macro_norm_list) # Load Classifiers
+                                  norms = full_macro_norm_list) # globally load classifiers
+
 
 ### REQUEST: JSON Object ###
 """
@@ -66,10 +65,11 @@ def getPredictionScores():
         comments = json_["comments"]
         key = json_["key"]
 
-        # If JSON request contains values for optional fields "subreddit_list" and "macro_norm_list",
-        # evaluate comment using those values.
-        # Otherwise use the all default classifiers and/or macro norms
-        # in ../data/study_subreddits.csv and/or ../data/macro-norms.txt
+
+        # if JSON request contains values for optional fields "subreddit_list" and/or "macro_norm_list"
+        #   then evaluate comments with specified classifiers
+        # else use default classifiers and/or macro norms listed in
+        #   ../data/study_subreddits.csv and/or ../data/macro-norms.txt
         if 'subreddit_list' in json_:
             subreddit_list = pd.Series(json_["subreddit_list"])
         if 'macro_norm_list' in json_:
@@ -83,7 +83,7 @@ def getPredictionScores():
         Authenticate key
         '''
         if key != auth_key:
-            return jsonify({'exception': "invalid key"})
+            return jsonify({'exception': "invalid api key " + key})
 
 
         '''
@@ -92,15 +92,14 @@ def getPredictionScores():
         json_response = []
 
 
-        ## GET classifier_predictions ##
-        # ex {'agreement_score': 1, 'norm_violation_score': 0, 'subreddits_that_remove': ['Futurology'], 'norms_violated': [], 'prediction_Futurology': True}
+        ## GET backend_predictions ##
         backend_predictions = []
         for i in range(len(comments)):
             backend_predictions.append(classifiers.get_result(comments[i]))
 
 
 
-        ## ADD i comments JSON objects to response JSON array ##
+        ## ADD i comments' JSON objects to response JSON array ##
         for i in range(len(comments)):
             ## INSTANTIATE ith comment's object ##
             json_comment = {}
@@ -136,6 +135,7 @@ def getPredictionScores():
 
                 json_comment["norm_violation_score"] = norm_violation_score / number_of_macro_norms
 
+            ## Console debug statements ##
             print("COMMENT:", comments[i][0:100], "...", sep="")
             print("# of classifiers removing comment = ", agreement_score, "/", number_of_classifiers)
             print("agreement_score = ", json_comment["agreement_score"])
