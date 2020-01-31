@@ -8,7 +8,7 @@
 
 from crossmodclassifiers import *
 
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify
 import pandas as pd
 import traceback
 import json
