@@ -8,24 +8,23 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>API - Crossmod</title>
+  <title>Api - Crossmod</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link rel="stylesheet" href="../css/highlight.css">
   
   <script>
     // Current page data
-    var mkdocs_page_name = "API";
+    var mkdocs_page_name = "Api";
     var mkdocs_page_input_path = "api.md";
-    var mkdocs_page_url = null;
+    var mkdocs_page_url = "/api/";
   </script>
   
-  <script src="../js/jquery-2.1.1.min.js" defer></script>
-  <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script> 
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
   
 </head>
 
@@ -39,7 +38,7 @@
         <a href=".." class="icon icon-home"> Crossmod</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+    <input type="text" name="q" placeholder="Search docs" />
   </form>
 </div>
       </div>
@@ -55,16 +54,27 @@
           
             <li class="toctree-l1 current">
 		
-    <a class="current" href="./">API</a>
+    <a class="current" href="./">Api</a>
     <ul class="subnav">
             
     <li class="toctree-l2"><a href="#quick-start">Quick Start</a></li>
     
-
-    <li class="toctree-l2"><a href="#requests">Requests</a></li>
+        <ul>
+        
+            <li><a class="toctree-l3" href="#flask">Flask</a></li>
+        
+            <li><a class="toctree-l3" href="#gunicorn">Gunicorn</a></li>
+        
+        </ul>
     
 
-    <li class="toctree-l2"><a href="#example-requests">Example Requests</a></li>
+    <li class="toctree-l2"><a href="#api-request-format">API Request Format</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#sample-requests">Sample Requests</a></li>
+        
+        </ul>
     
 
     <li class="toctree-l2"><a href="#responses">Responses</a></li>
@@ -73,7 +83,7 @@
     <li class="toctree-l2"><a href="#dependencies">Dependencies</a></li>
     
 
-    <li class="toctree-l2"><a href="#common-troubleshooting">Common Troubleshooting</a></li>
+    <li class="toctree-l2"><a href="#troubleshooting">Troubleshooting</a></li>
     
 
     </ul>
@@ -81,7 +91,7 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../getting_started/">Getting Started</a>
+    <a class="" href="../getting_started/">Getting started</a>
 	    </li>
           
         </ul>
@@ -106,7 +116,7 @@
     
       
     
-    <li>API</li>
+    <li>Api</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -117,62 +127,75 @@
             <div class="section">
               
                 <h2 id="quick-start">Quick Start</h2>
-<ul>
-<li>install DEPENDENCIES</li>
-<li>Navigate to crossmod_api/code
-<code>~
-export FLASK_APP=api.py
-flask run</code>~</li>
-</ul>
-<h2 id="requests">Requests</h2>
-<ul>
-<li>The JSON request is an object with the following fields:</li>
-</ul>
-<pre><code>    {
-        &quot;comments&quot;: [ comment1, comment2, ... ],
-        &quot;subreddit_list&quot;: [ classifier1, classifier2, ... ],
-        &quot;macro_norm_list&quot;: [ norm1, norm2, ... ],
-        &quot;key&quot;: KEY
-    }
+<p>### Running a local instance
+* Install dependencies
+* Navigate to <strong>code/</strong></p>
+<h5 id="flask">Flask</h5>
+<pre><code class="Console">$ export FLASK_APP=api.py
+$ flask run --host=0.0.0.0 -p 6000
 </code></pre>
 
+<h5 id="gunicorn">Gunicorn</h5>
+<pre><code class="Console">$ gunicorn3 --bind 0.0.0.0:6000 wsgi
+</code></pre>
+
+<h2 id="api-request-format">API Request Format</h2>
+<p>An API request takes the following format:</p>
+<pre><code>http://18.191.72.252:6000/get-prediction-scores
+</code></pre>
+
+<p>The API call request is a JSON object with the following fields:</p>
+<pre><code>{
+    "comments": [ comment1, comment2, ... ],
+    "subreddit_list": [ classifier1, classifier2, ... ],
+    "macro_norm_list": [ norm1, norm2, ... ],
+    "key": KEY
+}
+</code></pre>
 <ul>
-<li><code>comments:</code> array of comment strings to be evaulated by Crossmod</li>
-<li><code>subreddit_list:</code> (OPTIONAL) list of subreddit classifiers used to predict scores.<ul>
-<li>If field is left blank, the default classifiers in ../data/study_subreddits.csv will all be used</li>
+<li><code>comments:</code> array of comment strings to be evaluated</li>
+<li><code>subreddit_list [OPTIONAL]:</code> list of subreddit classifiers used to predict scores.<ul>
+<li>If field is left blank, all default classifiers in ../data/study_subreddits.csv will all be used</li>
 <li>If field is passed a blank list [], no classifiers will be used, and no  agreement score will be found</li>
 </ul>
 </li>
-<li><code>macro_norm_list:</code> (OPTIONAL) list of macro norms used to predict scores.
-        * If field is left blank, the default macro norms in ../data/macro-norms.txt will all be used
+<li><code>macro_norm_list [OPTIONAL]:</code> list of macro norms used to predict scores.
+        * If field is left blank, all default macro norms in ../data/macro-norms.txt will all be used
         * If field is passed a blank list [], no macro norms will be used, and no norm violation score will be found</li>
 <li><code>key</code>: string used for authentication.
         * currently, for debugging, key is set to <code>ABCDEFG</code></li>
 </ul>
-<h2 id="example-requests">Example Requests</h2>
-<ul>
-<li>While flask is running:<ul>
-<li>rating comments with all classifiers and no macro norms</li>
-</ul>
-</li>
-</ul>
-<pre><code class="bash">    curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;macro_norm_list&quot;: [], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:5000/get-prediction-scores
+<h3 id="sample-requests">Sample Requests</h3>
+<h4 id="local-instance">Local Instance:</h4>
+<p><sub>Rating comments with all classifiers and no macro norms</sub></p>
+<pre><code class="bash">    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;macro_norm_list&quot;: [], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:6000/get-prediction-scores
 </code></pre>
 
-<pre><code>* rating comments with only select classifiers and all macro norms
-</code></pre>
-<pre><code>    curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;subreddit_list&quot;: [&quot;Futurology&quot;, &quot;nba&quot;, &quot;AskReddit&quot;, &quot;science&quot;, &quot;politics&quot;, &quot;pokemongo&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:5000/get-prediction-scores
-</code></pre>
-
-<pre><code>* rating comments with all classifiers and all macro norms
-</code></pre>
-<pre><code>    curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:5000/get-prediction-scores
+<p><sub>Rating comments with only select classifiers and all macro norms</sub></p>
+<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;subreddit_list&quot;: [&quot;Futurology&quot;, &quot;nba&quot;, &quot;AskReddit&quot;, &quot;science&quot;, &quot;politics&quot;, &quot;pokemongo&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:6000/get-prediction-scores
 </code></pre>
 
+<p><sub>Rating comments with all classifiers and all macro norms</sub></p>
+<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:6000/get-prediction-scores
+</code></pre>
+
+<h4 id="public-api">Public API:</h4>
+<p><sub>Rating comments with all classifiers and no macro norms</sub></p>
+<pre><code class="bash">    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;macro_norm_list&quot;: [], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:6000/get-prediction-scores
+</code></pre>
+
+<p><sub>Rating comments with only select classifiers and all macro norms</sub></p>
+<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;subreddit_list&quot;: [&quot;Futurology&quot;, &quot;nba&quot;, &quot;AskReddit&quot;, &quot;science&quot;, &quot;politics&quot;, &quot;pokemongo&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:6000/get-prediction-scores
+</code></pre>
+
+<p><sub>Rating comments with all classifiers and all macro norms</sub></p>
+<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:6000/get-prediction-scores
+</code></pre>
+
+<p>For examples of making API calls through Python, see <code>api_demo.py</code>.</p>
 <h2 id="responses">Responses</h2>
 <ul>
-<li>The JSON response is an array of JSON objects, where the index of each JSON object
-  corresponds to the index of the original comment in the request.</li>
+<li>The API response is an array of JSON objects, where the index of each JSON object  corresponds to the index of the original comment in the request.</li>
 </ul>
 <p><code>[
         {
@@ -182,32 +205,32 @@ flask run</code>~</li>
             'norms_violated': [ norm1, norm2, ... ]
         },
         ....
-    ]</code></p>
-<pre><code>* `agreement_score: ` prediction score from subreddit classifiers.
-    * if no classifiers were used, is a `NULL` value.
-* `norm_violation_score: ` prediction score from macro norms.
-    * if no macro norms were used, is a `NULL` value.
-* `subreddits_that_remove: ` list of classifiers that would have removed the comment.
-    * if no classifiers were used, is an empty list
-* `norms_violated: ` list of norms that were violated by the comment.
-    * if no macro norms were used, is an empty listed
-* CHECK IF agreement_score OR norm_violation_score IS NULL
-        NOT IF subreddits_that_remove OR norms_violated IS EMPTY
-         because a NULL value implies that classifiers and/or macro norms were not used
-         whereas an EMPTY list does NOT NECESSARILY imply the above
-</code></pre>
+    ]</code>
+ * <code>agreement_score:</code> prediction score from subreddit classifiers. If no classifiers were used, is a <code>NULL</code> value.
+  * <code>norm_violation_score:</code> prediction score from macro norms. If no macro norms were used, is a <code>NULL</code> value.
+   * <code>subreddits_that_remove:</code> list of classifiers that voted to removed the comment. If no classifiers were used, is an <code>empty</code> list.
+    * <code>norms_violated:</code> list of norms that were violated by the comment. If no macro norms were used, is an <code>empty</code> list.</p>
 <h2 id="dependencies">Dependencies</h2>
-<pre><code>* `getPredictions.py`
-* `flask`
-* `pandas`
-* `traceback`
-* `json`
+<pre><code> crossmodclassifiers.py
+ flask
+ pandas
+ traceback
+ json
 </code></pre>
-<h2 id="common-troubleshooting">Common Troubleshooting</h2>
-<pre><code>* Make sure getPredictions.py points to the correct paths for the norm/reddit models and the fastText directory
-* Make sure fastText binaries are compiled on local machine.
-    * If not, navigate to `/fastText-0.9.1` and `make clean &amp;&amp; make`
+
+<p>To deploy with Gunicorn:</p>
+<pre><code> wsgi.py
+ gunicorn3
 </code></pre>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>If an API response contains:</strong></p>
+<pre><code>[Errno 12] Cannot allocate memory
+</code></pre>
+
+<p>the server is experiencing memory issues. Crossmod may be experiencing memory leaks.</p>
+<p><strong>If there is a port conflict when running a local instance:</strong>
+try switching from port 6000 to an alternative port such as 8000.</p>
               
             </div>
           </div>
@@ -215,7 +238,7 @@ flask run</code>~</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../getting_started/" class="btn btn-neutral float-right" title="Getting Started">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../getting_started/" class="btn btn-neutral float-right" title="Getting started">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -232,12 +255,12 @@ flask run</code>~</li>
 
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-      
+	  
         </div>
       </div>
 
     </section>
-
+    
   </div>
 
   <div class="rst-versions" role="note" style="cursor: pointer">
@@ -251,9 +274,7 @@ flask run</code>~</li>
       
     </span>
 </div>
-    <script>var base_url = '..';</script>
-    <script src="../js/theme.js" defer></script>
-      <script src="../search/main.js" defer></script>
+    <script src="../js/theme.js"></script>
 
 </body>
 </html>
