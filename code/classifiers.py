@@ -87,27 +87,17 @@ class CrossmodClassifiers:
         return { 'clfs_id': clfs_id, 'clfs_prediction': clf_prediction, 'clfs_type': clfs_type }
         
     def get_result(self, input_comment):
-        clfs_pool = Pool()
-
-        subreddit_clfs_arguments = [{'clfs_type': CrossmodConsts.SUBREDDIT_CLASSIFIERS, 
-                                    'clfs_id': clf,
-                                    'input_comment': input_comment} for clf in self.subreddit_clfs_ids]
-
-        norm_clfs_arguments = [{'clfs_type': CrossmodConsts.NORM_CLASSIFIERS, 
-                                'clfs_id': clf,
-                                'input_comment': input_comment} for clf in self.norm_clfs_ids]
-
         clfs_predictions = list()
 
         for clf_id in self.subreddit_clfs_ids:
             clfs_predictions.append(CrossmodClassifiers.run_classifier({'clfs_type': CrossmodConsts.SUBREDDIT_CLASSIFIERS,
                                                                         'clfs_id': clf_id,
-                                                                         'input_comment': input_comment))
+                                                                         'input_comment': input_comment}))
 
-        for clf_id in self.norms_clfs_ids:
+        for clf_id in self.norm_clfs_ids:
             clfs_predictions.append(CrossmodClassifiers.run_classifier({'clfs_type': CrossmodConsts.NORM_CLASSIFIERS,
                                                                         'clfs_id': clf_id,
-                                                                        'input_comment': input_comment))
+                                                                        'input_comment': input_comment}))
 
         result = {
             'agreement_score': 0,
