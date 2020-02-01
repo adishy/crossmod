@@ -97,10 +97,10 @@ class CrossmodClassifiers:
                                 'clfs_id': clf,
                                 'input_comment': input_comment} for clf in self.norm_clfs_ids]
 
-        # [ {'clfs_id': 'science', 'clfs_prediction': 1, 'clfs_type': SUBREDDIT }, {'clfs_id': 'space', 'clfs_prediction': 1, 'clfs_type': SUBREDDIT } ]
-        clfs_predictions = clfs_pool.map(CrossmodClassifiers.run_classifier, subreddit_clfs_arguments + norm_clfs_arguments)
-        clfs_pool.close()
-        clfs_pool.join()
+        clfs_predictions = list()
+
+        for clf_id in self.subreddit_clfs_ids + self.norm_clfs_ids:
+            clfs_predictions.append(CrossmodClassifiers.run_classifier(clf_id))
         
         result = {
             'agreement_score': 0,
