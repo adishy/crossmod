@@ -99,9 +99,16 @@ class CrossmodClassifiers:
 
         clfs_predictions = list()
 
-        for clf_id in self.subreddit_clfs_ids + self.norm_clfs_ids:
-            clfs_predictions.append(CrossmodClassifiers.run_classifier(clf_id))
-        
+        for clf_id in self.subreddit_clfs_ids:
+            clfs_predictions.append(CrossmodClassifiers.run_classifier({'clfs_type': CrossmodConsts.SUBREDDIT_CLASSIFIERS,
+                                                                        'clfs_id': clf_id,
+                                                                         'input_comment': input_comment))
+
+        for clf_id in self.norms_clfs_ids:
+            clfs_predictions.append(CrossmodClassifiers.run_classifier({'clfs_type': CrossmodConsts.NORM_CLASSIFIERS,
+                                                                        'clfs_id': clf_id,
+                                                                        'input_comment': input_comment))
+
         result = {
             'agreement_score': 0,
             'norm_violation_score': 0,
