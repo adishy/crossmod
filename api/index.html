@@ -206,10 +206,10 @@ $ flask run --host=0.0.0.0 -p 6000
         },
         ....
     ]</code>
- * <code>agreement_score:</code> prediction score from subreddit classifiers. If no classifiers were used, is a <code>NULL</code> value.
-  * <code>norm_violation_score:</code> prediction score from macro norms. If no macro norms were used, is a <code>NULL</code> value.
-   * <code>subreddits_that_remove:</code> list of classifiers that voted to removed the comment. If no classifiers were used, is an <code>empty</code> list.
-    * <code>norms_violated:</code> list of norms that were violated by the comment. If no macro norms were used, is an <code>empty</code> list.</p>
+* <code>agreement_score:</code> prediction score from subreddit classifiers. If no classifiers were used, is a <code>NULL</code> value.
+* <code>norm_violation_score:</code> prediction score from macro norms. If no macro norms were used, is a <code>NULL</code> value.
+* <code>subreddits_that_remove:</code> list of classifiers that voted to removed the comment. If no classifiers were used, is an <code>empty</code> list.
+* <code>norms_violated:</code> list of norms that were violated by the comment. If no macro norms were used, is an <code>empty</code> list.</p>
 <h2 id="dependencies">Dependencies</h2>
 <pre><code> crossmodclassifiers.py
  flask
