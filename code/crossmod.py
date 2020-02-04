@@ -213,8 +213,6 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 			###REPORT: if toxicity score returned by the Perspective API in the range [80%, 90%), report comment and send to mod (& report) queue for review (doesn't remove from thread automatically).
 			print("Reporting a comment and sending it to report queue at t=", time.time())
 			comment.report("Agreement Score = " + str(agreement_score) + "/1.0, Norm Violation Score: " + str(norm_violation_score) + "/1.0")
-			message = "Looks like we got ourselves a toxic comment! Toxicity score = " + str(toxicity_score)
-			comment.reply(message)
 			continue
 		elif ACTION == "modmail":
 			###MODMAIL: if toxicity score returned by the Perspective API in the range [75%, 80%), send a modmail alerting moderators.
