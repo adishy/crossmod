@@ -1,15 +1,4 @@
-import os
-import sys
-import csv
-import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Float, UnicodeText
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from crossmod.helpers.consts import CrossmodConsts
-
-Base = declarative_base()
 
 '''
     Schema:
@@ -30,7 +19,7 @@ Base = declarative_base()
 
 '''
 
-class CrossmodDBData(Base):
+class DataTable(Base):
       __tablename__ = 'crossmoddbdata'
       created_utc = Column(DateTime)
       ingested_utc = Column(DateTime)
@@ -44,37 +33,3 @@ class CrossmodDBData(Base):
       banned_at_utc = Column(DateTime)
       agreement_score = Column(Float)
       norm_violation_score = Column(Float)
-
-class CrossmodDBUpdateStatus(Base):
-    __tablename__ = 'crossmod_db_update_status'
-    id = Column(Integer, primary_key = True)
-    update_start_utc = Column(DateTime)
-    update_end_utc = Column(DateTime)
-    rows_updated = Column(Integer)
-    last_row_id = Column(String(50))
-
-class CrossmodDB:
-    def __init__(self, database_uri = 'sqlite:///' + CrossmodConsts.DB_PATH):
-        self.database_uri = database_uri
-        self.database = create_engine(self.database_uri)
-        Base.metadata.bind = self.database
-        Base.metadata.create_all(self.database)
-        self.DatabaseSession= sessionmaker(bind = self.database)
-        self.database_session = self.DatabaseSession()
-        
-    def write(self, **kwargs):
-        try:
-            crossmod_data_entry = CrossmodDBData(**kwargs)
-            self.database_session.add(crossmod_data_entry)
-            self.database_session.commit()
-        except Exception as e:
-            print(e)
-            print("Could not write comment id: {} to the database".format(kwargs['id']))
-            return
-
-def main():
-    print(CrossmodConsts.DB_PATH)
-    db = CrossmodDB()
-
-if __name__ == "__main__":
-    main()
