@@ -2,3 +2,4 @@ code/__pycache__/*
 models/*
 crossmod_credentials.sh
 .venv/*
+.vscode/*
