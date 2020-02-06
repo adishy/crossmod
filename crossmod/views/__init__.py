@@ -1,0 +1,1 @@
+from crossmod.views.index import index
