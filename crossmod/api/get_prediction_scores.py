@@ -17,7 +17,7 @@ classifiers = CrossmodClassifiers(subreddits = full_subreddit_list,
                                   norms = full_macro_norm_list) # globally load classifiers
 
 
-@crossmod.app.route('/get-prediction-scores', methods=['POST'])
+@crossmod.app.route('/api/get-prediction-scores', methods=['POST'])
 def get_prediction_scores():
 
     ## JSON REQUEST FIELDS ##
