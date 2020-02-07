@@ -1,4 +1,4 @@
-"""Insta485 package initializer."""
+"""Crossmod package initializer."""
 import flask
 
 # app is a single object used by all the code modules in this package
@@ -17,4 +17,4 @@ app.config.from_envvar('CROSSMOD_SETTINGS', silent=True)
 # (Reference http://flask.pocoo.org/docs/patterns/packages/)  We're
 # going to tell pylint and pycodestyle to ignore this coding style violation.
 import crossmod.views  # noqa: E402  pylint: disable=wrong-import-position
-import crossmod.ml  # noqa: E402  pylint: disable=wrong-import-position
+#import crossmod.ml  # noqa: E402  pylint: disable=wrong-import-position
