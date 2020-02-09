@@ -136,12 +136,14 @@ $ flask run --host=0.0.0.0 -p 6000
 </code></pre>
 
 <h5 id="gunicorn">Gunicorn</h5>
-<pre><code class="Console">$ gunicorn3 --bind 0.0.0.0:6000 wsgi
+<pre><code class="Console">$ gunicorn3 --bind 0.0.0.0:6000 wsgi -w [# of worker processes] --preload
 </code></pre>
 
+<p>Generally, it is sufficient to have one worker process per core (1-3 worker processes). The Crossmod production server has 8 cores.</p>
+<p><code>--preload</code> ensures that Crossmod's machine learning classifiers are only loaded once for all worker processes.</p>
 <h2 id="api-request-format">API Request Format</h2>
 <p>An API request takes the following format:</p>
-<pre><code>http://18.191.72.252:6000/get-prediction-scores
+<pre><code>http://18.191.72.252:8000/get-prediction-scores
 </code></pre>
 
 <p>The API call request is a JSON object with the following fields:</p>
@@ -165,32 +167,31 @@ $ flask run --host=0.0.0.0 -p 6000
 <li><code>key</code>: string used for authentication.
         * currently, for debugging, key is set to <code>ABCDEFG</code></li>
 </ul>
-<p>The default call rate limit is currently 60 per hour, 10 per minute.</p>
 <h3 id="sample-requests">Sample Requests</h3>
 <h4 id="local-instance">Local Instance:</h4>
 <p><sub>Rating comments with all classifiers and no macro norms</sub></p>
-<pre><code class="bash">    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;macro_norm_list&quot;: [], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:6000/get-prediction-scores
+<pre><code class="bash">    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;macro_norm_list&quot;: [], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:8000/get-prediction-scores
 </code></pre>
 
 <p><sub>Rating comments with only select classifiers and all macro norms</sub></p>
-<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;subreddit_list&quot;: [&quot;Futurology&quot;, &quot;nba&quot;, &quot;AskReddit&quot;, &quot;science&quot;, &quot;politics&quot;, &quot;pokemongo&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:6000/get-prediction-scores
+<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;subreddit_list&quot;: [&quot;Futurology&quot;, &quot;nba&quot;, &quot;AskReddit&quot;, &quot;science&quot;, &quot;politics&quot;, &quot;pokemongo&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:8000/get-prediction-scores
 </code></pre>
 
 <p><sub>Rating comments with all classifiers and all macro norms</sub></p>
-<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:6000/get-prediction-scores
+<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://localhost:8000/get-prediction-scores
 </code></pre>
 
 <h4 id="public-api">Public API:</h4>
 <p><sub>Rating comments with all classifiers and no macro norms</sub></p>
-<pre><code class="bash">    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;macro_norm_list&quot;: [], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:6000/get-prediction-scores
+<pre><code class="bash">    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;macro_norm_list&quot;: [], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:8000/get-prediction-scores
 </code></pre>
 
 <p><sub>Rating comments with only select classifiers and all macro norms</sub></p>
-<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;subreddit_list&quot;: [&quot;Futurology&quot;, &quot;nba&quot;, &quot;AskReddit&quot;, &quot;science&quot;, &quot;politics&quot;, &quot;pokemongo&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:6000/get-prediction-scores
+<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;subreddit_list&quot;: [&quot;Futurology&quot;, &quot;nba&quot;, &quot;AskReddit&quot;, &quot;science&quot;, &quot;politics&quot;, &quot;pokemongo&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:8000/get-prediction-scores
 </code></pre>
 
 <p><sub>Rating comments with all classifiers and all macro norms</sub></p>
-<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:6000/get-prediction-scores
+<pre><code>    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://18.191.72.252:8000/get-prediction-scores
 </code></pre>
 
 <p>For examples of making API calls through Python, see <code>api_demo.py</code>.</p>
@@ -207,14 +208,13 @@ $ flask run --host=0.0.0.0 -p 6000
         },
         ....
     ]</code>
-* <code>agreement_score:</code> prediction score from subreddit classifiers. If no classifiers were used, is a <code>NULL</code> value.
-* <code>norm_violation_score:</code> prediction score from macro norms. If no macro norms were used, is a <code>NULL</code> value.
-* <code>subreddits_that_remove:</code> list of classifiers that voted to removed the comment. If no classifiers were used, is an <code>empty</code> list.
-* <code>norms_violated:</code> list of norms that were violated by the comment. If no macro norms were used, is an <code>empty</code> list.</p>
+ * <code>agreement_score:</code> prediction score from subreddit classifiers. If no classifiers were used, is a <code>NULL</code> value.
+  * <code>norm_violation_score:</code> prediction score from macro norms. If no macro norms were used, is a <code>NULL</code> value.
+   * <code>subreddits_that_remove:</code> list of classifiers that voted to removed the comment. If no classifiers were used, is an <code>empty</code> list.
+    * <code>norms_violated:</code> list of norms that were violated by the comment. If no macro norms were used, is an <code>empty</code> list.</p>
 <h2 id="dependencies">Dependencies</h2>
 <pre><code> crossmodclassifiers.py
  flask
- flask_limiter
  pandas
  traceback
  json
@@ -232,7 +232,7 @@ $ flask run --host=0.0.0.0 -p 6000
 
 <p>the server is experiencing memory issues. Crossmod may be experiencing memory leaks.</p>
 <p><strong>If there is a port conflict when running a local instance:</strong>
-try switching from port 6000 to an alternative port such as 8000.</p>
+try switching from port 8000 to an alternative port such as 7000.</p>
               
             </div>
           </div>
