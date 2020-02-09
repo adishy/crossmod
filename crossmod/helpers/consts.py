@@ -11,7 +11,9 @@ class CrossmodConsts:
     MODELS_DIRECTORY = os.environ['MODELS_DIRECTORY']
     SUBREDDIT_CLASSIFIERS = "subreddit"
     NORM_CLASSIFIERS = "norm"
-
+    SUBREDDIT_LIST = ['The_Donald', 'politics', 'AskReddit', 'science', 'worldnews', 'news', 'explainlikeimfive', 'relationships', 'TwoXChromosomes', 'gonewild', 'hillaryclinton', 'askscience', 'leagueoflegends', 'AskHistorians', 'Games', 'PoliticalDiscussion', 'personalfinance', 'aww', 'photoshopbattles', 'syriancivilwar', 'nosleep', 'CFB', 'pcmasterrace', 'pics', 'pokemongo', 'funny', 'GlobalOffensive', 'Futurology', 'SandersForPresident', 'MMA', 'europe', 'nfl', 'EnoughTrumpSpam', 'BlackPeopleTwitter', 'pokemontrades', 'legaladvice', 'history', 'videos', 'AskWomen', 'sex', 'GlobalOffensiveTrade', 'LateStageCapitalism', 'gaming', 'whatisthisthing', 'Showerthoughts', 'DIY', 'Android', 'OutOfTheLoop', 'atheism', 'UpliftingNews', 'Incels', 'gifs', 'food', 'movies', 'india', 'books', 'depression', 'hiphopheads', 'pokemon', 'philosophy', 'nba', 'Christianity', 'anime', '2007scape', 'fantasyfootball', 'Overwatch', 'tifu', 'churning', 'changemyview', 'space', 'conspiracy', 'ShitRedditSays', 'canada', 'socialism', 'soccerstreams', 'CanadaPolitics', 'nottheonion', 'gameofthrones', 'OldSchoolCool', 'AskTrumpSupporters', 'creepyPMs', 'SuicideWatch', 'wow', 'LifeProTips', 'SubredditDrama', 'technology', 'TheSilphRoad', 'hearthstone', 'spacex', 'me_irl', 'IAmA', 'DestinyTheGame', 'television', 'dataisbeautiful', 'NSFW_GIF', 'PurplePillDebate', 'GetMotivated', 'asoiaf', 'NeutralPolitics', 'jailbreak' ]
+    NORM_LIST = ['misogynistic-slurs', 'verbal-attacks-on-Reddit', 'hatespeech-racist-homophobic', 'porno-links', 'abusing-and-criticisizing-mods', 'namecalling-claiming-other-too-sensitive', 'personal-attacks', 'opposing-political-views-trump']
+    
     @staticmethod
     def get_norms_classifier(norm):
         NORMS_CLASSIFIERS = CrossmodConsts.MODELS_DIRECTORY + "/norm-clfs/"

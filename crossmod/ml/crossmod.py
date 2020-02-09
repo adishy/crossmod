@@ -87,8 +87,8 @@ def main():
 	###list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
         
 	subreddits_limit = 100
-	subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
-	macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
+	subreddit_list = CrossmodConsts.SUBREDDIT_LIST
+	macro_norm_list = CrossmodConsts.NORM_LIST
 
 	classifiers = CrossmodClassifiers(subreddits = subreddit_list, 
 					  norms = macro_norm_list)
