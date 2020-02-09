@@ -18,6 +18,7 @@ Another database for queue?
 import crossmod
 
 from crossmod.ml.classifiers import *
+from crossmod.helpers.consts import *
 
 from flask import Flask, request, jsonify, make_response
 from flask_limiter import Limiter
@@ -36,8 +37,8 @@ auth_key = "ABCDEFG"
 call_rate_limit = ["10 per minute", "600 per hour"] # set api rate limiting by remote address
 
 subreddits_limit = 100
-full_subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
-full_macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
+full_subreddit_list = CrossmodConsts.SUBREDDIT_LIST
+full_macro_norm_list = CrossmodConsts.NORM_LIST
 
 classifiers = CrossmodClassifiers(subreddits = full_subreddit_list,
                                   norms = full_macro_norm_list) # globally load classifiers
