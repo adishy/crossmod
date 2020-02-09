@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, UnicodeText
+import crossmod
+from crossmod.db.base import Base
 
 '''
     Schema:
