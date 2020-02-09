@@ -15,9 +15,7 @@ Another database for queue?
 
 ## @NOTE crossmod.ml is port 80
 
-import crossmod
-
-from crossmod.ml.classifiers import *
+from classifiers import *
 
 from flask import Flask, request, jsonify, make_response
 from flask_limiter import Limiter

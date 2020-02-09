@@ -1,48 +1,48 @@
+from tenacity import retry, wait_exponential
+from crossmod.ml.moderation_settings import *
+from crossmod.helpers.consts import CrossmodConsts
+from crossmod.db.interface import CrossmodDB
+from crossmod.ml.classifiers import CrossmodClassifiers
+from crossmod.helpers.filters import CrossmodFilters
+from googleapiclient import discovery
 import praw
 import sys
 import datetime
 import pandas as pd
 import time
-from tenacity import retry, wait_exponential
-from getPredictions import *
-from config import *
-from consts import CrossmodConsts
-from db import CrossmodDB
-from classifiers import CrossmodClassifiers
-from filters import CrossmodFilters
+import crossmod
 
-###get toxicity score from Perspective API
-from googleapiclient import discovery
-
-# Usage: python3 crossmod.py modbot_staging 1 1
-if len(sys.argv) != 4:
-	print("Usage: python3 crossmod.py <subreddit-name> <perform-action [1, 0]> <use-classifiers [1, 0]>")
-	print("Example:")
-	print("  python3 crossmod.py modbot_staging 1 1")
-	print("  starts Crossmod to run on the subreddit modbot_staging, will actively flag comments and use Crossmod's ML backend")
-	exit(1);	
-else:
-	staging_subreddit = sys.argv[1]
-	perform_action = bool(int(sys.argv[2]))
-	use_classifiers = int(sys.argv[3])
-
-print("Staging subredddit: ", staging_subreddit)
-print("Perform action: ", perform_action)
-print("Use classifiers: ", use_classifiers)
+staging_subreddit = 'modbot_staging'
+perform_action = False
+use_classifiers = False
 
 def get_toxicity_score(comment):
     analyze_request = {
       'comment': { 'text': comment},
       'requestedAttributes': {'TOXICITY': {}}
     }
-
     response = service.comments().analyze(body=analyze_request).execute()
     toxicity_score = response['attributeScores']['TOXICITY']['summaryScore']['value']
     return toxicity_score
 
-
 def main():
 	###main()
+	# Usage: python3 crossmod.py modbot_staging 1 1
+	if len(sys.argv) != 4:
+		print("Usage: python3 crossmod.py <subreddit-name> <perform-action [1, 0]> <use-classifiers [1, 0]>")
+		print("Example:")
+		print("  python3 crossmod.py modbot_staging 1 1")
+		print("  starts Crossmod to run on the subreddit modbot_staging, will actively flag comments and use Crossmod's ML backend")
+		exit(1);	
+	else:
+		staging_subreddit = sys.argv[1]
+		perform_action = bool(int(sys.argv[2]))
+		use_classifiers = int(sys.argv[3])
+
+	print("Staging subredddit: ", staging_subreddit)
+	print("Perform action: ", perform_action)
+	print("Use classifiers: ", use_classifiers)
+
 	#generate Perspective API client object dynamically based on service name and version.
 	API_KEY = CrossmodConsts.PERSPECTIVE_API_SECRET
 	service = discovery.build('commentanalyzer', 'v1alpha1', developerKey=API_KEY)

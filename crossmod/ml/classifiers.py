@@ -1,11 +1,12 @@
+from crossmod.helpers.consts import *
+from crossmod.helpers.filters import *
 import fasttext
 import pandas as pd
 from multiprocessing import Pool
 import subprocess
 import re
-from consts import *
+import crossmod
 import time
-from filters import *
 
 class CrossmodClassifiers:    
     UNREMOVED_COMMENT = "__label__unremoved"
@@ -126,64 +127,3 @@ class CrossmodClassifiers:
         result['norm_violation_score'] /= len(self.norm_clfs_ids)
         
         return result
-
-def input_comments_tests():
-    input_with_urls = [ "add1 http://mit.edu.com you really kind of suck0",
-                        "add2 https://facebook.jp.com.2. blah blah bleep bloop nooooo go away",
-                        "add3 www.google.be. uvw",
-                        "add4 https://www.google.be. 123",
-                        "add5 www.website.gov.us test2",
-                        "Hey bob on www.test.com." ,
-                        "another test with ipv4 http://192.168.1.1/test.jpg. toto2",
-                        "website with different port number www.test.com:8080/test.jpg not port 80",
-                        "www.website.gov.us/login.html",
-                        "test with ipv4 192.168.1.1/test.jpg.",
-                        "search at google.co.jp/maps.",
-                        "test with ipv6 2001:0db8:0000:85a3:0000:0000:ac1f:8001/test.jpg." ]
-
-    for input_comment in input_with_urls:
-        print(CrossmodClassifiers.process_input_comment(input_comment))
-
-def main():
-    input_comments_tests()
-
-
-    return
-    
-    classifiers = []
-
-    classifiers_file = open("sample.in", "r")
-    clfs_ids = classifiers_file.readlines()
-
-    for clfs_id in clfs_ids:
-        classifiers.append(clfs_id.replace('\n', ''))
-
-    print("Currently using: ", len(classifiers), " classifiers")
-
-    subreddit_classifiers = ["AskReddit", "Futurology", "space", "technology"]
-
-    norm_classifiers = ["abusing-and-criticisizing-mods", 
-                        "hatespeech-racist-homophobic", 
-                        "misogynistic-slurs", 
-                        "namecalling-claiming-other-too-sensitive", 
-                        "opposing-political-views-trump", 
-                        "personal-attacks",
-                        "porno-links",
-                        "verbal-attacks-on-Reddit"]
-
-    classifiers = CrossmodClassifiers(subreddits = subreddit_classifiers,
-                                      norms = norm_classifiers)
-  
-    while(True):
-        input_comment = input("input a comment for a subreddit: ")
-    
-        start = time.time()
-
-        print(classifiers.get_result(input_comment))
-
-        end = time.time()
-
-        print("Predicted: ", int(round(end - start)), "s")
-
-if __name__ == '__main__':
-    main()
