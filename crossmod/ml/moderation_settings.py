@@ -1,3 +1,6 @@
+import crossmod
+from crossmod.helpers.consts import CrossmodConsts
+
 #IFTTT format - if <condition>: then <action>
 
 def check_config(comment):
@@ -16,7 +19,7 @@ def check_config(comment):
 
 	###conditional statements - to be modified by mods
 	try:
-		if comment['agreement_score'] >= 0.85: 
+		if comment['agreement_score'] >= CrossmodConsts.AGREEMENT_SCORE_THRESHOLD: 
 			ACTION = report
 	
 	### above this are the rules that are configured by the moderators
