@@ -4,4 +4,4 @@ from flask import render_template
 
 @crossmod.app.route('/dashboard/', methods=['GET'])
 def dashboard():
-    return render_template('dashboard.html', stats = current_overall_stats())
+    return render_template('dashboard.html', crossmod_state = current_overall_stats())
