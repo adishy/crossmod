@@ -28,11 +28,5 @@ app.config.from_envvar('CROSSMOD_SETTINGS', silent=True)
 # (Reference http://flask.pocoo.org/docs/patterns/packages/)  We're
 # going to tell pylint and pycodestyle to ignore this coding style violation.
 import crossmod.views  # noqa: E402  pylint: disable=wrong-import-position
-
 import crossmod.ml # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.helpers # noqa: E402  pylint: disable=wrong-import-position
-from crossmod.ml.classifiers import CrossmodClassifiers # noqa: E402  pylint: disable=wrong-import-position
-from crossmod.helpers.consts import * 
-classifiers = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
-                                  norms = CrossmodConsts.NORM_LIST)
-#import crossmod.ml  # noqa: E402  pylint: disable=wrong-import-position
