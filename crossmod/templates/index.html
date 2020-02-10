@@ -87,18 +87,6 @@
 	</section>
 	<section class="area">
 		<div class="container">
-			<div class="subscribe">
-				<h3>Crossmod is working hard  right now!</h3>
-				<p class="tagline">Crossmod has processed {{ stats['total_comments'] }} comments out of 
-					which it flagged {{ stats['crossmod_agreement_score'] }} comments. 
-					The moderators have removed {{ stats['moderators_and_crossmod'] }} comments that Crossmod flagged,
-					helping them perform more insightful moderation on the subreddit. 
-				</p>
-			</div>
-		</div>
-	</section>
-	<section class="area">
-		<div class="container">
 			<div class="row">
 				<div class="col-md-5">
 					<h2 class="visible-xs visible-sm text-primary">&lt;Crossomd in Action&gt;</h2>
@@ -118,7 +106,7 @@
 						</li>
 						<li>
 							<div class="img-holder">
-								<img class="pull-left" src="images/graph-03.svg" width="90" alt="">
+								<img class="pull-left" src="static/images/graph-03.svg" width="90" alt="">
 							</div>
 							<div class="text-holder">
 								<h3>Infinite Customization</h3>
@@ -161,6 +149,18 @@
 						<div class="img-slide scroll-trigger"><img src="static/images/img-01.png" height="624" alt=""></div>
 					</div>
 				</div>
+			</div>
+		</div>
+	</section>
+	<section class="area">
+		<div class="container">
+			<div class="text-holder" style="text-align: center;">
+				<h3>Crossmod is working hard  right now!</h3>
+				<p>Crossmod has processed {{ stats['total_comments'] }} comments out of 
+					which it flagged {{ stats['crossmod_agreement_score'] }} comments. 
+					The moderators have removed {{ stats['moderators_and_crossmod'] }} comments that Crossmod flagged,
+					helping them perform more insightful moderation on the subreddit. 
+				</p>
 			</div>
 		</div>
 	</section>
