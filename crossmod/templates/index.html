@@ -61,7 +61,7 @@
 					<h1>Crossmod</h1>
 				</div>
 				<p class="tagline">A new AI-backed sociotechnical moderation system for Reddit</p>
-				<span class="info">creating a better social internet</span>
+				<span class="info">making the internet safer and more welcoming</span>
 			</div>
 		</div>
 		<img src="static/images/img-decor-01.jpg" alt="" class="bg-stretch">
@@ -75,7 +75,9 @@
 			<div class="row">
 				<div class="text-box col-md-offset-1 col-md-10">
 					<h2>What is Crossmod?</h2>
-					<p>CrossMod  is  a  new  comment  moderation  bot  for  Reddit  that uses machine learning and a large amount of past moderation data from 100 different subreddits to determine what toxic comments look like and when to flag them. </p>
+					<p>Crossmod  is  a  new  comment  moderation  bot  for  Reddit  that uses machine learning to assist moderators.
+					   Crossmod is trained on a large amount of past moderation decisions from 100 popular subreddits. By combining AI predictions with human oversight, 
+					   Crossmod determines content that is unacceptable within Reddit communities. </p>
 					
 					<div class="social-placeholder">
 						<a class="github-button" href="https://github.com/ceshwar/crossmod/subscription" data-icon="octicon-eye" data-size="large" data-show-count="true" aria-label="Watch ceshwar/crossmod on GitHub">Watch</a>
@@ -89,19 +91,19 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-5">
-					<h2 class="visible-xs visible-sm text-primary">&lt;Crossomd in Action&gt;</h2>
+					<h2 class="visible-xs visible-sm text-primary">&lt;Crossmod in Action&gt;</h2>
 					<ul class="visual-list">
 						<li>
 							<div class="img-holder">
 								<img src="static/images/graph-04.svg" width="110" alt="">
 							</div>
 							<div class="text-holder">
-								<h3>Created to Make A Better Social Internet</h3>
+								<h3>Created to Improve the Current State of Moderation</h3>
 								
 								   <p>Crossmod is built to extend the capabilities of moderators, while also 
-									fitting into their existing workflows. It aims to extend the current capabilities provided by existing 
-									social and automated tools. Crossmod can improve moderation by detecting undesirable content which is 
-									currently undetected by existing automated moderation infrastructure.</p>
+									fitting into their existing workflows. It aims to extend existing 
+									social and automated approaches to moderation on Reddit. Crossmod can detect a wider
+									range of undesirable content which is currently undetected by existing automated tools.</p>
 							</div>
 						</li>
 						<li>
@@ -110,10 +112,10 @@
 							</div>
 							<div class="text-holder">
 								<h3>Infinite Customization</h3>
-								<p>Crossmod can be configured using an intuitive If This Then That (IFTTT) format 
+								<p>Crossmod can be configured using an intuitive <em>If This Then That</em> (IFTTT) format 
 								   where moderators just create chains of simple conditional 
-								   statements to trigger moderation actions, providing moderators 
-								   a rich set of options they can use to control and configure Crossmod 
+								   statements to trigger moderation actions. Crossmod does this by providing moderators with
+								   a rich set of options, which they can use to customize the system 
 								   to meet their subreddit-specific needs. </p>
 							</div>
 						</li>
@@ -123,7 +125,7 @@
 							</div>
 							<div class="text-holder">
 								<h3>Experiments Involving Crossmod</h3>
-								<p>Crossmod is currently active on the <a href="https://www.reddit.com/r/Futurology/comments/eceiqz/using_an_ai_bot_trained_on_human_mod_actions_to/" target="_blank">r/Futurology</a> subreddit, listening in on comments, looking for hate speech and reporting them to moderators when appropriate </p>
+								<p>Crossmod is currently active on the <a href="https://www.reddit.com/r/Futurology/comments/eceiqz/using_an_ai_bot_trained_on_human_mod_actions_to/" target="_blank">r/Futurology</a> subreddit, listening in on comments, looking for norm violations and reporting them to moderators upon detection. </p>
 							</div>
 						</li>
 						<li>
@@ -133,12 +135,10 @@
 							<div class="text-holder">
 								<h3>A Time-Saver for Moderators</h3>
 								<p>When Crossmod is added to a new subreddit, it begins to scan comments 
-									and evaluate toxicity scores for them from 0 to 100, where 0 means that 
-									not one classifier flagged the comment and where 100 means that every 
-									classifier flagged the comment. Moderators will be able to set a 
-									subreddit specific toxicity score threshold, and comments with 
-									toxicity scores is above this will be flagged, easing the difficulty 
-									in sifting through comments. </p>
+									and evaluates removal consensus among an ensemble of pre-trained classifiers. Removal consensus is 
+									computed as the proportion of subreddits that would remove the comment. 
+									Moderators will be able to set subreddit-specific score thresholds in order to triage
+									and prioritize comments for manual review.</p>
 							</div>
 						</li>
 					</ul>
