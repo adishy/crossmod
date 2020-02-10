@@ -12,7 +12,7 @@ const comment_input = document.querySelector(".comment_input")
                                     <p>Comment: ${comment_result.comment_body}</p>
                                     <p>Agreement Score: ${comment_result.agreement_score}</p>
                                     <p>Norm Violation Score: ${comment_result.norm_violation_score}</p>
-                                    <p>Subreddits that would remove this comment:</p>
+                                    <p>Examples of subreddits that would remove this comment:</p>
                                     <ul>
                                         ${ comment_result.subreddits_that_remove.map((subreddit) => { return `<li>
                                                                                                                 <a href="http://reddit.com/r/${subreddit}" target="_blank">
