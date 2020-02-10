@@ -15,46 +15,22 @@ Another database for queue?
 
 ## @NOTE crossmod.ml is port 80
 
-import crossmod
-
-from crossmod.ml.classifiers import *
+from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.helpers.consts import *
-
-from flask import Flask, request, jsonify, make_response
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-
+from flask import request, jsonify, make_response
+import crossmod
 import pandas as pd
 import traceback
 import json
-from flask_cors import CORS
-
-application = Flask(__name__)
-cors = CORS(application)
 
 ### CONFIG ###
 auth_key = "ABCDEFG"
-call_rate_limit = ["10 per minute", "600 per hour"] # set api rate limiting by remote address
 
 subreddits_limit = 100
-full_subreddit_list = CrossmodConsts.SUBREDDIT_LIST
-full_macro_norm_list = CrossmodConsts.NORM_LIST
 
-classifiers = CrossmodClassifiers(subreddits = full_subreddit_list,
-                                  norms = full_macro_norm_list) # globally load classifiers
+classifiers = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
+                                  norms = CrossmodConsts.NORM_LIST) # globally load classifiers
 
-limiter = Limiter(
-    application,
-    key_func=get_remote_address,
-    default_limits=call_rate_limit
-)
-## Exceeded call rate message ##
-@application.errorhandler(429)
-def ratelimit_handler(e):
-    return make_response(
-        jsonify(error="API call rate limit exceeded %s" % e.description)
-        , 429
-    )
 
 ### REQUEST: JSON Object ###
 """
@@ -77,16 +53,16 @@ def ratelimit_handler(e):
     ....
 ]
 """
-@application.route('/get-prediction-scores', methods=['POST', 'GET'])
-def getPredictionScores():
+@crossmod.app.route('/api/v1/get-prediction-scores', methods=['POST', 'GET'])
+def get_prediction_scores():
     print("Request:", request, "Method:", request.method)
     if request.method == 'GET':
         return '<html>GET</html>'
     print("Request data:", request.get_json(force=True))
     ## JSON REQUEST FIELDS ##
     comments = []
-    subreddit_list = full_subreddit_list     #by default, use all classifiers
-    macro_norm_list = full_macro_norm_list   #by default, use all macro norms
+    subreddit_list = CrossmodConsts.SUBREDDIT_LIST     #by default, use all classifiers
+    macro_norm_list = CrossmodConsts.NORM_LIST   #by default, use all macro norms
     key = ""
 
     try:
@@ -108,7 +84,7 @@ def getPredictionScores():
         if 'macro_norm_list' in json_:
             macro_norm_list = pd.Series(json_["macro_norm_list"])
 
-        number_of_classifiers=len(subreddit_list);
+        number_of_classifiers=len(subreddit_list)
         number_of_macro_norms=len(macro_norm_list)
 
 
@@ -185,8 +161,6 @@ def getPredictionScores():
         '''
         RETURN JSON response
         '''
-        #json_response = tuple(json_response)
-        #json_response = json.dumps(json_response)
         return jsonify(json_response)
 
     except:
@@ -194,9 +168,3 @@ def getPredictionScores():
         HANDLE errors
         '''
         return jsonify({'trace': traceback.format_exc()})
-
-
-
-
-if __name__ == "__main__":
-    application.run(debug=True, host='0.0.0.0', port=8000)

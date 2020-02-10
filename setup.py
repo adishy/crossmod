@@ -20,7 +20,8 @@ setup(
         'SQLAlchemy==1.3.12',
         'tenacity==6.0.0',
         'flask_cors',
-        'flask_limiter'  
+        'flask_limiter',
+        'click'  
     ],
     entry_points={
         'console_scripts': [
