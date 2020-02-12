@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Code base for *Crossmod: A Cross-Community Learning-based System to Assist Reddit Moderators*
 
 ### ACM Reference Format: 
@@ -21,3 +22,6 @@ Contact authors to obtain the ensemble of classifiers for Crossmod's back-end.
 ## Documentation:
 * Documentation for Crossmod can be accessed at http://crossmod.ml
 * Dependencies can be installed using the included *requirements.txt*
+=======
+The page should be available at https://ceshwar.github.io/crossmod/ 
+>>>>>>> restructuring-to-web-app
