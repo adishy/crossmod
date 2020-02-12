@@ -1,17 +1,4 @@
-<html>
-<head>
-    Crossmod | Try Crossmod
-</head>
-<body>
-    <h1>Try Crossmod</h1>
-    <input type="text" class="comment_input" placeholder="Enter a comment here!" />
-    <input type="button" class="check_toxicity" value="Check Toxicity" />
-    <div class="result_container">
-    </div>
-</body>
-
-<script>
-    const comment_input = document.querySelector(".comment_input")
+const comment_input = document.querySelector(".comment_input")
     const check_toxicity_button = document.querySelector(".check_toxicity")
     const results_container = document.querySelector(".result_container")
 
@@ -25,7 +12,7 @@
                                     <p>Comment: ${comment_result.comment_body}</p>
                                     <p>Agreement Score: ${comment_result.agreement_score}</p>
                                     <p>Norm Violation Score: ${comment_result.norm_violation_score}</p>
-                                    <p>Subreddits that would remove this comment:</p>
+                                    <p>Examples of subreddits that would remove this comment:</p>
                                     <ul>
                                         ${ comment_result.subreddits_that_remove.map((subreddit) => { return `<li>
                                                                                                                 <a href="http://reddit.com/r/${subreddit}" target="_blank">
@@ -46,7 +33,7 @@
 
     function get_result(){
         var comments = comment_input.value.split(";")
-        fetch('http://crossmod.ml:8000/get-prediction-scores', {
+        fetch('http://crossmod.ml:8300/api/v1/get-prediction-scores', {
             method: 'POST',
             mode: 'cors', 
             cache: 'no-cache', 
@@ -65,6 +52,3 @@
     }
     
     check_toxicity_button.addEventListener("click", get_result);
-    
-</script>
-</html>

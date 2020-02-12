@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3/5.12.0/d3.js"></script>
+        <script src = "/static/js/venn.min.js"></script>
+        <title>Crossmod Live Dashboard</title>
+    </head>
+
+    <body>
+        <h1>Crossmod Dashboard</h1>
+        <ul>
+            <li>
+                <p>
+                    <b>Total: </b> 
+                    {{ crossmod_state['total_comments'] }} 
+                </p>
+            </li>
+
+            <li>
+                <p>
+                    <b>AutoModerator: </b> 
+                    {{ crossmod_state['automoderator'] }} 
+                </p>
+            </li>
+
+            <li>
+                <p>
+                    <b>Moderators: </b> 
+                    {{ crossmod_state['moderators'] }} 
+                </p>
+            </li>
+
+            <li> 
+                <p>
+                    <b>Crossmod with agreement score >= 0.85: </b> 
+                    {{ crossmod_state['crossmod_agreement_score'] }} 
+                </p>
+            </li>   
+            
+            <li>    
+                <p>
+                    <b>AutoModerator intersection Moderators </b> 
+                    0 
+                </p>
+            </li>
+
+            <li>    
+                <p>
+                    <b>AutoModerator intersection Crossmod </b> 
+                    {{ crossmod_state['automoderator_and_crossmod'] }} 
+                </p>
+            </li>
+
+            <li>    
+                <p>
+                    <b>Moderators intersection Crossmod </b> 
+                    {{ crossmod_state['moderators_and_crossmod'] }} 
+                </p>
+            </li>
+
+            <li>    
+                <p>
+                    <b>Moderators intersection Crossmod </b> 
+                    {{ crossmod_state['only_crossmod'] }} 
+                </p>
+            </li>
+        </ul>
+
+        <div id = "venn">
+        </div>
+    </body>
+
+    <script>
+        var sets = [{sets: ['AutoModerator'], size: {{ crossmod_state['automoderator'] }} }, 
+                    {sets: ['Moderators'], size: {{ crossmod_state['moderators'] }} },
+                    {sets: ['Crossmod'], size: {{ crossmod_state['crossmod_agreement_score'] }} },
+                    {sets: ['AutoModerator','Moderators'], size: 0},
+                    {sets: ['AutoModerator','Crossmod'], size: {{ crossmod_state['automoderator_and_crossmod'] }}},
+                    {sets: ['Moderators','Crossmod'], size: {{ crossmod_state['moderators_and_crossmod'] }}}];
+
+        var chart = venn.VennDiagram()
+        d3.select("#venn").datum(sets).call(chart);
+    </script>
+</html>
