@@ -12,15 +12,6 @@ import pandas as pd
 import time
 import crossmod
 
-def get_toxicity_score(comment):
-    analyze_request = {
-      'comment': { 'text': comment},
-      'requestedAttributes': {'TOXICITY': {}}
-    }
-    response = service.comments().analyze(body=analyze_request).execute()
-    toxicity_score = response['attributeScores']['TOXICITY']['summaryScore']['value']
-    return toxicity_score
-
 def main():
   ###main()
   # Usage: python3 crossmod.py modbot_staging 1 1
@@ -38,12 +29,6 @@ def main():
   print("Staging subredddit: ", staging_subreddit)
   print("Perform action: ", perform_action)
   print("Use classifiers: ", use_classifiers)
-
-  #generate Perspective API client object dynamically based on service name and version.
-  API_KEY = CrossmodConsts.PERSPECTIVE_API_SECRET
-  service = discovery.build('commentanalyzer', 'v1alpha1', developerKey=API_KEY)
-  ###
-
 
   #setup the Reddit bot
   reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
@@ -83,7 +68,6 @@ def main():
 
   ###list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
         
-  subreddits_limit = 100
   subreddit_list = CrossmodConsts.SUBREDDIT_LIST
   macro_norm_list = CrossmodConsts.NORM_LIST
 
@@ -131,7 +115,6 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
           ingested_utc = datetime.datetime.now(),
           id = comment.id,
           body = comment.body,
-          toxicity_score = -1.0,
           crossmod_action = "filtered",
           author = comment.author.name,
           subreddit = comment.subreddit.display_name, 
@@ -146,16 +129,7 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
 
     ### Get back-end predictions and score the comment! 
 
-    ### Type 1: Use toxicity scores from Perspective API to make decisions -
-    try:
-      toxicity_score = get_toxicity_score(comment.body)
-    except:
-      toxicity_score = -1.0
-
-    #print("Toxicity score from Perspective API = ", toxicity_score, "Subreddit list:", subreddit_list, "Macro norm list:", macro_norm_list)   
-
     backend_predictions = {}
-    backend_predictions['toxicity_score'] = toxicity_score
 
     print("Use classifiers:", use_classifiers)
     if use_classifiers == 1:
@@ -189,7 +163,6 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
         ingested_utc = datetime.datetime.now(),
         id = comment.id,
         body = comment.body,
-        toxicity_score = toxicity_score,
         crossmod_action = ACTION,
         author = comment.author.name,
         subreddit = comment.subreddit.display_name, 
