@@ -5,7 +5,6 @@ import pandas as pd
 from multiprocessing import Pool
 import subprocess
 import re
-import crossmod
 import time
 
 class CrossmodClassifiers:    

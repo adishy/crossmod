@@ -28,8 +28,8 @@ auth_key = "ABCDEFG"
 
 subreddits_limit = 100
 
-classifiers = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
-                                  norms = CrossmodConsts.NORM_LIST) # globally load classifiers
+#classifiers = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
+#                                  norms = CrossmodConsts.NORM_LIST) # globally load classifiers
 
 
 ### REQUEST: JSON Object ###
@@ -104,7 +104,7 @@ def get_prediction_scores():
         ## GET backend_predictions ##
         backend_predictions = []
         for i in range(len(comments)):
-            backend_predictions.append(classifiers.get_result(comments[i]))
+            backend_predictions.append(crossmod.classifiers.get_result(comments[i]))
 
 
 
