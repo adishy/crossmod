@@ -10,7 +10,6 @@ import sys
 import datetime
 import pandas as pd
 import time
-import crossmod
 
 def main():
   ###main()
@@ -71,8 +70,8 @@ def main():
   subreddit_list = CrossmodConsts.SUBREDDIT_LIST
   macro_norm_list = CrossmodConsts.NORM_LIST
 
-  classifiers = CrossmodClassifiers(subreddits = subreddit_list, 
-                                    norms = macro_norm_list)
+  classifiers = crossmod.classifiers #CrossmodClassifiers(subreddits = subreddit_list, 
+                                     #                    norms = macro_norm_list)
 
 
   whitelisted_authors += moderators_list
