@@ -70,9 +70,7 @@ def main():
   subreddit_list = CrossmodConsts.SUBREDDIT_LIST
   macro_norm_list = CrossmodConsts.NORM_LIST
 
-  classifiers = crossmod.classifiers #CrossmodClassifiers(subreddits = subreddit_list, 
-                                     #                    norms = macro_norm_list)
-
+  classifiers = crossmod.clf_ensemble
 
   whitelisted_authors += moderators_list
 

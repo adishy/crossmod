@@ -34,5 +34,5 @@ import crossmod.api # noqa: E402  pylint: disable=wrong-import-position
 
 from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.helpers.consts import CrossmodConsts
-classifiers = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
-                                  norms = CrossmodConsts.NORM_LIST)
+clf_ensemble = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
+                                   norms = CrossmodConsts.NORM_LIST)
