@@ -13,7 +13,6 @@ setup(
     install_requires=[
         'fasttext==0.9.1',  
         'Flask==1.1.1',
-        #'google-api-python-client==1.7.11', 
         'mkdocs==1.0.4',
         'praw==6.4.0',
         'seaborn==0.9.0',  
