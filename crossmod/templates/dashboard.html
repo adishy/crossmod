@@ -11,35 +11,51 @@
         <ul>
             <li>
                 <p>
-                    <b>Total: </b> 
+                    <b>Total number of comments ingested: </b> 
                     {{ crossmod_state['total_comments'] }} 
                 </p>
             </li>
 
             <li>
                 <p>
-                    <b>AutoModerator: </b> 
-                    {{ crossmod_state['automoderator'] }} 
+                    <b>Total number of Moderator Removals: </b> 
+                    {{ crossmod_state['automoderator'] + crossmod_state['moderators'] }} 
                 </p>
             </li>
 
-            <li>
+            
+            <li> 
                 <p>
-                    <b>Moderators: </b> 
-                    {{ crossmod_state['moderators'] }} 
+                    <b>Flagged by Crossmod (agreement score >= 0.85) </b> 
+                    {{ crossmod_state['crossmod_agreement_score'] }} 
+                </p>
+            </li>   
+     
+            <li> 
+                <p>
+                    <b>Number of days Crossmod has been active </b> 
+                    {{ crossmod_state['crossmod_active_days']    }} 
+                </p>
+            </li> 
+
+            <li>    
+                <p>
+                    <b>Total number of Crossmod flags removed </b> 
+                    {{ crossmod_state['automoderator_and_crossmod'] + crossmod_state['moderators_and_crossmod'] }} 
                 </p>
             </li>
 
             <li> 
                 <p>
-                    <b>Crossmod with agreement score >= 0.85: </b> 
-                    {{ crossmod_state['crossmod_agreement_score'] }} 
+                    <b>Rate of successful reports by Crossmod  </b> 
+                    {{ 100 * (crossmod_state['automoderator_and_crossmod'] + crossmod_state['moderators_and_crossmod'])/crossmod_state['crossmod_agreement_score'] }} % 
                 </p>
-            </li>   
-            
+            </li>
+
+            <!-----mAKE INTO HOVER -->
             <li>    
                 <p>
-                    <b>AutoModerator intersection Moderators </b> 
+                    <b>AutoModerator intersection Human Moderators </b> 
                     0 
                 </p>
             </li>
@@ -53,17 +69,26 @@
 
             <li>    
                 <p>
-                    <b>Moderators intersection Crossmod </b> 
+                    <b>Human Moderators intersection Crossmod </b> 
                     {{ crossmod_state['moderators_and_crossmod'] }} 
                 </p>
             </li>
 
-            <li>    
+            <li>
                 <p>
-                    <b>Moderators intersection Crossmod </b> 
-                    {{ crossmod_state['only_crossmod'] }} 
+                    <b>AutoModerator Removals: </b> 
+                    {{ crossmod_state['automoderator'] }} 
                 </p>
             </li>
+
+            <li>
+                <p>
+                    <b>Human Moderators Removals: </b> 
+                    {{ crossmod_state['moderators'] }} 
+                </p>
+            </li>
+
+
         </ul>
 
         <div id = "venn">
