@@ -104,7 +104,7 @@ def get_prediction_scores():
         ## GET backend_predictions ##
         backend_predictions = []
         for i in range(len(comments)):
-            backend_predictions.append(crossmod.classifiers.get_result(comments[i]))
+            backend_predictions.append(clf_ensemble.get_result(comments[i]))
 
 
 
