@@ -4,7 +4,6 @@ from crossmod.helpers.consts import CrossmodConsts
 from crossmod.db.interface import CrossmodDB
 from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.helpers.filters import CrossmodFilters
-from googleapiclient import discovery
 import praw
 import sys
 import datetime
