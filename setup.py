@@ -20,7 +20,8 @@ setup(
         'tenacity==6.0.0',
         'flask_cors',
         'flask_limiter',
-        'click'  
+        'click',
+        'gunicorn'  
     ],
     entry_points={
         'console_scripts': [

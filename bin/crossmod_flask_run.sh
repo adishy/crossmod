@@ -13,4 +13,4 @@ export FLASK_DEBUG=True
 export FLASK_APP=crossmod
 export CROSSMOD_SETTINGS=config.py
 
-gunicorn crossmod:app --bind 0.0.0.0:8300 -w 5 --preload
+gunicorn crossmod:app --bind 0.0.0.0 -w 5 --preload
