@@ -53,7 +53,7 @@ subreddits_limit = 100
     ....
 ]
 """
-@crossmod.app.route('/api/v1/get-prediction-scores/', methods=['POST', 'GET'])
+@crossmod.app.route('/api/v1/get-prediction-scores', methods=['POST', 'GET'])
 def get_prediction_scores():
     print("Request:", request, "Method:", request.method)
     if request.method == 'GET':
