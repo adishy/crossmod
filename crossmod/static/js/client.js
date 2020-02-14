@@ -33,7 +33,7 @@ const comment_input = document.querySelector(".comment_input")
 
     function get_result(){
         var comments = comment_input.value.split(";")
-        fetch('http://crossmod.ml:8300/api/v1/get-prediction-scores', {
+        fetch('/api/v1/get-prediction-scores/', {
             method: 'POST',
             mode: 'cors', 
             cache: 'no-cache', 
