@@ -66,6 +66,18 @@
 		</div>
 		<img src="static/images/img-decor-01.jpg" alt="" class="bg-stretch">
 	</section>
+	<section class="area">
+		<div class="container">
+			<div class="text-holder" style="text-align: center;">
+				<h3>Crossmod is working hard  right now!</h3>
+				<p style="font-size: 20px;">Crossmod has processed <b>{{ stats['total_comments'] }}</b> comments out of 
+					which it flagged <b>{{ stats['crossmod_agreement_score'] }}</b> comments. 
+					The moderators have removed <b>{{ stats['automoderator_and_crossmod'] + stats['moderators_and_crossmod'] }}</b> comments that Crossmod flagged,
+					helping them perform more insightful moderation on the subreddit. 
+				</p>
+			</div>
+		</div>
+	</section>
 	<section class="main">
 		<div class="container">
 			<div id="cta">
@@ -78,7 +90,7 @@
 					<p>Crossmod  is  a  new  comment  moderation  bot  for  Reddit  that uses machine learning to assist moderators.
 					   Crossmod is trained on a large amount of past moderation decisions from 100 popular subreddits. By combining AI predictions with human oversight, 
 					   Crossmod determines content that is unacceptable within Reddit communities. </p>
-					
+					   <iframe frameborder="0" scrolling="no" marginheight="0" marginwidth="0"width="788.54" height="443" style="display: block; margin:auto;" type="text/html" src="https://www.youtube.com/embed/nBcA2LApi_U?autoplay=0&fs=0&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0&origin=https://youtubeembedcode.com"><div><small><a href="https://youtubeembedcode.com/nl/">youtubeembedcode nl</a></small></div><div><small><a href="http://add-link-exchange.com">add-link-exchange</a></small></div></iframe>
 					<div class="social-placeholder">
 						<a class="github-button" href="https://github.com/ceshwar/crossmod/subscription" data-icon="octicon-eye" data-size="large" data-show-count="true" aria-label="Watch ceshwar/crossmod on GitHub">Watch</a>
 						<a class="github-button" href="https://github.com/ceshwar/crossmod" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star ceshwar/crossmod on GitHub">Star</a>
@@ -87,6 +99,7 @@
 			</div>
 		</div>
 	</section>
+
 	<section class="area">
 		<div class="container">
 			<div class="row">
@@ -152,18 +165,7 @@
 			</div>
 		</div>
 	</section>
-	<section class="area">
-		<div class="container">
-			<div class="text-holder" style="text-align: center;">
-				<h3>Crossmod is working hard  right now!</h3>
-				<p style="font-size: 20px;">Crossmod has processed <b>{{ stats['total_comments'] }}</b> comments out of 
-					which it flagged <b>{{ stats['crossmod_agreement_score'] }}</b> comments. 
-					The moderators have removed <b>{{ stats['moderators_and_crossmod'] }}</b> comments that Crossmod flagged,
-					helping them perform more insightful moderation on the subreddit. 
-				</p>
-			</div>
-		</div>
-	</section>
+	
 	<a name="contact"></a>
 	<section class="area">
 		<div class="container">
