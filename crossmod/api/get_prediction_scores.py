@@ -24,10 +24,11 @@ import crossmod
 import pandas as pd
 import traceback
 import json
+from datetime import datetime
 
 ### CONFIG ###
 auth_key = "ABCDEFG"
-
+db = CrossmodDB() #Set up the database
 subreddits_limit = 100
 
 #classifiers = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
@@ -57,6 +58,7 @@ subreddits_limit = 100
 """
 @crossmod.app.route('/api/v1/get-prediction-scores', methods=['POST', 'GET'])
 def get_prediction_scores():
+    time_received = datetime.now() # For database purposes
     print("Request:", request, "Method:", request.method)
     if request.method == 'GET':
         return '<html>GET</html>'
@@ -93,6 +95,11 @@ def get_prediction_scores():
         '''
         Authenticate key
         '''
+        # Check that the key is valid and exists in the api_keys database
+        # Record the key's access level
+        # Comment out, find acc_lvl
+        if db.session.query(NAMEOFTHEAPIKEYTABLE!).filter(api_key==key).first() == None:
+            return jsonify({'exception': "invalid api key " + key})
         if key != auth_key:
             return jsonify({'exception': "invalid api key " + key})
 
@@ -162,20 +169,11 @@ def get_prediction_scores():
         '''
         WRITE to DB
         '''
-        '''
-        db = CrossmodDB()
-        db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
-            ingested_utc = datetime.datetime.now(),
-            id = comment.id,
-            body = comment.body,
-            crossmod_action = "filtered",
-            author = comment.author.name,
-            subreddit = comment.subreddit.display_name,
-            banned_by = None,
-            banned_at_utc = None,
-            agreement_score = -1.0,
-            norm_violation_score = -1.0)
-        '''
+        db.write(api_key = key,
+                 access_level = acc_lvl,
+                 num_of_queries = len(comments),
+                 call_received_utc = time_received,
+                 call_returned_utc = datetime.now())
 
         '''
         RETURN JSON response

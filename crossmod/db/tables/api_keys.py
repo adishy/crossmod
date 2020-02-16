@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 import crossmod
 from crossmod.db.base import Base
+from crossmod.db.api_acces_levels import ApiAccessLevelTable
 
 '''
     Schema:
@@ -14,4 +15,4 @@ class ApiKeyTable(Base):
       __tablename__ = 'api_key_db'
       id = Column(Integer, primary_key = True)
       api_key = Column(String(40))
-      access_level = Column(Integer)
+      access_level = Column(Integer, foreign_key('api_access_level_db.access_level_limit'))

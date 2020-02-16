@@ -12,4 +12,4 @@ from crossmod.db.base import Base
 class ApiAccessLevelTable(Base):
       __tablename__ = 'api_access_level_db'
       access_level_id = Column(Integer, primary_key = True)
-      access_level_limit = Column()
+      access_level_limit = Column(String(100))
