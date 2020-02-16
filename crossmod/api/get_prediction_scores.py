@@ -17,6 +17,8 @@ Another database for queue?
 
 from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.helpers.consts import *
+from crossmod.db.interface import CrossmodDB
+
 from flask import request, jsonify, make_response
 import crossmod
 import pandas as pd
@@ -157,6 +159,23 @@ def get_prediction_scores():
             ## ADD ith comment to JSON response ##
             json_response.append(json_comment)
 
+        '''
+        WRITE to DB
+        '''
+        '''
+        db = CrossmodDB()
+        db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
+            ingested_utc = datetime.datetime.now(),
+            id = comment.id,
+            body = comment.body,
+            crossmod_action = "filtered",
+            author = comment.author.name,
+            subreddit = comment.subreddit.display_name,
+            banned_by = None,
+            banned_at_utc = None,
+            agreement_score = -1.0,
+            norm_violation_score = -1.0)
+        '''
 
         '''
         RETURN JSON response
