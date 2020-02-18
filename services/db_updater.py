@@ -1,5 +1,5 @@
-from consts import *
-from db import *
+from cromssmod.helpers.consts import *
+from crossmod.db.interface import *
 import datetime
 import praw
 import sys

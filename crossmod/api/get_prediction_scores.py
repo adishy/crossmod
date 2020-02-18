@@ -25,11 +25,9 @@ import json
 
 ### CONFIG ###
 auth_key = "ABCDEFG"
+temp_auth_key = "q6Gev880mAp1KDYbaYprpBiJQ4SAASZf2F2SiBOK"
 
 subreddits_limit = 100
-
-#classifiers = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
-#                                  norms = CrossmodConsts.NORM_LIST) # globally load classifiers
 
 
 ### REQUEST: JSON Object ###
@@ -91,7 +89,7 @@ def get_prediction_scores():
         '''
         Authenticate key
         '''
-        if key != auth_key:
+        if not (key == auth_key or key == temp_auth_key):
             return jsonify({'exception': "invalid api key " + key})
 
 
