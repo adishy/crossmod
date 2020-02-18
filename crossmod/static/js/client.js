@@ -27,9 +27,9 @@ const comment_input = document.querySelector(".comment_input")
 
             let result_display = `<div class="result">
                                     <p>Comment: ${comment_result.comment_body}</p>
-                                    <p>Agreement Score (): ${comment_result.agreement_score}</p>
+                                    <p>Agreement Score <em>(Proportion of subreddits that would remove the comment)</em>: ${comment_result.agreement_score}</p>
                                     
-                                    <p>Norm Violation Score: ${comment_result.norm_violation_score}</p>
+                                    <p>Norm Violation Score <em>(Likelihood that the comment violates macro norms on Reddit)</em>: ${comment_result.norm_violation_score}</p>
                                     ${
                                         comment_result.subreddits_that_remove.length ? 
 
