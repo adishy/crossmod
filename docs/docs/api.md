@@ -1,16 +1,22 @@
 
+
 ## Quick Start
  ### Running a local instance
+* Clone Crossmoderator repository
+	* [https://github.com/ceshwar/crossmod](https://github.com/ceshwar/crossmod)
 * Install dependencies
-* Navigate to **code/**
 
-##### Flask
+```
+./bin/crossmod_flask_run.sh
+```
+
+##### Flask (Outdated)
 
 ```Console
 $ export FLASK_APP=api.py
 $ flask run --host=0.0.0.0 -p 6000
 ```
-##### Gunicorn
+##### Gunicorn (Outdated)
 ```Console
 $ gunicorn3 --bind 0.0.0.0:6000 wsgi
 ```
@@ -18,7 +24,7 @@ $ gunicorn3 --bind 0.0.0.0:6000 wsgi
 ## API Request Format
 An API request takes the following format:
 ```
-http://18.191.72.252:6000/get-prediction-scores
+http://crossmod.ml/api/v1/get-prediction-scores
 ```
 The API call request is a JSON object with the following fields:
 
@@ -40,36 +46,22 @@ The API call request is a JSON object with the following fields:
 * `key`: string used for authentication.
         * currently, for debugging, key is set to `ABCDEFG`
 
-### Sample Requests
-#### Local Instance:
+### Sample API Requests
+Examples of API requests made through command line with cURL:
+
 <sub>Rating comments with all classifiers and no macro norms</sub>
 ```bash
-    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "macro_norm_list": [], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:6000/get-prediction-scores
+    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "macro_norm_list": [], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://crossmod.ml/api/v1/get-prediction-scores
 ```
 
 <sub>Rating comments with only select classifiers and all macro norms</sub>
 ```
-    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "subreddit_list": ["Futurology", "nba", "AskReddit", "science", "politics", "pokemongo"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:6000/get-prediction-scores
+    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "subreddit_list": ["Futurology", "nba", "AskReddit", "science", "politics", "pokemongo"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://crossmod.ml/api/v1/get-prediction-scores
 ```
 
 <sub>Rating comments with all classifiers and all macro norms</sub>
 ```
-    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://localhost:6000/get-prediction-scores
-```
-#### Public API:
-<sub>Rating comments with all classifiers and no macro norms</sub>
-```bash
-    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "macro_norm_list": [], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://18.191.72.252:6000/get-prediction-scores
-```
-
-<sub>Rating comments with only select classifiers and all macro norms</sub>
-```
-    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "subreddit_list": ["Futurology", "nba", "AskReddit", "science", "politics", "pokemongo"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://18.191.72.252:6000/get-prediction-scores
-```
-
-<sub>Rating comments with all classifiers and all macro norms</sub>
-```
-    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://18.191.72.252:6000/get-prediction-scores
+    $ curl -d '{"comments": ["you really suck!", "this is just a comment"], "key": "ABCDEFG"}' -H "Content-Type: application/json" -X POST http://crossmod.ml/api/v1/get-prediction-scores
 ```
 For examples of making API calls through Python, see `api_demo.py`.
 
@@ -96,7 +88,8 @@ For examples of making API calls through Python, see `api_demo.py`.
 
 
 
-## Dependencies
+## Local Instance Dependencies
+Again, if you run a local instance of the API, a virtual environment is recommended.
 ```
  crossmodclassifiers.py
  flask
