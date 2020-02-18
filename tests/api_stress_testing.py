@@ -1,11 +1,13 @@
 from datetime import datetime
 import csv
 import requests
+import statistics
+import time
 
-from multiprocessing import Process
+from multiprocessing import Process, Pool
 
 ## Config Variables ##
-API_ENDPOINT = "http://18.191.72.252:8000/get-prediction-scores"
+API_ENDPOINT = "http://crossmod.ml/api/v1/get-prediction-scores"
 API_KEY = "ABCDEFG"
 
 ## Single Endpoint Testing
@@ -34,29 +36,48 @@ with open('../stress_tests/single_endpoint.csv', 'w', newline='') as file:
 file.close()
 '''
 
-## Multiple Endpoint Testing TODO
-def make_call():
+## Multiple Endpoint Testing
+def make_call(endpoints):
     startTime = datetime.now()
     r = requests.post(url= API_ENDPOINT, json = data)
     endTime = datetime.now()
-    print("Time elapsed: ", (endTime - startTime))
 
+    timeElapsed = (endTime-startTime).microseconds / 1e6
+    return timeElapsed
 
-num_comments = 10
+# Prepare data to be called
+num_comments = 100
 comments = []
 for i in range(0, num_comments):
     comments.append("ADJSLKFJLKSDJKLSDJFKLHLKEJS")
-
 data = {"comments": comments,
             "key": API_KEY}
 
+# Record CSV file with rows(num_endpoints, longest response time (seconds))
+'''
+f = open("../stress_tests/multiple_endpoints.csv", "w")
+num_endpoints = 150
+for i in range(1, num_endpoints):
+    print(i, "Endpoints")
+    pool = Pool(processes=i)
+    output = pool.map(make_call, range(i))
+    pool.close()
+    pool.join()
+    f.write(str(i) + "," + str(max(output)) + "\n")
+    print(max(output))
 
-num_endpoints = 1000
-print(num_endpoints, "Endpoints")
-jobs = []
-for j in range(0, num_endpoints):
-    p = Process(target=make_call)
-#    jobs.append(p)
-    p.start()
-#for j in jobs:
-#    j.join()
+f.close()
+'''
+def run_tests():
+    num_endpoints = 200
+    print(num_endpoints, "Endpoints")
+    pool = Pool(processes=num_endpoints)
+    output = pool.map(make_call, range(num_endpoints))
+    pool.close()
+    pool.join()
+    print(statistics.mean(output))
+
+for i in range(1, 11):
+    print("Second ", i)
+    run_tests()
+    time.sleep(1)
