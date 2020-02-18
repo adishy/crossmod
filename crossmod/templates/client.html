@@ -6,9 +6,15 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"> 
 </head>
 <body>
+    
     <main>
+        <a href="/">back to home</a>
         <h1>Try Crossmod</h1>
-        <input type="text" class="comment_input" placeholder="Enter a comment here!" />
+        <div class="input_container">
+            <input type="text" class="comment_input" placeholder="Enter a comment here!" />
+            <input type="button" class="check_removal_consensus" value="Compute Removal Consensus"/>
+        </div>
+        <p class="input_description"><em>Multiple comments can be entered at once, separated by a semicolon ( ; )</em></p>
         <div class="result_container">
         </div>
     </main>
