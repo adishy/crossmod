@@ -5,3 +5,34 @@ main {
     font-family: 'Roboto', sans-serif;
     background: #ececec;
   }
+
+  main h1{
+    text-align: center;
+  }
+
+  input {
+      padding: 4px;
+      margin-left: 4px;
+  }
+
+  .input_container{
+    display: flex;
+    justify-content: center;
+  }
+
+  .input_description{
+      margin: 23 0 23 0;
+      text-align: center;
+      font-size: 12px;
+  }
+
+  .result_category{
+      font-size: 14px;
+  }
+
+  .result_category_description{
+        font-size: 12px;
+        font-style: italic;
+        margin-top: -12px;
+  }
+
