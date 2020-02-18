@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime
 import crossmod
 from crossmod.db.base import Base
-from crossmod.db.api_acces_levels import ApiAccessLevelTable
+from crossmod.db.api_access_levels import ApiAccessLevelTable
 
 '''
     Schema:
