@@ -170,8 +170,8 @@ $ flask run --host=0.0.0.0 -p 6000
         * currently, for debugging, key is set to <code>ABCDEFG</code></li>
 </ul>
 <h3 id="sample-api-requests">Sample API Requests</h3>
-<p>Examples of API requests made through command line with cURL:
-<sub>Rating comments with all classifiers and no macro norms</sub></p>
+<p>Examples of API requests made through command line with cURL:</p>
+<p><sub>Rating comments with all classifiers and no macro norms</sub></p>
 <pre><code class="bash">    $ curl -d '{&quot;comments&quot;: [&quot;you really suck!&quot;, &quot;this is just a comment&quot;], &quot;macro_norm_list&quot;: [], &quot;key&quot;: &quot;ABCDEFG&quot;}' -H &quot;Content-Type: application/json&quot; -X POST http://crossmod.ml/api/v1/get-prediction-scores
 </code></pre>
 
