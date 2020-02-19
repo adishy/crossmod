@@ -7,23 +7,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="None">
   
-  <link rel="shortcut icon" href="img/favicon.ico">
+  <link rel="shortcut icon" href="../img/favicon.ico">
   <title>Home - Crossmod</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-  <link rel="stylesheet" href="css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "Home";
-    var mkdocs_page_input_path = "README.md";
+    var mkdocs_page_input_path = "docs/index.md";
     var mkdocs_page_url = null;
   </script>
   
-  <script src="js/jquery-2.1.1.min.js" defer></script>
-  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
@@ -36,9 +36,9 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="." class="icon icon-home"> Crossmod</a>
+        <a href=".." class="icon icon-home"> Crossmod</a>
         <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -50,17 +50,17 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="index.md">Home</a>
+    <a class="" href="../index.md">Home</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="api.md">API</a>
+    <a class="" href="../api.md">API</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="getting_started.md">Getting Started</a>
+    <a class="" href="../getting_started.md">Getting Started</a>
 	    </li>
           
         </ul>
@@ -73,7 +73,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href=".">Crossmod</a>
+        <a href="..">Crossmod</a>
       </nav>
 
       
@@ -81,7 +81,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".">Docs</a> &raquo;</li>
+    <li><a href="..">Docs</a> &raquo;</li>
     
       
     
@@ -95,7 +95,30 @@
           <div role="main">
             <div class="section">
               
-                <p>The page should be available at https://ceshwar.github.io/crossmod/ </p>
+                <h2 id="code-base-for-crossmod-a-cross-community-learning-based-system-to-assist-reddit-moderators">Code base for <em>Crossmod: A Cross-Community Learning-based System to Assist Reddit Moderators</em></h2>
+<h3 id="acm-reference-format">ACM Reference Format:</h3>
+<p>Eshwar Chandrasekharan, Chaitrali Gandhi, Matthew Wortley Mustelier, and Eric Gilbert. 2019. Crossmod: A
+Cross-Community Learning-based System to Assist Reddit Moderators. Proc. ACM Hum.-Comput. Interact., CSCW.</p>
+<h3 id="code-directory">Code directory:</h3>
+<p><strong>code/</strong> - contains the codebase for the system:
+  * <em>config.py</em>: configuration file that allows mods to control the system using <strong>IFTTT rules</strong>
+  * <em>getPrediction.py</em>: modules to query back-end models in order to score incoming comments
+  * <em>crossmod.py</em>: system code that creates a bot moderator for the test subreddit, taking moderations actions based on the configuration file.</p>
+<p><strong>data/</strong> - contains the list of subreddits and norm violations that comprise the system's AI back-end.</p>
+<p>Contact authors to obtain the ensemble of classifiers for Crossmod's back-end.</p>
+<h1 id="installation-instructions">Installation instructions:</h1>
+<ul>
+<li>Crossmod depends on flask, SQLAlchemy, pandas, praw (python reddit api wrapper) and the google api python client 
+  <a href="https://realpython.com/python-virtual-environments-a-primer/">(Preferably use a virtual environment)</a></li>
+</ul>
+<pre><code>pip3 install flask
+pip3 install sqlalchemy
+pip3 install pandas     
+pip3 install praw  
+pip3 install google-api-python-client
+pip3 install fasttext
+pip3 install tenacity
+</code></pre>
               
             </div>
           </div>
@@ -126,9 +149,9 @@
       
     </span>
 </div>
-    <script>var base_url = '.';</script>
-    <script src="js/theme.js" defer></script>
-      <script src="search/main.js" defer></script>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>
