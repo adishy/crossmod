@@ -1,12 +1,12 @@
 site_name: Crossmod
 nav:
-    - Home: docs/index.md
-    - Getting Started: docs/getting_started.md
+    - Home: index.md
+    - Getting Started: getting_started.md
     - Crossmod: 
         - 'API': crossmod/api.md
         - 'Database': crossmod/db.md
         - 'Helpers': crossmod/helpers.md
         - 'ML': crossmod/ml.md
         - 'Data Analysis': crossmod/analysis.md
-    - Models: docs/models.md
+    - Models: models.md
 theme: readthedocs
