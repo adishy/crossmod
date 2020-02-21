@@ -21,7 +21,8 @@ setup(
         'flask_cors',
         'flask_limiter',
         'click',
-        'gunicorn'  
+        'gunicorn',
+        'progress'  
     ],
     entry_points={
         'console_scripts': [
