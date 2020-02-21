@@ -3,7 +3,10 @@ from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import flask
+from pyfiglet import Figlet
 
+crossmod_ascii_banner = Figlet(font='graffiti')
+print(crossmod_ascii_banner.renderText('crossmod'))
 
 # app is a single object used by all the code modules in this package
 app = flask.Flask(__name__)  # pylint: disable=invalid-name
