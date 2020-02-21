@@ -34,13 +34,13 @@ class CrossmodClassifiers:
         sys.stderr = StringIO()
 
         # Load subreddit classifiers
-        for clfs_id in ChargingBar('Loading Subreddit Classifiers:').iter(self.subreddit_clfs_ids):
+        for clfs_id in ChargingBar('Loading Subreddit Classifiers:', max = 100).iter(self.subreddit_clfs_ids):
             if clfs_id not in CrossmodClassifiers.subreddit_clfs:
                 CrossmodClassifiers.subreddit_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_subreddit_classifier(clfs_id))
                 subreddit_count += 1
 
         # Load norm classifiers
-        for clfs_id in ChargingBar('Loading Norm Violation Classifiers:').iter(self.norm_clfs_ids):
+        for clfs_id in ChargingBar('Loading Norm Violation Classifiers:', max = 8).iter(self.norm_clfs_ids):
             if clfs_id not in CrossmodClassifiers.norm_clfs:
                 CrossmodClassifiers.norm_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_norms_classifier(clfs_id))
                 norm_count += 1
