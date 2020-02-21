@@ -21,7 +21,9 @@ setup(
         'flask_cors',
         'flask_limiter',
         'click',
-        'gunicorn'  
+        'gunicorn',
+        'progress',
+        'pyfiglet'  
     ],
     entry_points={
         'console_scripts': [

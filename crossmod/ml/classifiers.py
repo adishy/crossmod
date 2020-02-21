@@ -6,6 +6,9 @@ from multiprocessing import Pool
 import subprocess
 import re
 import time
+from progress.bar import ChargingBar
+import sys
+from io import StringIO
 
 class CrossmodClassifiers:    
     UNREMOVED_COMMENT = "__label__unremoved"
@@ -27,18 +30,22 @@ class CrossmodClassifiers:
         self.norm_clfs_ids = kwargs['norms']
 
         start = time.time()
+      
+        sys.stderr = StringIO()
 
         # Load subreddit classifiers
-        for clfs_id in self.subreddit_clfs_ids:
+        for clfs_id in ChargingBar('Loading Subreddit Classifiers:', max = 100).iter(self.subreddit_clfs_ids):
             if clfs_id not in CrossmodClassifiers.subreddit_clfs:
                 CrossmodClassifiers.subreddit_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_subreddit_classifier(clfs_id))
                 subreddit_count += 1
 
         # Load norm classifiers
-        for clfs_id in self.norm_clfs_ids:
+        for clfs_id in ChargingBar('Loading Norm Violation Classifiers:', max = 8).iter(self.norm_clfs_ids):
             if clfs_id not in CrossmodClassifiers.norm_clfs:
                 CrossmodClassifiers.norm_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_norms_classifier(clfs_id))
                 norm_count += 1
+
+        sys.stderr = sys.__stderr__
 
         end = time.time()
         print("Loaded classifiers: ", int(round(end - start)), "s") 
