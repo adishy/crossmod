@@ -17,8 +17,6 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["10 per minute", "600 per hour"]
 )
-
-# Read settings from config module (insta485/config.py)
 app.config.from_object('crossmod.config')
 
 # Overlay settings read from file specified by environment variable. This is

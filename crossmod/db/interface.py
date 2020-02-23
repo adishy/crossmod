@@ -5,10 +5,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
 
+
 class CrossmodDB:
     def __init__(self, database_uri = 'sqlite:///' + CrossmodConsts.DB_PATH):
         self.database_uri = database_uri
-        self.database = create_engine(self.database_uri)
+        # Connection timeout parameter for SQLite: https://stackoverflow.com/questions/15065037/how-to-increase-connection-timeout-using-sqlalchemy-with-sqlite-in-python
+        self.database = create_engine(self.database_uri, connect_args={'timeout': 15})
         Base.metadata.bind = self.database
         Base.metadata.create_all(self.database)
         self.DatabaseSession= sessionmaker(bind = self.database)
