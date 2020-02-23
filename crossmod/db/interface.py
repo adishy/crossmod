@@ -14,12 +14,14 @@ class CrossmodDB:
         self.DatabaseSession= sessionmaker(bind = self.database)
         self.database_session = self.DatabaseSession()
         
-    def write(self, **kwargs):
+    def write(self, table_type, commit = True, **kwargs):
         try:
-            crossmod_data_entry = DataTable(**kwargs)
-            self.database_session.add(crossmod_data_entry)
-            self.database_session.commit()
+            table_data_entry = table_type(**kwargs)
+            self.database_session.add(table_data_entry)
+            
+            if commit:
+                self.database_session.commit()
         except Exception as e:
+            print("Could not write data:")
             print(e)
-            print("Could not write comment id: {} to the database".format(kwargs['id']))
             return

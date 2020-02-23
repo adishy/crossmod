@@ -16,6 +16,7 @@ Another database for queue?
 ## @NOTE crossmod.ml is port 80
 
 from crossmod.ml.classifiers import CrossmodClassifiers
+from crossmod.ml.clf_ensemble import clf_ensemble
 from crossmod.helpers.consts import *
 from flask import request, jsonify, make_response
 import crossmod
@@ -102,7 +103,7 @@ def get_prediction_scores():
         ## GET backend_predictions ##
         backend_predictions = []
         for i in range(len(comments)):
-            backend_predictions.append(crossmod.clf_ensemble.get_result(comments[i]))
+            backend_predictions.append(clf_ensemble.get_result(comments[i]))
 
 
 

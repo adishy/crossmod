@@ -2,6 +2,7 @@ from tenacity import retry, wait_exponential
 from crossmod.ml.moderation_settings import *
 from crossmod.helpers.consts import CrossmodConsts
 from crossmod.db.interface import CrossmodDB
+from crossmod.db.tables.data import DataTable
 from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.helpers.filters import CrossmodFilters
 import praw
@@ -69,7 +70,8 @@ def main():
   subreddit_list = CrossmodConsts.SUBREDDIT_LIST
   macro_norm_list = CrossmodConsts.NORM_LIST
 
-  classifiers = crossmod.clf_ensemble
+  from crossmod.ml.clf_ensemble import clf_ensemble
+  classifiers = clf_ensemble
 
   whitelisted_authors += moderators_list
 
@@ -107,7 +109,8 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
     if comment.author != me and (comment.author in whitelisted_authors or CrossmodFilters.apply_filters(comment.body)):
       print("Filtering comment:", comment.id, comment.body)
       ### Write to CrossmodDB
-      db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
+      db.write(DataTable,
+          created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
           ingested_utc = datetime.datetime.now(),
           id = comment.id,
           body = comment.body,
@@ -155,7 +158,8 @@ def process_comments(subreddit, classifiers, db, whitelisted_authors, subreddit_
       norm_violation_score = None
 
     ### Write to CrossmodDB
-    db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
+    db.write(DataTable,
+        created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
         ingested_utc = datetime.datetime.now(),
         id = comment.id,
         body = comment.body,
