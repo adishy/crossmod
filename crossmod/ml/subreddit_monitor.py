@@ -149,5 +149,3 @@ class CrossmodSubredditMonitor():
 
         print("Processing time for comment:", end - start, "seconds")
         print("________________________\n")
-
-
