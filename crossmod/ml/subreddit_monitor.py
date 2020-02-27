@@ -83,8 +83,8 @@ class CrossmodSubredditMonitor():
   
 
     def monitor(self):
-      cprint("Crossmod started monitoring at:", (datetime.datetime.now(pytz.timezone('EST'))).strftime('%Y-%m-%d %H:%M:%S'), "EST")
-      cprint("Currently monitoring:", ", ".join([subreddit for subreddit in self.perform_action_in_subreddit.keys()]))
+      print("Crossmod started monitoring at:", (datetime.datetime.now(pytz.timezone('EST'))).strftime('%Y-%m-%d %H:%M:%S'), "EST")
+      print("Currently monitoring:", ", ".join([subreddit for subreddit in self.perform_action_in_subreddit.keys()]))
       print()
 
       for comment in self.subreddits_listener.stream.comments(skip_existing = True):
