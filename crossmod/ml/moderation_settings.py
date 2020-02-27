@@ -14,9 +14,6 @@ def check_config(comment):
 	### initialization
 	ACTION = "EMPTY"
 
-	### below this are the rules that are configured by the moderators
-	print(comment)
-
 	###conditional statements - to be modified by mods
 	try:
 		if comment['agreement_score'] >= CrossmodConsts.AGREEMENT_SCORE_THRESHOLD: 

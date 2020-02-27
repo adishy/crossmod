@@ -23,7 +23,7 @@ setup(
         'pyfiglet', 
         'seaborn',  
         'SQLAlchemy',
-        'tenacity', 
+        'tenacity'
     ],
     entry_points={
         'console_scripts': [

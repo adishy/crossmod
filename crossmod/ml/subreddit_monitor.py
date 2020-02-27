@@ -1,13 +1,14 @@
-from tenacity import retry, wait_exponential
-from datetime import datetime
-from crossmod.ml.moderation_settings import *
-from crossmod.helpers.consts import CrossmodConsts
 from crossmod.db.interface import CrossmodDB
-from crossmod.ml.classifiers import CrossmodClassifiers
+from crossmod.helpers.consts import CrossmodConsts
 from crossmod.helpers.filters import CrossmodFilters
+from crossmod.helpers.filters import CrossmodFilters
+from crossmod.ml.moderation_settings import *
+from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.db.tables import DataTable
 from crossmod.db.tables import SubredditSettingsTable
 from crossmod.db.tables import ActiveSubredditsTable
+from datetime import datetime
+from tenacity import retry, wait_exponential
 import requests
 import praw
 import sys
@@ -33,7 +34,7 @@ class CrossmodSubredditMonitor():
 
       # Query database to find which subreddits to listen to and whether to 
       # only simulate moderation actions for each subreddit
-      self.perform_action_in_subreddit = [{row.subreddit: row.perform_action} for row in self.db.database_session.query(ActiveSubredditsTable).all()]
+      self.perform_action_in_subreddit = {row.subreddit: row.perform_action for row in self.db.database_session.query(ActiveSubredditsTable).all()}
       
       # PRAW interface used to stream comments from subreddits
       self.subreddits_listener = self.reddit.subreddit("+".join([row.subreddit for row in self.db.database_session.query(ActiveSubredditsTable.subreddit).all()]))
@@ -43,10 +44,10 @@ class CrossmodSubredditMonitor():
 
     def find_removal_consensus(self, comment, subreddit_name):
       """Finds removal consensus querying Crossmod's API"""
-      subreddit_settings = db.database_session \
-                             .query(SubredditSettingsTable) \
-                             .filter(SubredditSettingsTable.subreddit == subreddit_name) \
-                             .one()
+      subreddit_settings = self.db.database_session \
+                               .query(SubredditSettingsTable) \
+                               .filter(SubredditSettingsTable.subreddit == subreddit_name) \
+                               .one()
       data = {"comments": [comment],
               "subreddit_list": subreddit_settings.subreddit_classifiers.split(','),
               "macro_norm_list": subreddit_settings.norm_classifiers.split(','),
@@ -56,7 +57,7 @@ class CrossmodSubredditMonitor():
 
 
     def is_whitelisted(self, author, subreddit):
-      moderator_list = self.db.database_session.query(SubredditSettingsTable.moderator_list).filter(subreddit = subreddit).one().moderator_list.split(",")
+      moderator_list = self.db.database_session.query(SubredditSettingsTable.moderator_list).filter(SubredditSettingsTable.subreddit == subreddit).one().moderator_list.split(",")
       return author in moderator_list
 
 
@@ -82,12 +83,12 @@ class CrossmodSubredditMonitor():
   
 
     def monitor(self):
-      print("Crossmod starting at:", (datetime.datetime.now(pytz.timezone('EST'))).strftime('%Y-%m-%d %H:%M:%S'), "EST")
-      print()
+      cprint("Crossmod started monitoring at:", (datetime.datetime.now(pytz.timezone('EST'))).strftime('%Y-%m-%d %H:%M:%S'), "EST")
+      cprint("Currently monitoring:", ", ".join([subreddit for subreddit in self.perform_action_in_subreddit.keys()]))
       print()
 
       for comment in self.subreddits_listener.stream.comments(skip_existing = True):
-        print("________________________\n\n")
+        print("______________________________________________\n")
         
         start = time.time()
 
@@ -95,9 +96,10 @@ class CrossmodSubredditMonitor():
             continue
 
         subreddit_name = comment.subreddit.display_name
-        print("Posted in r/", subreddit_name, ":\n", "Comment ID: ", comment.id, " Body:\n", comment.body, "\n\n")
+        print(f"Posted in r/{subreddit_name}:")
+        print("Comment ID:", comment.id, "\nComment Body:", comment.body.replace('\n', ' '))
 
-        if self.is_whitelisted(comment.author) or CrossmodFilters.apply_filters(comment.body):
+        if self.is_whitelisted(comment.author, subreddit_name) or CrossmodFilters.apply_filters(comment.body):
             print("Filtering comment:", comment.id, comment.body)
             self.db.write(DataTable,
                           created_utc = datetime.fromtimestamp(comment.created_utc),
@@ -120,11 +122,11 @@ class CrossmodSubredditMonitor():
         print("Agreement score from Crossmod API:", agreement_score)
         print("Norm violation score from Crossmod API:", norm_violation_score)
 
-        action = check_config(backend_predictions)
+        action = check_config(removal_consensus)
 
         ### Write to CrossmodDB
         self.db.write(DataTable, 
-                      created_utc = datetime.fromtimestamp(comment.created_utc),
+                      created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
                       ingested_utc = datetime.datetime.now(),
                       id = comment.id,
                       body = comment.body,
@@ -145,4 +147,4 @@ class CrossmodSubredditMonitor():
                               norm_violation_score)
 
         print("Processing time for comment:", end - start, "seconds")
-        print("________________________\n")
+        print("______________________________________________\n") 
