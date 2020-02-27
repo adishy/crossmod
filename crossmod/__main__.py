@@ -11,8 +11,8 @@ def main(mode):
 
   elif mode == "monitor":
     print("Monitor")
-    #subreddit_monitor = CrossmodSubredditMonitor()
-    #subreddit_monitor.monitor()
+    subreddit_monitor = CrossmodSubredditMonitor()
+    subreddit_monitor.monitor()
 
 if __name__=="__main__":
   main()

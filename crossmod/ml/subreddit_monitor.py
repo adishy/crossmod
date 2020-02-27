@@ -13,6 +13,7 @@ import praw
 import sys
 import datetime
 import time
+import pytz
 
 class CrossmodSubredditMonitor():
     """Provides an interface to monitor multiple subreddits by querying Crossmod's API"""
@@ -32,11 +33,10 @@ class CrossmodSubredditMonitor():
 
       # Query database to find which subreddits to listen to and whether to 
       # only simulate moderation actions for each subreddit
-      self.subreddits_to_listen_and_remove = [{row['subreddit']: row['perform_action']} for row in self.db.database_session.query(ActiveSubredditsTable).all()]
+      self.perform_action_in_subreddit = [{row.subreddit: row.perform_action} for row in self.db.database_session.query(ActiveSubredditsTable).all()]
       
       # PRAW interface used to stream comments from subreddits
-      self.subreddits_listener = self.reddit.subreddit(self.subreddits_to_listen.keys(), 
-                                                       skip_existing = True)
+      self.subreddits_listener = self.reddit.subreddit("+".join([row.subreddit for row in self.db.database_session.query(ActiveSubredditsTable.subreddit).all()]))
 
       self.me = self.reddit.user.me()
 
@@ -48,15 +48,15 @@ class CrossmodSubredditMonitor():
                              .filter(SubredditSettingsTable.subreddit == subreddit_name) \
                              .one()
       data = {"comments": [comment],
-              "subreddit_list": subreddit_settings['subreddit_classifiers'].split(','),
-              "macro_norm_list": subreddit_settings['norm_classifiers'].split(','),
+              "subreddit_list": subreddit_settings.subreddit_classifiers.split(','),
+              "macro_norm_list": subreddit_settings.norm_classifiers.split(','),
               "key": CrossmodConsts.CLIENT_API_SUPER_KEY}
       result = requests.post(url= CrossmodConsts.CLIENT_API_ENDPOINT, json = data)
       return result.json()[0]
 
 
     def is_whitelisted(self, author, subreddit):
-      moderator_list = self.db.database_session.query(SubredditSettingsTable.moderator_list).filter(subreddit = subreddit).one().split(",")
+      moderator_list = self.db.database_session.query(SubredditSettingsTable.moderator_list).filter(subreddit = subreddit).one().moderator_list.split(",")
       return author in moderator_list
 
 
@@ -82,12 +82,13 @@ class CrossmodSubredditMonitor():
   
 
     def monitor(self):
-      print("Crossmod starting at:", start_time.stftime('%Y-%m-%d %H:%M:%S'))
+      print("Crossmod starting at:", (datetime.datetime.now(pytz.timezone('EST'))).strftime('%Y-%m-%d %H:%M:%S'), "EST")
       print()
       print()
-      print("________________________\n\n")
 
-      for comment in self.subreddits_listener.stream.comments():
+      for comment in self.subreddits_listener.stream.comments(skip_existing = True):
+        print("________________________\n\n")
+        
         start = time.time()
 
         if comment == None:
@@ -100,7 +101,7 @@ class CrossmodSubredditMonitor():
             print("Filtering comment:", comment.id, comment.body)
             self.db.write(DataTable,
                           created_utc = datetime.fromtimestamp(comment.created_utc),
-                          ingested_utc = datetime.now(),
+                          ingested_utc = datetime.datetime.now(),
                           id = comment.id,
                           body = comment.body,
                           crossmod_action = "filtered",
@@ -124,7 +125,7 @@ class CrossmodSubredditMonitor():
         ### Write to CrossmodDB
         self.db.write(DataTable, 
                       created_utc = datetime.fromtimestamp(comment.created_utc),
-                      ingested_utc = datetime.now(),
+                      ingested_utc = datetime.datetime.now(),
                       id = comment.id,
                       body = comment.body,
                       crossmod_action = action,
@@ -137,7 +138,7 @@ class CrossmodSubredditMonitor():
 
         end = time.time()
 
-        if self.subreddits_to_listen_or_remove[subreddit_name]:
+        if self.perform_action_in_subreddit[subreddit_name]:
           self.perform_action(comment, 
                               action, 
                               agreement_score, 
