@@ -37,7 +37,10 @@ class CrossmodSubredditMonitor():
                                               for row in self.db.database_session.query(ActiveSubredditsTable).all()]
       
       # PRAW interface used to stream comments from subreddits
-      self.subreddits_listener = self.reddit.subreddit(self.subreddits_to_listen.keys())
+      self.subreddits_listener = self.reddit.subreddit(self.subreddits_to_listen.keys(), 
+                                                       skip_existing = True)
+
+      self.me = self.reddit.user.me()
 
 
     def find_removal_consensus(self, comment, subreddit_name):
@@ -53,9 +56,34 @@ class CrossmodSubredditMonitor():
       result = requests.post(url= CrossmodConsts.CLIENT_API_ENDPOINT, json = data)
       return result.json()[0]
 
+
     def is_whitelisted(self, author, subreddit):
       moderator_list = self.db.database_session.query(SubredditSettingsTable.moderator_list).filter(subreddit = subreddit).one().split(",")
       return author in moderator_list
+
+
+    def perform_action(self, comment, action, agreement_score, norm_violation_score):
+      if action == "remove":
+        print("Removing comment, and alerting moderator by modmail at:", time.time())
+        subreddit.modmail.create("[Comment removal by Crossmod] Crossmod performed a comment removal!", 
+                                 f"Crossmod removed a comment with permalink [{comment.permalink}]", 
+                                 self.me)
+        comment.mod.remove()
+        message = f"[Comment removal by Crossmod] Comment removal consensus: "
+                  f"Agreement Score {agreement_score} "
+                  f"Norm Violation Score {norm_violation_score}"
+        comment.mod.send_removal_message(message, title='ignored', type='public')
+    
+      elif action == "report":
+        print("Reporting a comment and sending it to report queue at:", time.time())
+        comment.report(f"Agreement Score: {agreement_score}/1.0, Norm Violation Score: {norm_violation_score}/1.0")
+    
+      elif ACTION == "modmail":
+        print("Sending a modmail at:", time.time())
+        subreddit.modmail.create("[Alert by Crossmod] Comment exceeds removal consensus threshold!", 
+                                 f"A comment with permalink [{comment.permalink}] exceeded Crossmod's removal consensus threshold." 
+                                 self.me)
+  
 
     def monitor(self):
       print("Crossmod starting at:", start_time.stftime('%Y-%m-%d %H:%M:%S')
@@ -68,9 +96,6 @@ class CrossmodSubredditMonitor():
 
         if comment == None:
             continue
-
-        # if comment.created_utc < start_time:
-        #     continue
 
         subreddit_name = comment.subreddit.display_name
         print("Posted in r/", subreddit_name, ":\n", "Comment ID: ", comment.id, " Body:\n" comment.body, "\n\n")
@@ -117,9 +142,12 @@ class CrossmodSubredditMonitor():
         end = time.time()
 
         if self.subreddits_to_listen_or_remove[subreddit_name]:
-          self.perform_action(comment)
+          self.perform_action(comment, 
+                              action, 
+                              agreement_score, 
+                              norm_violation_score)
 
         print("Processing time for comment:", end - start, "seconds")
-        print("________________________")
+        print("________________________\n")
 
 
