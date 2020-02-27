@@ -14,6 +14,5 @@ def main(mode):
     #subreddit_monitor = CrossmodSubredditMonitor()
     #subreddit_monitor.monitor()
 
-if __name__ == "__main__":
+if __name__=="__main__":
   main()
-

@@ -32,8 +32,7 @@ class CrossmodSubredditMonitor():
 
       # Query database to find which subreddits to listen to and whether to 
       # only simulate moderation actions for each subreddit
-      self.subreddits_to_listen_and_remove = [{row['subreddit']: row['perform_action']} \ 
-                                              for row in self.db.database_session.query(ActiveSubredditsTable).all()]
+      self.subreddits_to_listen_and_remove = [{row['subreddit']: row['perform_action']} for row in self.db.database_session.query(ActiveSubredditsTable).all()]
       
       # PRAW interface used to stream comments from subreddits
       self.subreddits_listener = self.reddit.subreddit(self.subreddits_to_listen.keys(), 
@@ -68,9 +67,7 @@ class CrossmodSubredditMonitor():
                                  f"Crossmod removed a comment with permalink [{comment.permalink}]", 
                                  self.me)
         comment.mod.remove()
-        message = f"[Comment removal by Crossmod] Comment removal consensus: "
-                  f"Agreement Score {agreement_score} "
-                  f"Norm Violation Score {norm_violation_score}"
+        message = f"[Comment removal by Crossmod] Comment removal consensus:\nAgreement Score {agreement_score}, Norm Violation Score {norm_violation_score}"
         comment.mod.send_removal_message(message, title='ignored', type='public')
     
       elif action == "report":
@@ -80,15 +77,15 @@ class CrossmodSubredditMonitor():
       elif ACTION == "modmail":
         print("Sending a modmail at:", time.time())
         subreddit.modmail.create("[Alert by Crossmod] Comment exceeds removal consensus threshold!", 
-                                 f"A comment with permalink [{comment.permalink}] exceeded Crossmod's removal consensus threshold." 
+                                 f"A comment with permalink [{comment.permalink}] exceeded Crossmod's removal consensus threshold.", 
                                  self.me)
   
 
     def monitor(self):
-      print("Crossmod starting at:", start_time.stftime('%Y-%m-%d %H:%M:%S')
+      print("Crossmod starting at:", start_time.stftime('%Y-%m-%d %H:%M:%S'))
       print()
       print()
-      print("________________________\n\n\")
+      print("________________________\n\n")
 
       for comment in self.subreddits_listener.stream.comments():
         start = time.time()
@@ -97,22 +94,22 @@ class CrossmodSubredditMonitor():
             continue
 
         subreddit_name = comment.subreddit.display_name
-        print("Posted in r/", subreddit_name, ":\n", "Comment ID: ", comment.id, " Body:\n" comment.body, "\n\n")
+        print("Posted in r/", subreddit_name, ":\n", "Comment ID: ", comment.id, " Body:\n", comment.body, "\n\n")
 
-        if self.is_whitelisted(comment.author) or CrossmodFilters.apply_filters(comment.body)):
+        if self.is_whitelisted(comment.author) or CrossmodFilters.apply_filters(comment.body):
             print("Filtering comment:", comment.id, comment.body)
-			      self.db.write(DataTable,
-                                created_utc = datetime.fromtimestamp(comment.created_utc),
-                                ingested_utc = datetime.now(),
-                                id = comment.id,
-                                body = comment.body,
-                                crossmod_action = "filtered",
-                                author = comment.author.name,
-                                subreddit = comment.subreddit.display_name, 
-                                banned_by = None,
-                                banned_at_utc = None,
-                                agreement_score = -1.0,
-                                norm_violation_score = -1.0)
+            self.db.write(DataTable,
+                          created_utc = datetime.fromtimestamp(comment.created_utc),
+                          ingested_utc = datetime.now(),
+                          id = comment.id,
+                          body = comment.body,
+                          crossmod_action = "filtered",
+                          author = comment.author.name,
+                          subreddit = comment.subreddit.display_name, 
+                          banned_by = None,
+                          banned_at_utc = None,
+                          agreement_score = -1.0,
+                          norm_violation_score = -1.0)
             continue	
 
         removal_consensus = self.find_removal_consensus(comment.body, subreddit_name)

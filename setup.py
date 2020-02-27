@@ -27,7 +27,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'crossmod = __main__'
+            'crossmod = crossmod.__main__:main'
         ]
     },
 )
