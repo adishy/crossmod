@@ -1,28 +1,18 @@
+from tenacity import retry, wait_exponential
+from crossmod.ml.moderation_settings import *
+from crossmod.helpers.consts import CrossmodConsts
+from crossmod.db.interface import CrossmodDB
+from crossmod.ml.classifiers import CrossmodClassifiers
+from crossmod.helpers.filters import CrossmodFilters
+from crossmod.db.tables import DataTable
+from crossmod.db.tables import SubredditSettingsTable
+from crossmod.db.tables import ActiveSubredditsTable
+import requests
 import praw
 import sys
 import datetime
 import pandas as pd
 import time
-from tenacity import retry, wait_exponential
-from getPredictions import *
-from config import *
-from consts import CrossmodConsts
-from db import CrossmodDB
-from classifiers import CrossmodClassifiers
-from filters import CrossmodFilters
-import requests
-###get toxicity score from Perspective API
-from googleapiclient import discovery
-
-
-## Config Variables ##
-API_ENDPOINT = "http://crossmod.ml/api/v1/get-prediction-scores"
-API_KEY = "ABCDEFG"
-
-#list of subreddits to use for voting (i.e., aggregating the predictions from back-end ensemble of classifiers)
-subreddits_limit = 100
-total_subreddit_list = list(pd.read_csv("../data/study_subreddits.csv", names = ["subreddit"])["subreddit"][:subreddits_limit])
-total_macro_norm_list = list(pd.read_csv('../data/macro-norms.txt', names = ['macronorms'])['macronorms'])
 
 #setup the subreddits list and action
 subreddits_names = ['modbot_staging', 'Futurology', 'nba']
@@ -33,50 +23,25 @@ subreddits_norm = [total_macro_norm_list, total_macro_norm_list, total_macro_nor
 # Use API or local crossmod instance
 use_api = 1
 
-def get_api_score(comment, subreddit_list, macro_norm_list):
-    comments = []
-    comments.append(comment)
-    data = {"comments": comments,
+def get_api_score(comment, subreddit_name):
+    data = {"comments": [comment],
             "subreddit_list": subreddit_list,
             "macro_norm_list": macro_norm_list,
-            "key": API_KEY}
-    r = requests.post(url= API_ENDPOINT, json = data)
+            "key": CrossmodConsts.CLIENT_API_KEY}
+    r = requests.post(url= CrossmodConsts.CLIENT_API_ENDPOINT, json = data)
     return r.json()
 
-def get_toxicity_score(comment):
-    analyze_request = {
-      'comment': { 'text': comment},
-      'requestedAttributes': {'TOXICITY': {}}
-    }
-    response = service.comments().analyze(body=analyze_request).execute()
-    toxicity_score = response['attributeScores']['TOXICITY']['summaryScore']['value']
-    return toxicity_score
-
 def main():
-    #generate Perspective API client object dynamically based on service name and version. 
-    Perspective_API_KEY = CrossmodConsts.PERSPECTIVE_API_SECRET
-    service = discovery.build('commentanalyzer', 'v1alpha1', developerKey=Perspective_API_KEY)
-
     #setup the Reddit bot
     reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
                         client_id = CrossmodConsts.REDDIT_CLIENT_ID, 
                         client_secret = CrossmodConsts.REDDIT_CLIENT_SECRET,
                         username = CrossmodConsts.REDDIT_USERNAME, 
                         password = CrossmodConsts.REDDIT_PASSWORD)
-    multi_reddits_names = ''
-
-    action_dict = dict(zip(subreddits_names, subreddits_action))
-    model_dict = dict(zip(subreddits_names, subreddits_model))
-    norm_dict = dict(zip(subreddits_names, subreddits_norm))
-    print("Crawling to these subreddits (with action, subreddits, macro norm): ")
-    for name in subreddits_names:
-        multi_reddits_names += name
-        multi_reddits_names += '+'
-        print("\t", name, action_dict[name], model_dict[name], norm_dict[name])
-
-    multi_reddits = reddit.subreddit(multi_reddits_names)
-
     db = CrossmodDB()
+    subreddits_to_listen = db.database_session.query(ActiveSubredditsTable).all()
+    subreddits_listener = reddit.subreddit(subreddits_to_listen)
+
 
     ###list of white-listed authors whose content the bot would ignore
     whitelisted_authors = []
@@ -95,31 +60,25 @@ def main():
 					   "Yosarian2",
 					   "ImLivingAmongYou",
 					   "lughnasadh"] #add mods to list of whitelisted_authors
+
+
     for moderator in moderators_list:
         mod_list_string = mod_list_string + "/u/" + moderator + " , "
 
     whitelisted_authors += moderators_list
 
-    if use_api == 1:
-        classifiers = None
-    else:
-        classifiers = CrossmodClassifiers(subreddits = subreddit_list, norms = macro_norm_list)
-
-    process_comments(multi_reddits, action_dict, model_dict, norm_dict, classifiers, db, whitelisted_authors)
+    process_comments(db)
 
     db.database_session.exit()
 
+def is_whitelisted(author):
 
-def process_comments(multi_reddits, action_dict, model_dict, norm_dict, classifiers, db, whitelisted_authors):
-    
-    start_time = time.time()
+def process_comments(db, subreddits_listener):
+    start_time = datetime.fromtimestamp(datetime.now()))
 
-    print("Crossmod = ACTIVE, starting at t = ", start_time)
-    print("Whitelisted authors:", whitelisted_authors)
+    print("Crossmod starting at:", start_time.stftime('%Y-%m-%d %H:%M:%S')
 
-    me = whitelisted_authors[0]
-
-    for comment in multi_reddits.stream.comments():
+    for comment in subreddits_listener.stream.comments():
         start = time.time()
 
         if comment == None:
@@ -132,14 +91,14 @@ def process_comments(multi_reddits, action_dict, model_dict, norm_dict, classifi
 
         print("r/", subreddit_name, "Comment: ", comment.body)
 
-        if comment.author != me and (comment.author in whitelisted_authors or CrossmodFilters.apply_filters(comment.body)):
+        if is_whitelisted(comment.author) or CrossmodFilters.apply_filters(comment.body)):
             print("Filtering comment:", comment.id, comment.body)
 			### Write to CrossmodDB
-            db.write(created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
+            db.write(DataTable,
+                    created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
 					ingested_utc = datetime.datetime.now(),
 					id = comment.id,
 					body = comment.body,
-					toxicity_score = -1.0,
 					crossmod_action = "filtered",
 					author = comment.author.name,
 					subreddit = comment.subreddit.display_name, 
@@ -149,18 +108,6 @@ def process_comments(multi_reddits, action_dict, model_dict, norm_dict, classifi
 					norm_violation_score = -1.0)
             continue	
 
-        backend_predictions = {}
-
-        ### Type 1: Use toxicity scores from Perspective API to make decisions
-        # DISABLED NOW
-        # try:
-        #     toxicity_score = get_toxicity_score(comment.body)       
-        # except:
-        #     toxicity_score = -1.0
-        # print("Toxicity score from Perspective API = ", toxicity_score)
-        # backend_predictions['toxicity_score'] = toxicity_score
-        
-        if use_api == 1:
             ### Type 2: Use API
             try:
                 body = get_api_score(comment.body, model_dict[subreddit_name], norm_dict[subreddit_name])
@@ -172,18 +119,6 @@ def process_comments(multi_reddits, action_dict, model_dict, norm_dict, classifi
             print("Agreement score from crossmod API = ", api_agreement_score)
             backend_predictions['api_agreement_score'] = api_agreement_score
             backend_predictions['api_norm_violation_score'] = api_norm_violation_score
-        else:
-            ### Type 3: Use prediction from crossmod classifiers
-            try:
-                comment_value = comment.body
-                backend_predictions.update(classifiers.get_result(comment_value))
-                print("Number of subreddit classifiers agreeing to remove comment = ", backend_predictions['agreement_score'])
-                print("Number of norms violated = ", backend_predictions['norm_violation_score'])
-            except Exception as ex:
-                print(ex)
-                continue
-            agreement_score = backend_predictions['agreement_score']
-            norm_violation_score = backend_predictions['norm_violation_score']
 
 
         ### Write to CrossmodDB
