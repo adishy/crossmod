@@ -20,14 +20,14 @@ setup(
         'mkdocs',
         'praw',
         'progress',
-        'pyfiglet' 
+        'pyfiglet', 
         'seaborn',  
         'SQLAlchemy',
         'tenacity', 
     ],
     entry_points={
         'console_scripts': [
-            'crossmod = crossmod.ml.crossmod:main'
+            'crossmod = __main__'
         ]
     },
 )

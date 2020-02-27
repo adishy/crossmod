@@ -32,3 +32,5 @@ import crossmod.views  # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.ml # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.helpers # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.api # noqa: E402  pylint: disable=wrong-import-position
+
+clf_ensemble = None

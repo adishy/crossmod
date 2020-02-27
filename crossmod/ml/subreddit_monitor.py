@@ -12,7 +12,6 @@ import requests
 import praw
 import sys
 import datetime
-import pandas as pd
 import time
 
 class CrossmodSubredditMonitor():
@@ -103,17 +102,17 @@ class CrossmodSubredditMonitor():
         if self.is_whitelisted(comment.author) or CrossmodFilters.apply_filters(comment.body)):
             print("Filtering comment:", comment.id, comment.body)
 			      self.db.write(DataTable,
-                          created_utc = datetime.fromtimestamp(comment.created_utc),
-                          ingested_utc = datetime.now(),
-                          id = comment.id,
-                          body = comment.body,
-                          crossmod_action = "filtered",
-                          author = comment.author.name,
-                          subreddit = comment.subreddit.display_name, 
-                          banned_by = None,
-                          banned_at_utc = None,
-                          agreement_score = -1.0,
-                          norm_violation_score = -1.0)
+                                created_utc = datetime.fromtimestamp(comment.created_utc),
+                                ingested_utc = datetime.now(),
+                                id = comment.id,
+                                body = comment.body,
+                                crossmod_action = "filtered",
+                                author = comment.author.name,
+                                subreddit = comment.subreddit.display_name, 
+                                banned_by = None,
+                                banned_at_utc = None,
+                                agreement_score = -1.0,
+                                norm_violation_score = -1.0)
             continue	
 
         removal_consensus = self.find_removal_consensus(comment.body, subreddit_name)

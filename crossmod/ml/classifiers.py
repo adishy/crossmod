@@ -24,10 +24,16 @@ class CrossmodClassifiers:
         norm_count = 0
 
         # List of subreddit classifiers
-        self.subreddit_clfs_ids = kwargs['subreddits']
+        if 'subreddits' in kwargs:
+            self.subreddit_clfs_ids = kwargs['subreddits']
+        else:
+            self.subreddit_clfs_ids = CrossmodConsts.SUBREDDIT_LIST
         
         # List of norm classifiers
-        self.norm_clfs_ids = kwargs['norms']
+        if 'norms' in kwargs:
+            self.norm_clfs_ids = kwargs['norms']
+        else:
+            self.subreddit_clfs_ids = CrossmodConsts.NORM_LIST
 
         start = time.time()
       
