@@ -5,15 +5,15 @@ from crossmod.helpers.consts import CrossmodConsts
 
 def add_subreddit_to_monitor(db, 
                              subreddit_name, 
-                             moderator_list, 
+                             moderators_list, 
                              perform_action = False,
                              subreddit_classifiers = CrossmodConsts.SUBREDDIT_LIST, 
                              norm_classifiers = CrossmodConsts.NORM_LIST):
     db.write(SubredditSettingsTable,
             subreddit = subreddit_name,
-            moderator_list = moderator_list.join(","),
-            subreddit_classifiers = subreddit_classifiers,
-            norm_classifers = norm_classifiers)
+            moderator_list = ",".join(moderators_list),
+            subreddit_classifiers = ",".join(subreddit_classifiers),
+            norm_classifiers = ",".join(norm_classifiers))
 
     db.write(ActiveSubredditsTable, 
              subreddit = subreddit_name,
@@ -24,23 +24,25 @@ def add_subreddit_to_monitor(db,
 def main():
     db = CrossmodDB()
 
-    add_subreddit_to_monitor("modbot_staging", 
+    add_subreddit_to_monitor(db,
+                             "modbot_staging", 
                              ["thebiglebowskiii"], 
                              True)
 
-    add_subreddit_to_monitor("Futurology",
+    add_subreddit_to_monitor(db,
+                             "Futurology",
                              ["thebiglebowskiii", 
-                             "AutoModerator", 
-                             "TransPlanetInjection", 
-                             "Xenophon1", 
-                             "ion-tom", 
-                             "mind_bomber",
-                             "Gobi_The_Mansoe",
-                             "multi-mod",
-                             "Buck-Nasty",
-                             "Yosarian2",
-                             "ImLivingAmongYou",
-                             "lughnasadh"])
+                              "AutoModerator", 
+                              "TransPlanetInjection", 
+                              "Xenophon1", 
+                              "ion-tom", 
+                              "mind_bomber",
+                              "Gobi_The_Mansoe",
+                              "multi-mod",
+                              "Buck-Nasty",
+                              "Yosarian2",
+                              "ImLivingAmongYou",
+                              "lughnasadh"])
 
 if __name__=="__main__":
     main()
