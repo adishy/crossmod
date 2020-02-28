@@ -52,12 +52,17 @@ class CrossmodSubredditMonitor():
               "subreddit_list": subreddit_settings.subreddit_classifiers.split(','),
               "macro_norm_list": subreddit_settings.norm_classifiers.split(','),
               "key": CrossmodConsts.CLIENT_API_SUPER_KEY}
-      result = requests.post(url= CrossmodConsts.CLIENT_API_ENDPOINT, json = data)
+      result = requests.post(url= CrossmodConsts.CLIENT_API_ENDPOINT, json = data).json()
+
+      if type(result) is not list or len(result) != 1:
+        raise ValueError(f"Expected API response to be a list with a single comment, but got: {result}")
+      
       return result.json()[0]
 
 
     def is_whitelisted(self, author, subreddit):
       moderator_list = self.db.database_session.query(SubredditSettingsTable.moderator_list).filter(SubredditSettingsTable.subreddit == subreddit).one().moderator_list.split(",")
+      moderator_list.append(self.me)
       return author in moderator_list
 
 
