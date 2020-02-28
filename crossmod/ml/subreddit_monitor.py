@@ -57,7 +57,7 @@ class CrossmodSubredditMonitor():
       if type(result) is not list or len(result) != 1:
         raise ValueError(f"Expected API response to be a list with a single comment, but got: {result}")
       
-      return result.json()[0]
+      return result[0]
 
 
     def is_whitelisted(self, author, subreddit):

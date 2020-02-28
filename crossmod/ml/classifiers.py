@@ -33,7 +33,7 @@ class CrossmodClassifiers:
         if 'norms' in kwargs:
             self.norm_clfs_ids = kwargs['norms']
         else:
-            self.subreddit_clfs_ids = CrossmodConsts.NORM_LIST
+            self.norm_clfs_ids = CrossmodConsts.NORM_LIST
 
         start = time.time()
       
@@ -55,7 +55,7 @@ class CrossmodClassifiers:
 
         end = time.time()
         print("Loaded classifiers: ", int(round(end - start)), "s") 
-        print("Loaded ", subreddit_count, " subreddit classifiers, ", norm_count, " norm classifiers")
+        print("Loaded ", subreddit_count, " subreddit classifiers, ", norm_count, " norm classifiers\n")
         
     @staticmethod
     def process_input_comment(input_comment):
