@@ -24,10 +24,16 @@ class CrossmodClassifiers:
         norm_count = 0
 
         # List of subreddit classifiers
-        self.subreddit_clfs_ids = kwargs['subreddits']
+        if 'subreddits' in kwargs:
+            self.subreddit_clfs_ids = kwargs['subreddits']
+        else:
+            self.subreddit_clfs_ids = CrossmodConsts.SUBREDDIT_LIST
         
         # List of norm classifiers
-        self.norm_clfs_ids = kwargs['norms']
+        if 'norms' in kwargs:
+            self.norm_clfs_ids = kwargs['norms']
+        else:
+            self.norm_clfs_ids = CrossmodConsts.NORM_LIST
 
         start = time.time()
       
@@ -49,7 +55,7 @@ class CrossmodClassifiers:
 
         end = time.time()
         print("Loaded classifiers: ", int(round(end - start)), "s") 
-        print("Loaded ", subreddit_count, " subreddit classifiers, ", norm_count, " norm classifiers")
+        print("Loaded ", subreddit_count, " subreddit classifiers, ", norm_count, " norm classifiers\n")
         
     @staticmethod
     def process_input_comment(input_comment):
@@ -61,7 +67,7 @@ class CrossmodClassifiers:
         for url in CrossmodFilters.get_urls(input_comment):
             input_comment = input_comment.replace(url, '')
         for subreddit_name in CrossmodFilters.get_subreddit_names(input_comment):
-            input_comment = input_comment.replace()
+            input_comment = input_comment.replace(f"r/{subreddit_name}", "")
         input_comment = input_comment.replace('\n', ' ')
         input_comment = input_comment.lower()
         input_comment = re.sub('[^A-Za-z]+', ' ', input_comment)

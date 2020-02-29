@@ -11,23 +11,23 @@ setup(
     packages=['crossmod'],
     include_package_data=True,
     install_requires=[
-        'fasttext==0.9.1',  
-        'Flask==1.1.1',
-        'mkdocs==1.0.4',
-        'praw==6.4.0',
-        'seaborn==0.9.0',  
-        'SQLAlchemy==1.3.12',
-        'tenacity==6.0.0',
+        'click',
+        'fasttext',  
+        'Flask',
         'flask_cors',
         'flask_limiter',
-        'click',
         'gunicorn',
+        'mkdocs',
+        'praw',
         'progress',
-        'pyfiglet'  
+        'pyfiglet', 
+        'seaborn',  
+        'SQLAlchemy',
+        'tenacity'
     ],
     entry_points={
         'console_scripts': [
-            'crossmod = crossmod.ml.crossmod:main'
+            'crossmod = crossmod.__main__:main'
         ]
     },
 )

@@ -17,8 +17,6 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["10 per minute", "600 per hour"]
 )
-
-# Read settings from config module (insta485/config.py)
 app.config.from_object('crossmod.config')
 
 # Overlay settings read from file specified by environment variable. This is
@@ -35,7 +33,4 @@ import crossmod.ml # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.helpers # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.api # noqa: E402  pylint: disable=wrong-import-position
 
-from crossmod.ml.classifiers import CrossmodClassifiers
-from crossmod.helpers.consts import CrossmodConsts
-clf_ensemble = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
-                                   norms = CrossmodConsts.NORM_LIST)
+clf_ensemble = None
