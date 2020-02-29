@@ -5,21 +5,25 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
 
+
 class CrossmodDB:
     def __init__(self, database_uri = 'sqlite:///' + CrossmodConsts.DB_PATH):
         self.database_uri = database_uri
-        self.database = create_engine(self.database_uri)
+        # Connection timeout parameter for SQLite: https://stackoverflow.com/questions/15065037/how-to-increase-connection-timeout-using-sqlalchemy-with-sqlite-in-python
+        self.database = create_engine(self.database_uri, connect_args={'timeout': 15})
         Base.metadata.bind = self.database
         Base.metadata.create_all(self.database)
         self.DatabaseSession= sessionmaker(bind = self.database)
         self.database_session = self.DatabaseSession()
         
-    def write(self, **kwargs):
+    def write(self, table_type, commit = True, **kwargs):
         try:
-            crossmod_data_entry = DataTable(**kwargs)
-            self.database_session.add(crossmod_data_entry)
-            self.database_session.commit()
+            table_data_entry = table_type(**kwargs)
+            self.database_session.add(table_data_entry)
+            
+            if commit:
+                self.database_session.commit()
         except Exception as e:
+            print("Could not write data:")
             print(e)
-            print("Could not write comment id: {} to the database".format(kwargs['id']))
             return
