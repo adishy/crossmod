@@ -107,7 +107,7 @@ class CrossmodSubredditMonitor():
         if self.is_whitelisted(comment.author, subreddit_name) or CrossmodFilters.apply_filters(comment.body):
             print("Filtering comment:", comment.id, comment.body)
             self.db.write(DataTable,
-                          created_utc = datetime.fromtimestamp(comment.created_utc),
+                          created_utc = datetime.datetime.fromtimestamp(comment.created_utc),
                           ingested_utc = datetime.datetime.now(),
                           id = comment.id,
                           body = comment.body,
