@@ -67,7 +67,7 @@ class CrossmodClassifiers:
         for url in CrossmodFilters.get_urls(input_comment):
             input_comment = input_comment.replace(url, '')
         for subreddit_name in CrossmodFilters.get_subreddit_names(input_comment):
-            input_comment = input_comment.replace()
+            input_comment = input_comment.replace(f"r/{subreddit_name}", "")
         input_comment = input_comment.replace('\n', ' ')
         input_comment = input_comment.lower()
         input_comment = re.sub('[^A-Za-z]+', ' ', input_comment)
