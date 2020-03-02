@@ -1,13 +1,13 @@
 from crossmod.helpers.consts import CrossmodConsts
-from crossmod.db.interface import CrossmodDB
-from crossmod.db.tables.data import DataTable
-from crossmod.db.tables.update_status import UpdateStatusTable
+from crossmod.db import CrossmodDB
+from crossmod.db.tables import DataTable
+from crossmod.db.tables import UpdateStatusTable
 import datetime
 import praw
 import sys
 import click
 
-class CrossmodDBUpdater:
+class CrossmodDataTableUpdater:
     def __init__(self):
         self.REMOVED = "[removed]"
         self.DELETED = "[deleted]"
@@ -59,10 +59,3 @@ class CrossmodDBUpdater:
 
             if count % 20 == 0:
                 self.db.database_session.commit()
-
-def main():
-    updater = CrossmodDBUpdater()
-    updater.update_database_values()
-    
-if __name__ == "__main__":
-    main()

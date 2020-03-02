@@ -12,6 +12,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'click',
+        'celery',
         'fasttext',  
         'Flask',
         'flask_cors',
@@ -21,6 +22,7 @@ setup(
         'praw',
         'progress',
         'pyfiglet', 
+        'redis',
         'seaborn',  
         'SQLAlchemy',
         'tenacity'

@@ -11,7 +11,7 @@ def main(mode):
     crossmod.clf_ensemble = CrossmodClassifiers()
     print("API\n")
     options = {
-      'bind': '0.0.0.0:8000',
+      'bind': '0.0.0.0:8200',
       'preload_app': True,
       'workers': 3
     }
