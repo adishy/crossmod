@@ -67,7 +67,9 @@ class CrossmodSubredditMonitor():
 
 
     def perform_action(self, comment, action, agreement_score, norm_violation_score):
-      if action == "remove":
+      if action == "EMPTY":
+        return
+      elif action == "remove":
         print("Removing comment, and alerting moderator by modmail at:", time.time())
         subreddit.modmail.create("[Comment removal by Crossmod] Crossmod performed a comment removal!", 
                                  f"Crossmod removed a comment with permalink [{comment.permalink}]", 
@@ -80,7 +82,7 @@ class CrossmodSubredditMonitor():
         print("Reporting a comment and sending it to report queue at:", time.time())
         comment.report(f"Agreement Score: {agreement_score}/1.0, Norm Violation Score: {norm_violation_score}/1.0")
     
-      elif ACTION == "modmail":
+      elif action == "modmail":
         print("Sending a modmail at:", time.time())
         subreddit.modmail.create("[Alert by Crossmod] Comment exceeds removal consensus threshold!", 
                                  f"A comment with permalink [{comment.permalink}] exceeded Crossmod's removal consensus threshold.", 
@@ -97,7 +99,7 @@ class CrossmodSubredditMonitor():
         
         start = time.time()
 
-        if comment == None:
+        if comment == None or comment.body == '[removed]':
             continue
 
         subreddit_name = comment.subreddit.display_name
