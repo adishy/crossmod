@@ -1,7 +1,7 @@
 import crossmod
 from crossmod.db.interface import CrossmodDB
 from crossmod.db.tables import DataTable
-from crossmod.helpers.consts import CrossmodConsts
+from crossmod.environments.consts import CrossmodConsts
 from sqlalchemy import func
 
 def current_overall_stats(crossmod_agreement_score = CrossmodConsts.AGREEMENT_SCORE_THRESHOLD):

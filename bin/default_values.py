@@ -1,7 +1,7 @@
 from crossmod.db.interface import CrossmodDB
 from crossmod.db.tables import ActiveSubredditsTable
 from crossmod.db.tables import SubredditSettingsTable
-from crossmod.helpers.consts import CrossmodConsts
+from crossmod.environments.consts import CrossmodConsts
 
 def add_subreddit_to_monitor(db, 
                              subreddit_name, 

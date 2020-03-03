@@ -1,5 +1,5 @@
 from crossmod.db.interface import CrossmodDB
-from crossmod.helpers.consts import CrossmodConsts
+from crossmod.environments.consts import CrossmodConsts
 from crossmod.helpers.filters import CrossmodFilters
 from crossmod.helpers.filters import CrossmodFilters
 from crossmod.ml.moderation_settings import *

@@ -1,6 +1,7 @@
 code/__pycache__/*
 models/*
 crossmod_credentials.sh
+crossmod.celery
 .venv/*
 .vscode/*
 # Byte-compiled / optimized / DLL files

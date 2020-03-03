@@ -1,4 +1,4 @@
-from crossmod.helpers.consts import CrossmodConsts
+from crossmod.environments.consts import CrossmodConsts
 from crossmod.db.base import Base
 from crossmod.db.tables import DataTable
 from sqlalchemy import create_engine

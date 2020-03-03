@@ -38,6 +38,7 @@ import crossmod.tasks
 # circular import, which is naughty, but Flask was designed that way.
 # (Reference http://flask.pocoo.org/docs/patterns/packages/)  We're
 # going to tell pylint and pycodestyle to ignore this coding style violation.
+import crossmod.environments # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.views  # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.ml # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.helpers # noqa: E402  pylint: disable=wrong-import-position

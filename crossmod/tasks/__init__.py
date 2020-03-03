@@ -1,5 +1,5 @@
 import crossmod
-from crossmod.tasks.db_updater import perform_db_update, test
+from crossmod.tasks.data_table_updater import perform_db_update, test
 
 @crossmod.celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):

@@ -1,5 +1,5 @@
 import crossmod
-from crossmod.helpers.consts import CrossmodConsts
+from crossmod.environments.consts import CrossmodConsts
 
 #IFTTT format - if <condition>: then <action>
 

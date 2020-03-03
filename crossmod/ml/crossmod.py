@@ -1,6 +1,6 @@
 from tenacity import retry, wait_exponential
 from crossmod.ml.moderation_settings import *
-from crossmod.helpers.consts import CrossmodConsts
+from crossmod.environments.consts import CrossmodConsts
 from crossmod.db.interface import CrossmodDB
 from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.helpers.filters import CrossmodFilters

@@ -1,5 +1,5 @@
-from crossmod.helpers.consts import CrossmodConsts
-from crossmod.db import CrossmodDB
+from crossmod.db.interface import CrossmodDB
+from crossmod.environments.consts import CrossmodConsts
 from crossmod.db.tables import DataTable
 from crossmod.db.tables import UpdateStatusTable
 import datetime
