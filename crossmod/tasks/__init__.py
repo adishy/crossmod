@@ -1,6 +1,9 @@
 import crossmod
-from crossmod.tasks.data_table_updater import perform_db_update, test
+from crossmod.tasks.data_table_updater import perform_update
+from celery.schedules import crontab
 
 @crossmod.celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(1.0, test.s("a"), name="test")
+    # Update data table banned_at_utc, banned_by columns at 00:00 on Tuesday, Thursday and Saturday
+    sender.add_periodic_task(crontab(minute="00", hour="00", day_of_week="2,4,6"), 
+                             perform_update, name="perform_update")
