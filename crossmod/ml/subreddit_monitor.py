@@ -37,9 +37,7 @@ class CrossmodSubredditMonitor():
       
       # PRAW interface used to stream comments from subreddits
       self.subreddits_listener = self.reddit.subreddit("+".join([row.subreddit for row in self.db.database_session.query(SubredditSettingsTable.subreddit).all()]))
-
-      print("Moderators", )
-
+      
       self.me = self.reddit.user.me()
 
 
