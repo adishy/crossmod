@@ -45,3 +45,12 @@ import crossmod.helpers # noqa: E402  pylint: disable=wrong-import-position
 import crossmod.api # noqa: E402  pylint: disable=wrong-import-position
 
 clf_ensemble = None
+
+
+from crossmod.db.interface import CrossmodDB
+
+db_interface = CrossmodDB()
+
+@crossmod.app.teardown_appcontext
+def cleanup(resp_or_exc):
+    crossmod.db_interface.database_session.remove()

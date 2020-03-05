@@ -1,5 +1,4 @@
 from crossmod.db.interface import CrossmodDB
-from crossmod.db.tables import ActiveSubredditsTable
 from crossmod.db.tables import SubredditSettingsTable
 from crossmod.environments.consts import CrossmodConsts
 
@@ -13,11 +12,8 @@ def add_subreddit_to_monitor(db,
             subreddit = subreddit_name,
             moderator_list = ",".join(moderators_list),
             subreddit_classifiers = ",".join(subreddit_classifiers),
-            norm_classifiers = ",".join(norm_classifiers))
-
-    db.write(ActiveSubredditsTable, 
-             subreddit = subreddit_name,
-             perform_action = perform_action)
+            norm_classifiers = ",".join(norm_classifiers),
+            perform_action = perform_action)
     
     print(f"{subreddit_name} will be monitored")
 

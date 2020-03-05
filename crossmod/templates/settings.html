@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"> 
+        <style>
+            body{
+                font-family: 'Roboto', sans-serif;
+            }
+
+            .active_subreddits li {
+                display: flex;
+                flex: 1 1 1;
+                flex-direction: row;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="active_subreddits">
+            <h1>Active Subreddits</h1>
+            <ul>
+                {% for active_subreddit in active_subreddits %}
+                    <li>
+                        <a href="http://reddit.com/r/{{ active_subreddit.subreddit }}" target="_blank">
+                            r/{{ active_subreddit.subreddit }}
+                        </a>
+                        {% if active_subreddit.perform_action %}
+                            <p>Currently moderated</p>
+                            <form action="{{ url_for('settings') }}" method="POST">
+                                <input type="hidden" name="subreddit" value="{{ active_subreddit.subreddit }}"/>
+                                <input type="submit" name="deactivate_moderation" value="Deactivate Moderation"/>
+                            </form>
+                        {% else %}
+                            <p>Not currently moderated</p>
+                            <form action="{{ url_for('settings') }}" method="POST">
+                                <input type="hidden" name="subreddit" value="{{ active_subreddit.subreddit }}"/>
+                                <input type="submit" name="activate_moderation" value="Activate Moderation"/>
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </body>
+</html>

@@ -8,7 +8,7 @@ import crossmod
 @click.argument('mode')
 def main(mode):
   if mode == "api":
-    crossmod.clf_ensemble = CrossmodClassifiers()
+    #crossmod.clf_ensemble = CrossmodClassifiers()
     print("API\n")
     options = {
       'bind': '0.0.0.0:8200',

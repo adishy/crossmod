@@ -6,7 +6,6 @@ from crossmod.ml.moderation_settings import *
 from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.db.tables import DataTable
 from crossmod.db.tables import SubredditSettingsTable
-from crossmod.db.tables import ActiveSubredditsTable
 from datetime import datetime
 from tenacity import retry, wait_exponential
 import requests
@@ -34,10 +33,12 @@ class CrossmodSubredditMonitor():
 
       # Query database to find which subreddits to listen to and whether to 
       # only simulate moderation actions for each subreddit
-      self.perform_action_in_subreddit = {row.subreddit: row.perform_action for row in self.db.database_session.query(ActiveSubredditsTable).all()}
+      self.perform_action_in_subreddit = {row.subreddit: row.perform_action for row in self.db.database_session.query(SubredditSettingsTable).all()}
       
       # PRAW interface used to stream comments from subreddits
-      self.subreddits_listener = self.reddit.subreddit("+".join([row.subreddit for row in self.db.database_session.query(ActiveSubredditsTable.subreddit).all()]))
+      self.subreddits_listener = self.reddit.subreddit("+".join([row.subreddit for row in self.db.database_session.query(SubredditSettingsTable.subreddit).all()]))
+
+      print("Moderators", )
 
       self.me = self.reddit.user.me()
 
@@ -61,7 +62,7 @@ class CrossmodSubredditMonitor():
 
 
     def is_whitelisted(self, author, subreddit):
-      moderator_list = self.db.database_session.query(SubredditSettingsTable.moderator_list).filter(SubredditSettingsTable.subreddit == subreddit).one().moderator_list.split(",")
+      moderator_list = [moderator.name for moderator in self.reddit.subreddit(subreddit).moderator()]
       moderator_list.append(self.me)
       return author in moderator_list
 
