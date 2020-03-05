@@ -1,4 +1,8 @@
-# add source <path-to-crossmod-credentials.sh> in your ~/.profile file 
+# add source <path-to-crossmod-credentials.sh> in your ~/.profile file, 
+# i.e. run 
+# cat crossmod_credentials.sh >> file
+# after filling in all the required credentials in this file, and renaming it to
+# crossmod_credentials.sh (i.e. run mv crossmod_credentials_example.sh crossmod_credentials.sh)
 # This makes all the credentials required by crossmod available as environment 
 # variables
 
