@@ -6,40 +6,76 @@
             body{
                 font-family: 'Roboto', sans-serif;
             }
-
-            .active_subreddits li {
-                display: flex;
-                flex: 1 1 1;
-                flex-direction: row;
-                width: 100%;
-            }
         </style>
     </head>
     <body>
-        <div class="active_subreddits">
-            <h1>Active Subreddits</h1>
-            <ul>
-                {% for active_subreddit in active_subreddits %}
-                    <li>
-                        <a href="http://reddit.com/r/{{ active_subreddit.subreddit }}" target="_blank">
-                            r/{{ active_subreddit.subreddit }}
-                        </a>
-                        {% if active_subreddit.perform_action %}
-                            <p>Currently moderated</p>
-                            <form action="{{ url_for('settings') }}" method="POST">
-                                <input type="hidden" name="subreddit" value="{{ active_subreddit.subreddit }}"/>
-                                <input type="submit" name="deactivate_moderation" value="Deactivate Moderation"/>
-                            </form>
-                        {% else %}
-                            <p>Not currently moderated</p>
-                            <form action="{{ url_for('settings') }}" method="POST">
-                                <input type="hidden" name="subreddit" value="{{ active_subreddit.subreddit }}"/>
-                                <input type="submit" name="activate_moderation" value="Activate Moderation"/>
-                            </form>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+        <h1>Subreddits</h1>
+        <ul>
+            {% for subreddit in subreddits %}
+                <li>
+                    <a href="http://reddit.com/r/{{ subreddit.subreddit }}" target="_blank">
+                        r/{{ subreddit.subreddit }}
+                    </a>
+                    {% if subreddit.perform_action %}
+                        <p>Currently moderated</p>
+                        <form action="{{ url_for('settings') }}" method="POST">
+                            <input type="hidden" name="subreddit" value="{{ subreddit.subreddit }}"/>
+                            <input type="submit" name="deactivate_moderation" value="Deactivate Moderation"/>
+                        </form>
+                    {% else %}
+                        <p>Not currently moderated</p>
+                        <form action="{{ url_for('settings') }}" method="POST">
+                            <input type="hidden" name="subreddit" value="{{ subreddit.subreddit }}"/>
+                            <input type="submit" name="activate_moderation" value="Activate Moderation"/>
+                        </form>
+                    {% endif %}
+                    <h3>Subreddit classifiers: </h3>
+                    <p>{{ subreddit.subreddit_classifiers }}</p>
+                    <h3>Norm classifiers: </h3>
+                    <p>{{ subreddit.norm_classifiers }}</p>
+                </li>
+                <hr>
+                <br>
+            {% endfor %}
+        </ul>
+        <h2>Add Subreddit</h2>
+        <form action="/settings/" method="POST">
+            <label> 
+                Subreddit:
+                <input type="text" name="subreddit" placeholder="Enter a subreddit name"/>
+            </label>
+            
+            <br>
+            <br>
+            
+            <label> 
+                Subreddit Classifiers:
+                <em>(Comma separated list)</em>
+                <input type="text" name="subreddit_classifiers" placeholder="Leave blank for using all subreddit classifiers"/>
+            </label>
+            
+            <br>
+            <br>
+            
+            <label> 
+                Norm Classifiers:
+                <em>(Comma separated list)</em>
+                <input type="text" name = "norm_classifiers" placeholder="Leave blank for using all norm classifiers"/>
+            </label>
+
+            <br>
+            <br>
+            
+            <label> 
+                Should Crossmod moderate this subreddit?:
+                <em>(Check to moderate, uncheck to listen in but not moderate)</em>
+                <input type="checkbox" name = "perform_action"/>
+            </label>
+
+            <br>
+            <br>
+
+            <input type="submit" name="add_subreddit" value="Add Subreddit"/>
+        </form>
     </body>
 </html>

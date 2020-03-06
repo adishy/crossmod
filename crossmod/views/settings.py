@@ -23,17 +23,13 @@ def settings():
 
         elif 'add_subreddit' in request.form:
             print("Adding subreddit")
-            print(f"Request subreddit {request.form['subreddit']}")
-            print(f"Request subreddit {request.form['subreddit_classifiers']}")
-            print(f"Request subreddit {request.form['norm_classifiers']}")
-            print(f"Request subreddit {request.form['perform_action']}")
             subreddit = flask.escape(request.form['subreddit'])
             subreddit_classifiers = flask.escape(request.form['subreddit_classifiers'])
             if subreddit_classifiers == "":
-                subreddit_classifiers = CrossmodConsts.SUBREDDIT_LIST
-            norm_classifiers = flask.escape(request.form['macro_norm_classifiers'])
+                subreddit_classifiers = ",".join(CrossmodConsts.SUBREDDIT_LIST)
+            norm_classifiers = flask.escape(request.form['norm_classifiers'])
             if norm_classifiers == "":
-                norm_classifiers = CrossmodConsts.NORM_LIST
+                norm_classifiers = ",".join(CrossmodConsts.NORM_LIST)
             perform_action = False
             if request.form.get('perform_action'):
                 perform_action = True
