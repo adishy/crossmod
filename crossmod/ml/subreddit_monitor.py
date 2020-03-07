@@ -31,14 +31,17 @@ class CrossmodSubredditMonitor():
                                 username = CrossmodConsts.REDDIT_USERNAME, 
                                 password = CrossmodConsts.REDDIT_PASSWORD)
 
-      # Query database to find which subreddits to listen to and whether to 
-      # only simulate moderation actions for each subreddit
-      self.perform_action_in_subreddit = {row.subreddit: row.perform_action for row in self.db.database_session.query(SubredditSettingsTable).all()}
-      
       # PRAW interface used to stream comments from subreddits
       self.subreddits_listener = self.reddit.subreddit("+".join([row.subreddit for row in self.db.database_session.query(SubredditSettingsTable.subreddit).all()]))
       
       self.me = self.reddit.user.me()
+
+        
+    def should_perform_action(self, subreddit):
+        """Queries database to find which subreddits to listen to and whether 
+           to only simulate moderation actions for each subreddit"""
+        row = self.db.database_session.query(SubredditSettingsTable.perform_action).filter(SubredditSettingsTable.subreddit == subreddit).one()
+        return row.perform_action
 
 
     def find_removal_consensus(self, comment, subreddit_name):
@@ -68,6 +71,7 @@ class CrossmodSubredditMonitor():
     def perform_action(self, comment, action, agreement_score, norm_violation_score):
       if action == "EMPTY":
         return
+        
       elif action == "remove":
         print("Removing comment, and alerting moderator by modmail at:", time.time())
         self.reddit.subreddit(comment.subreddit.name) \
@@ -148,7 +152,7 @@ class CrossmodSubredditMonitor():
 
         end = time.time()
 
-        if self.perform_action_in_subreddit[subreddit_name]:
+        if self.should_perform_action(subreddit_name):
           self.perform_action(comment, 
                               action, 
                               agreement_score, 
