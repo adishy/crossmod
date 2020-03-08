@@ -23,7 +23,7 @@
                             <input type="submit" name="deactivate_moderation" value="Deactivate Moderation"/>
                         </form>
                     {% else %}
-                        <p>Not currently moderated</p>
+                        <p>Listening in</p>
                         <form action="{{ url_for('settings') }}" method="POST">
                             <input type="hidden" name="subreddit" value="{{ subreddit.subreddit }}"/>
                             <input type="submit" name="activate_moderation" value="Activate Moderation"/>
@@ -33,6 +33,10 @@
                     <p>{{ subreddit.subreddit_classifiers }}</p>
                     <h3>Norm classifiers: </h3>
                     <p>{{ subreddit.norm_classifiers }}</p>
+                    <form action="{{ url_for('settings') }}" method="POST">
+                        <input type="hidden" name="subreddit" value="{{ subreddit.subreddit }}"/>
+                        <input type="submit" name="remove_subreddit" value="Remove Subreddit"/>
+                    </form>
                 </li>
                 <hr>
                 <br>

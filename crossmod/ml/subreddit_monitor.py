@@ -101,9 +101,10 @@ class CrossmodSubredditMonitor():
                         f"A comment with permalink [{comment.permalink}] exceeded Crossmod's removal consensus threshold.", 
                         self.me)
   
-
+    @retry(wait=wait_exponential(multiplier=1, min=4, max=10))
     def monitor(self):
       # PRAW interface used to stream comments from subreddits
+      self.current_subreddits_count = self.number_of_subreddits()
       subreddits_listener = self.reddit.subreddit("+".join([row.subreddit for row in self.db.database_session.query(SubredditSettingsTable.subreddit).all()]))
 
       print("Crossmod started monitoring at:", (datetime.datetime.now(pytz.timezone('EST'))).strftime('%Y-%m-%d %H:%M:%S'), "EST")

@@ -8,4 +8,4 @@ class SubredditSettingsTable(Base):
       subreddit = Column(String(50), unique = True)
       subreddit_classifiers = Column(UnicodeText)
       norm_classifiers = Column(UnicodeText)
-      perform_action = Column(Boolean)
+      perform_action = Column(Boolean, default = False)
