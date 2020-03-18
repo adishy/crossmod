@@ -3,12 +3,17 @@ from crossmod.db.tables.data import DataTable
 from crossmod.helpers.consts import *
 import fasttext
 
+
+
 class retraining():
     def __init__(self):
         # Crossmod database interface
         self.db = CrossmodDB()
 
         self.session = self.db.database_session
+
+        UNREMOVED_COMMENT = "__label__unremoved"
+        REMOVED_COMMENT = "__label__removed"
 
     def train(self, subreddit):
         '''
@@ -24,8 +29,17 @@ class retraining():
 
         model = fasttext.load_model(CrossmodConsts.get_subreddit_classifier(subreddit))
 
+        f = open("tmp_data.train", "a")
         for row in rows:
             print(model.predict(row.comment))
+            if row.banned_by == null: 
+                f.write(UNREMOVED_COMMENT)
+            elif row.banned_by == null: 
+                f.write(REMOVED_COMMENT)
+            f.write(" " + row.comment)
+        f.close()
+
+        # retraining comes here.
 
         
 
