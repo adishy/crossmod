@@ -2,6 +2,7 @@ site_name: Crossmod
 nav:
     - Home: index.md
     - Getting Started: getting_started.md
+    - Code Structure: code_structure.md
     - Crossmod: 
         - API: crossmod/api.md
         - Database: crossmod/db.md
