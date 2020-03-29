@@ -16,8 +16,9 @@ Another database for queue?
 ## @NOTE crossmod.ml is port 80
 
 from crossmod.ml.classifiers import CrossmodClassifiers
-from crossmod.helpers.consts import *
+from crossmod.environments.consts import *
 from crossmod.db.interface import CrossmodDB
+from crossmod.db import ApiKeyTable
 
 from flask import request, jsonify, make_response
 import crossmod
@@ -25,14 +26,10 @@ import pandas as pd
 import traceback
 import json
 from datetime import datetime
-
 ### CONFIG ###
 auth_key = "ABCDEFG"
 db = CrossmodDB() #Set up the database
 subreddits_limit = 100
-
-#classifiers = CrossmodClassifiers(subreddits = CrossmodConsts.SUBREDDIT_LIST,
-#                                  norms = CrossmodConsts.NORM_LIST) # globally load classifiers
 
 
 ### REQUEST: JSON Object ###
@@ -98,11 +95,8 @@ def get_prediction_scores():
         # Check that the key is valid and exists in the api_keys database
         # Record the key's access level
         # Comment out, find acc_lvl
-        if db.session.query(NAMEOFTHEAPIKEYTABLE!).filter(api_key==key).first() == None:
+        if db.session.query(ApiKeyTable).filter(api_key==key).first() == None:
             return jsonify({'exception': "invalid api key " + key})
-        if key != auth_key:
-            return jsonify({'exception': "invalid api key " + key})
-
 
         '''
         Build JSON response

@@ -47,6 +47,9 @@ def settings():
             db.database_session.query(SubredditSettingsTable).filter(SubredditSettingsTable.subreddit == subreddit).delete()
             db.database_session.commit()
 
+        elif 'add_key' in request.form:
+            print("Adding a key to api table")
+            #db.write()
         # PRG Pattern: https://en.wikipedia.org/wiki/Post/Redirect/Get
         return flask.redirect(flask.url_for('settings'))
 

@@ -3,6 +3,9 @@ from crossmod.db.tables import SubredditSettingsTable
 from crossmod.environments.consts import CrossmodConsts
 
 
+def add_keys_to_table():
+  pass
+
 def add_subreddit_to_monitor(db, 
                              subreddit_name, 
                              perform_action = False,
@@ -28,6 +31,7 @@ def main():
     for subreddit in subreddits:
         add_subreddit_to_monitor(db, subreddit[0], subreddit[1])
 
+    add_keys()
 
 if __name__=="__main__":
     main()
