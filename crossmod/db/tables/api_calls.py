@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 import crossmod
 from crossmod.db.base import Base
-from crossmod.db.api_access_levels import ApiAccessLevelTable
+from crossmod.db.tables.api_access_levels import ApiAccessLevelTable
 
 '''
     Schema:
@@ -18,7 +18,7 @@ class ApiCallTable(Base):
       __tablename__ = 'api_call_db'
       id = Column(Integer, primary_key = True)
       api_key = Column(String(40))
-      access_level = Column(Integer, foreign_key('api_access_level_db.access_level_limit'))
+      access_level = Column(Integer, ForeignKey('api_access_level_db.access_level_limit'))
       num_of_queries = Column(Integer)
       call_received_utc = Column(DateTime)
       call_returned_utc = Column(DateTime)
