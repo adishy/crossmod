@@ -3,10 +3,14 @@ from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.crossmod_gunicorn import CrossmodGunicorn
 import click
 import crossmod
+from pyfiglet import Figlet
 
 @click.command()
 @click.argument('mode')
 def main(mode):
+  crossmod_ascii_banner = Figlet(font='graffiti')
+  print(crossmod_ascii_banner.renderText('crossmod'))
+
   if mode == "api":
     crossmod.clf_ensemble = CrossmodClassifiers()
     print("API\n")
