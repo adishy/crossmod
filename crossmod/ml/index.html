@@ -86,6 +86,16 @@
             
     <li class="toctree-l3"><a href="#machine-learing-models">Machine Learing Models</a></li>
     
+        <ul>
+        
+            <li><a class="toctree-l4" href="#data-training">Data Training</a></li>
+        
+            <li><a class="toctree-l4" href="#data-prediction">Data Prediction</a></li>
+        
+            <li><a class="toctree-l4" href="#data-retraining">Data Retraining</a></li>
+        
+        </ul>
+    
 
     </ul>
                 </li>
@@ -138,6 +148,23 @@
             <div class="section">
               
                 <h2 id="machine-learing-models">Machine Learing Models</h2>
+<p>Crossmod is currently using <a href="https://github.com/facebookresearch/fastText">Fasttext</a> as its backend model. </p>
+<h3 id="data-training">Data Training</h3>
+<p>Now we have 100 models that were trained on 100 subreddits on Reddit and 8 models that were trained on Macro Norm. These models are pre-trained by the data we collected before. We would use the predication from all of them and take actions according to user's manual configuration.</p>
+<h3 id="data-prediction">Data Prediction</h3>
+<p>The main prediction process is <code>subreddit_monitor.py</code>. It could listen to mulitple subreddits and take actions on some of them. The list could be changed in the database. The main steps are:</p>
+<ol>
+<li>Crossmod will use <a href="https://praw.readthedocs.io/en/latest/">praw</a> to fetch comments in mulitple subreddits;</li>
+<li>Then it will check the whitelisted option and also filtered the comments by <code>helpers/filters.py</code> (which could get rid of links, emojis and other symbols that could not be used for detecting violations)</li>
+<li>Then it will use our <a href="https://ceshwar.github.io/crossmod/crossmod/api/">API</a> service to use our backend models to get the prediction. It will generate two scores <code>agreement_score</code> from 100 subreddit models and <code>norm_violation_score</code> from 8 macro norm models. </li>
+<li>Crossmod will store the data into database. It could do retraining and data analysis with these data in the future.</li>
+<li>(Optional) If the user chooses to take action on the subreddit of this comment, crossmod will use <a href="https://praw.readthedocs.io/en/latest/">praw</a> to report it to the moderators on Reddit.</li>
+</ol>
+<h3 id="data-retraining">Data Retraining</h3>
+<p>Because we have collected many comments from different subreddits, we could do data retraining to improve the accuracy of our backend model. Our plan is:</p>
+<ol>
+<li>We could use our new data to train a new subreddit model and add it to our model list.</li>
+</ol>
               
             </div>
           </div>
