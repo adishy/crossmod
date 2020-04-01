@@ -13,7 +13,7 @@ Contact authors to obtain the ensemble of classifiers for Crossmod's back-end.
 ## Installing Crossmod:
 ```bash
 # Install Python pip and venv and other dependencies
-sudo apt-get install -y python3-pip build-essential libssl-dev libffi-dev python-dev python3-venv
+sudo apt-get install -y python3-pip build-essential libssl-dev libffi-dev python3-dev python3-venv
 
 # Clone the repository
 git clone http://github.com/ceshwar/crossmod
