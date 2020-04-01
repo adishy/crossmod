@@ -7,7 +7,6 @@ import datetime
 
 
 
-
 class retraining():
     def __init__(self):
         # Crossmod database interface
@@ -31,8 +30,10 @@ class retraining():
         rows = self.session.query(DataTable).filter(DataTable.subreddit == subreddit, 
                                                     DataTable.crossmod_action == "report",
                                                     DataTable.ingested_utc > start_time, 
-                                                    DataTable.ingested_utc <= end_time).limit(500)
+                                                    DataTable.ingested_utc <= end_time).limit(500)\
+
         f = open("tmp_data.train", "a")
+
         for row in rows:
             print(model.predict(row.comment))
             if row.banned_by == null: 
@@ -42,7 +43,7 @@ class retraining():
             f.write(" " + row.comment)
         f.close()
 
-
+        model = fasttext.train_supervised(input="./tmp_data.train")
 
 if __name__ == "__main__":
     test = retraining()
