@@ -6,6 +6,8 @@ import datetime
 
 
 
+
+
 class retraining():
     def __init__(self):
         # Crossmod database interface
@@ -14,6 +16,10 @@ class retraining():
         self.session = self.db.database_session
 
     def train(self, subreddit, start_time, end_time):
+
+        UNREMOVED_COMMENT = "__label__unremoved"
+        REMOVED_COMMENT = "__label__removed"
+
         '''
         sqlite> select count(*) from crossmoddbdata where banned_by is not null;
         7942
@@ -26,13 +32,16 @@ class retraining():
                                                     DataTable.crossmod_action == "report",
                                                     DataTable.ingested_utc > start_time, 
                                                     DataTable.ingested_utc <= end_time).limit(500)
-
-        f = open("tmp_data.txt", "a")
-        
+        f = open("tmp_data.train", "a")
         for row in rows:
-            print(row)
-
+            print(model.predict(row.comment))
+            if row.banned_by == null: 
+                f.write(UNREMOVED_COMMENT)
+            elif row.banned_by == null: 
+                f.write(REMOVED_COMMENT)
+            f.write(" " + row.comment)
         f.close()
+
 
 
 if __name__ == "__main__":
