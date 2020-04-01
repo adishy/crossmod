@@ -23,6 +23,7 @@ from crossmod.db.base import Base
 
 class DataTable(Base):
       __tablename__ = 'crossmoddbdata'
+      __table_args__ = {'extend_existing': True} 
       created_utc = Column(DateTime)
       ingested_utc = Column(DateTime)
       id = Column(String(50), primary_key = True)
