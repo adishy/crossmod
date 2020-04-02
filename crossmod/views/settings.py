@@ -7,6 +7,8 @@ from flask import request
 
 @crossmod.app.route('/settings/', methods=['GET', 'POST'])
 def settings():
+    if 'email' not in flask.session:
+        return flask.redirect(flask.url_for('login'))
     db = CrossmodDB()
     if request.method == 'POST': 
         if 'activate_moderation' in request.form:

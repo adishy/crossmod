@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crossmod | Create an account</title>
+        <style>
+            input{
+                display: block;
+                margin: 20px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <form action="/accounts/create/" method="post" enctype="multipart/form-data">
+            <input type="text" name="email" placeholder="Email"/>
+            <input type="password" name="password" placeholder="Password"/>
+            <input type="submit" name="signup" value="sign up" />
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }"/>
+        </form>
+        <p>Already have an account? <a href="/accounts/login/">Login</a></p>
+    </body>
+
+</html>

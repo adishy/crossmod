@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crossmod | Login</title>
+</head>
+<body>
+    <form class="login_form" action="/accounts/login/" method="post" enctype="multipart/form-data">
+        <input type="text" name="username" />
+        <input type="password" name="password" class="password_input"/>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }"/>
+        <input type="button" value="login" class="login_button">
+    </form>
+    <p> Don't have an account? <a href="/accounts/create/">Create one</a></p>
+</body>
+
+<script>
+    function sha512(str) {
+        return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str)).then(buf => {
+            return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
+        });
+    }
+
+    var login_form = document.querySelector(".login_form")
+    var login_button = document.querySelector(".login_button")
+    var password_input = document.querySelector(".password_input")
+    
+    login_button.addEventListener("click", function(event){
+        password_input.value= sha512(password_input.value)
+        login_form.submit()
+    })
+</script>
+</html>
