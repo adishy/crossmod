@@ -27,8 +27,8 @@ class CrossmodSubredditMonitor():
       self.db = CrossmodDB()
 
       # PRAW interface to monitor subreddits
-      self.reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
-                                client_id = CrossmodConsts.REDDIT_CLIENT_ID, 
+      self.reddit = praw.Reddit(user_agent = CrossmodConsts.MONITOR_REDDIT_USER_AGENT,
+                                client_id = CrossmodConsts.MONITOR_REDDIT_CLIENT_ID, 
                                 client_secret = CrossmodConsts.REDDIT_CLIENT_SECRET,
                                 username = CrossmodConsts.REDDIT_USERNAME, 
                                 password = CrossmodConsts.REDDIT_PASSWORD)

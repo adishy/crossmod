@@ -1,12 +1,21 @@
 import os
 
 class CrossmodConsts:
-    PERSPECTIVE_API_SECRET = os.environ['PERSPECTIVE_API_SECRET']
-    REDDIT_USER_AGENT = os.environ['REDDIT_USER_AGENT']
-    REDDIT_CLIENT_ID = os.environ['REDDIT_CLIENT_ID']
-    REDDIT_CLIENT_SECRET = os.environ['REDDIT_CLIENT_SECRET']
+    # Reddit account used to run Crossmod
     REDDIT_PASSWORD = os.environ['REDDIT_PASSWORD']
     REDDIT_USERNAME = os.environ['REDDIT_USERNAME']
+
+    # Reddit UA value (let Reddit know this is a bot)
+    REDDIT_USER_AGENT = "Crossmod (by /u/CrossModerator, for more details visit crossmod.ml)"
+
+    # Subreddit Monitor Client ID and Secret
+    MONITOR_REDDIT_CLIENT_ID = os.environ['REDDIT_CLIENT_ID']
+    MONITOR_REDDIT_CLIENT_SECRET = os.environ['REDDIT_CLIENT_SECRET']
+    
+    # DB Updater Client ID and Secret
+    UPDATER_REDDIT_CLIENT_ID = os.environ['UPDATER_REDDIT_CLIENT_ID']
+    UPDATER_REDDIT_CLIENT_SECRET = os.environ['UPDATER_REDDIT_CLIENT_SECRET']
+    
     ENVIRONMENT="debug"
     DB_PATH = "crossmoddbdata.db" #os.environ['DB_PATH']
     MODELS_DIRECTORY = os.environ['MODELS_DIRECTORY']
