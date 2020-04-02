@@ -9,8 +9,8 @@ class CrossmodConsts:
     REDDIT_USER_AGENT = "Crossmod (by /u/CrossModerator, for more details visit crossmod.ml)"
 
     # Subreddit Monitor Client ID and Secret
-    MONITOR_REDDIT_CLIENT_ID = os.environ['REDDIT_CLIENT_ID']
-    MONITOR_REDDIT_CLIENT_SECRET = os.environ['REDDIT_CLIENT_SECRET']
+    MONITOR_REDDIT_CLIENT_ID = os.environ['MONITOR_REDDIT_CLIENT_ID']
+    MONITOR_REDDIT_CLIENT_SECRET = os.environ['MONITOR_REDDIT_CLIENT_SECRET']
     
     # DB Updater Client ID and Secret
     UPDATER_REDDIT_CLIENT_ID = os.environ['UPDATER_REDDIT_CLIENT_ID']
@@ -21,7 +21,7 @@ class CrossmodConsts:
     MODELS_DIRECTORY = os.environ['MODELS_DIRECTORY']
     SUBREDDIT_CLASSIFIERS = "subreddit"
     NORM_CLASSIFIERS = "norm"
-    SUBREDDIT_LIST = ['The_Donald', 'politics', 'AskReddit', 'science']#, 'worldnews', 'news', 'explainlikeimfive', 'relationships', 'TwoXChromosomes', 'gonewild', 'hillaryclinton', 'askscience', 'leagueoflegends', 'AskHistorians', 'Games', 'PoliticalDiscussion', 'personalfinance', 'aww', 'photoshopbattles', 'syriancivilwar', 'nosleep', 'CFB', 'pcmasterrace', 'pics', 'pokemongo', 'funny', 'GlobalOffensive', 'Futurology', 'SandersForPresident', 'MMA', 'europe', 'nfl', 'EnoughTrumpSpam', 'BlackPeopleTwitter', 'pokemontrades', 'legaladvice', 'history', 'videos', 'AskWomen', 'sex', 'GlobalOffensiveTrade', 'LateStageCapitalism', 'gaming', 'whatisthisthing', 'Showerthoughts', 'DIY', 'Android', 'OutOfTheLoop', 'atheism', 'UpliftingNews', 'Incels', 'gifs', 'food', 'movies', 'india', 'books', 'depression', 'hiphopheads', 'pokemon', 'philosophy', 'nba', 'Christianity', 'anime', '2007scape', 'fantasyfootball', 'Overwatch', 'tifu', 'churning', 'changemyview', 'space', 'conspiracy', 'ShitRedditSays', 'canada', 'socialism', 'soccerstreams', 'CanadaPolitics', 'nottheonion', 'gameofthrones', 'OldSchoolCool', 'AskTrumpSupporters', 'creepyPMs', 'SuicideWatch', 'wow', 'LifeProTips', 'SubredditDrama', 'technology', 'TheSilphRoad', 'hearthstone', 'spacex', 'me_irl', 'IAmA', 'DestinyTheGame', 'television', 'dataisbeautiful', 'NSFW_GIF', 'PurplePillDebate', 'GetMotivated', 'asoiaf', 'NeutralPolitics', 'jailbreak' ]
+    SUBREDDIT_LIST = ['Futurology']#, 'worldnews', 'news', 'explainlikeimfive', 'relationships', 'TwoXChromosomes', 'gonewild', 'hillaryclinton', 'askscience', 'leagueoflegends', 'AskHistorians', 'Games', 'PoliticalDiscussion', 'personalfinance', 'aww', 'photoshopbattles', 'syriancivilwar', 'nosleep', 'CFB', 'pcmasterrace', 'pics', 'pokemongo', 'funny', 'GlobalOffensive', 'Futurology', 'SandersForPresident', 'MMA', 'europe', 'nfl', 'EnoughTrumpSpam', 'BlackPeopleTwitter', 'pokemontrades', 'legaladvice', 'history', 'videos', 'AskWomen', 'sex', 'GlobalOffensiveTrade', 'LateStageCapitalism', 'gaming', 'whatisthisthing', 'Showerthoughts', 'DIY', 'Android', 'OutOfTheLoop', 'atheism', 'UpliftingNews', 'Incels', 'gifs', 'food', 'movies', 'india', 'books', 'depression', 'hiphopheads', 'pokemon', 'philosophy', 'nba', 'Christianity', 'anime', '2007scape', 'fantasyfootball', 'Overwatch', 'tifu', 'churning', 'changemyview', 'space', 'conspiracy', 'ShitRedditSays', 'canada', 'socialism', 'soccerstreams', 'CanadaPolitics', 'nottheonion', 'gameofthrones', 'OldSchoolCool', 'AskTrumpSupporters', 'creepyPMs', 'SuicideWatch', 'wow', 'LifeProTips', 'SubredditDrama', 'technology', 'TheSilphRoad', 'hearthstone', 'spacex', 'me_irl', 'IAmA', 'DestinyTheGame', 'television', 'dataisbeautiful', 'NSFW_GIF', 'PurplePillDebate', 'GetMotivated', 'asoiaf', 'NeutralPolitics', 'jailbreak' ]
     NORM_LIST = ['misogynistic-slurs', 'verbal-attacks-on-Reddit', 'hatespeech-racist-homophobic', 'porno-links', 'abusing-and-criticisizing-mods', 'namecalling-claiming-other-too-sensitive', 'personal-attacks', 'opposing-political-views-trump']
     AGREEMENT_SCORE_THRESHOLD = 0.85
     CLIENT_API_ENDPOINT = "http://localhost/api/v1/get-prediction-scores"
