@@ -16,7 +16,8 @@ def main(mode):
     options = {
       'bind': '0.0.0.0:8200',
       'preload_app': True,
-      'workers': 3
+      'workers': 3,
+      'debug': True
     }
     CrossmodGunicorn(crossmod.app, options).run()
 

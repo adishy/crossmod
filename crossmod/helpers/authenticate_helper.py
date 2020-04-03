@@ -24,7 +24,7 @@ def confirm_password(db, form_email, form_password):
     if row is None:
         return False
 
-    password_hash = row['password_hash']
+    password_hash = row.password_hash
     password_components = password_hash.split('$')
 
     return password_components[2] == get_password_hash(
@@ -52,9 +52,9 @@ def create_password(password):
 
 def create_account(db, email, password):
     """Write a new user to the database."""
-    new_user = UsersTable(email = email, password = create_password(password))
+    new_user = UsersTable(email = email, password_hash = create_password(password))
     db.database_session.add(new_user)
-    db.database_session.flush()
+    db.database_session.commit()
     
 
 def delete_user_in_db(db, email):
@@ -67,7 +67,7 @@ def generate_csrf_token():
     flask.session['csrf_token'] = secrets.token_hex(16)
 
 def check_csrf_token(request):
-    csrf_token = request.get('csrf_token')
+    csrf_token = request.form.get('csrf_token')
     return csrf_token is not None and csrf_token == flask.session['csrf_token']
 
 def check_and_refresh_csrf(request):

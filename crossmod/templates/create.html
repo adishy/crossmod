@@ -11,13 +11,29 @@
     </head>
     
     <body>
-        <form action="/accounts/create/" method="post" enctype="multipart/form-data">
+        <form class="create_form" action="/accounts/create/" method="post" enctype="multipart/form-data">
             <input type="text" name="email" placeholder="Email"/>
-            <input type="password" name="password" placeholder="Password"/>
-            <input type="submit" name="signup" value="sign up" />
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }"/>
+            <input class="password_input" type="password" name="password" placeholder="Password"/>
+            <input type="submit" name="signup" value="sign up" class="create_button" />
         </form>
         <p>Already have an account? <a href="/accounts/login/">Login</a></p>
     </body>
 
+    <script>
+        function sha512(str) {
+            return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str)).then(buf => {
+                return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
+            });
+        }
+    
+        var create_form = document.querySelector(".create_form")
+        var create_button = document.querySelector(".create_button")
+        var password_input = document.querySelector(".password_input")
+        
+        create_button.addEventListener("click", function(event){
+            event.preventDefault()
+            password_input.value= sha512(password_input.value)
+            create_form.submit()
+        })
+    </script>
 </html>

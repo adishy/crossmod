@@ -8,9 +8,6 @@ def login():
     if 'email' in flask.session:
         return flask.redirect(flask.url_for('settings'))
     if flask.request.method == 'POST':
-        if not check_and_refresh_csrf(flask.request):
-            print("Invalid CSRF token")
-            return flask.abort(403)
         db = CrossmodDB()
         email = flask.request.form['email']
         password = flask.request.form['password']
@@ -22,7 +19,7 @@ def login():
     return flask.render_template('login.html', **context)
 
 
-@crossmod.app.route('/accounts/login/', methods = ['GET', 'POST'])
+@crossmod.app.route('/accounts/logout/', methods = ['GET', 'POST'])
 def logout():
     flask.session.clear()
     return flask.redirect(flask.url_for('login'))
@@ -37,10 +34,6 @@ def create():
     db = CrossmodDB()
 
     if flask.request.method == 'POST':
-        if not check_and_refresh_csrf(flask.request):
-            print("Invalid CSRF token")
-            return flask.abort(403)
-
         email = flask.request.form['email']
         password = flask.request.form['password']
 
