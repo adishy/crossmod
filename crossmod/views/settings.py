@@ -1,7 +1,8 @@
 import crossmod
 from crossmod.environments.consts import CrossmodConsts
 from crossmod.db import CrossmodDB
-from crossmod.db.tables import SubredditSettingsTable
+from crossmod.db.tables import SubredditSettingsTable, UsersTable
+from crossmod.helpers.authenticate_helper import admin_user
 import flask
 from flask import request
 
@@ -49,9 +50,19 @@ def settings():
             db.database_session.query(SubredditSettingsTable).filter(SubredditSettingsTable.subreddit == subreddit).delete()
             db.database_session.commit()
 
+        elif 'make_admin' in request.form:
+            print("Adding admin user")
+            email = flask.escape(request.form['email'])
+            row = db.database_session.query(UsersTable).filter(UsersTable.email == email).one_or_none()
+            if row is not None:
+                row.admin = True
+                db.database_session.commit()
         # PRG Pattern: https://en.wikipedia.org/wiki/Post/Redirect/Get
         return flask.redirect(flask.url_for('settings'))
 
     subreddits = [row for row in db.database_session.query(SubredditSettingsTable).all()]
-    context = { 'subreddits': subreddits }
+    context = { 'subreddits': subreddits, 
+                'admin_user': admin_user(db, flask.session['email']),
+                'non_admin_users': db.database_session.query(UsersTable).filter(UsersTable.admin == False).all()
+                }
     return flask.render_template('settings.html', **context)

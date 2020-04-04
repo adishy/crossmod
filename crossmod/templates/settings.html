@@ -10,6 +10,7 @@
     </head>
     <body>
         <a href="/accounts/logout/">Logout</a>
+        {% if admin_user %}
         <h1>Subreddits</h1>
         <ul>
             {% for subreddit in subreddits %}
@@ -82,5 +83,30 @@
 
             <input type="submit" name="add_subreddit" value="Add Subreddit"/>
         </form>
+
+        <h2>Make/Break Admin Users:</h2>
+        <ul>
+            {% if non_admin_users %}
+
+                {% for user in non_admin_users %}
+                    <li>
+                        <p>{{ user.email }}</p>
+                        <form action="{{ url_for('settings') }}"method="POST">
+                            <input type="hidden" name="email" value="{{ user.email }}"/>
+                            <input type="submit" name="make_admin" value="Make Admin"/>
+                        </form>
+                    </li>
+                {% endfor %}
+
+            {% else %}
+                    <p> No non-admin users </p>
+            {% endif %}
+        </ul>
+        
+        {% else %}
+        <p>You need to be an admin user to view this page!</p>
+        {% endif %}
+
+
     </body>
 </html>

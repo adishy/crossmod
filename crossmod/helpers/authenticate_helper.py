@@ -63,6 +63,10 @@ def delete_user_in_db(db, email):
     db.database_session.query(UsersTable).filter(UsersTable.email == email).delete()
     db.database_session.commit()
 
+def admin_user(db, email):
+    row = db.database_session.query(UsersTable).filter(UsersTable.email == email).one_or_none()
+    return row.admin
+
 def generate_csrf_token():
     flask.session['csrf_token'] = secrets.token_hex(16)
 
