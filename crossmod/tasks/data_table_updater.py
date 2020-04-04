@@ -5,7 +5,3 @@ import crossmod
 def perform_update():
     db_updater = CrossmodDataTableUpdater()
     db_updater.update_database_values()
-
-@crossmod.celery.task
-def test(args):
-    print("Task", args)

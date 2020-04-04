@@ -24,6 +24,7 @@ class CrossmodDataTableUpdater:
                                   password = CrossmodConsts.REDDIT_PASSWORD)
 
     def update_database_values(self):
+        print("Starting data table update!")
         status_count = self.session.query(UpdateStatusTable).count()
         if(status_count == 0):
             rows = self.session.query(DataTable)

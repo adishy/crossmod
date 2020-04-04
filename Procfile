@@ -1,3 +1,3 @@
 api: crossmod api
 monitor: crossmod monitor
-db-updater: celery worker --beat -A crossmod.celery --loglevel=info
+db-updater: celery worker -A crossmod.celery -B --loglevel=info
