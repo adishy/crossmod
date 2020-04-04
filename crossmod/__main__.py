@@ -11,10 +11,10 @@ def main(mode):
   crossmod_ascii_banner = Figlet(font='graffiti')
   print(crossmod_ascii_banner.renderText('crossmod'))
   if mode == "api":
-    #crossmod.clf_ensemble = CrossmodClassifiers()
+    crossmod.clf_ensemble = CrossmodClassifiers()
     print("API\n")
     options = {
-      'bind': '0.0.0.0:8200',
+      'bind': '0.0.0.0',
       'preload_app': True,
       'workers': 3,
       'debug': True

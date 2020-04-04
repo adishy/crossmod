@@ -27,9 +27,9 @@ class CrossmodSubredditMonitor():
       self.db = CrossmodDB()
 
       # PRAW interface to monitor subreddits
-      self.reddit = praw.Reddit(user_agent = CrossmodConsts.MONITOR_REDDIT_USER_AGENT,
+      self.reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
                                 client_id = CrossmodConsts.MONITOR_REDDIT_CLIENT_ID, 
-                                client_secret = CrossmodConsts.REDDIT_CLIENT_SECRET,
+                                client_secret = CrossmodConsts.MONITOR_REDDIT_CLIENT_SECRET,
                                 username = CrossmodConsts.REDDIT_USERNAME, 
                                 password = CrossmodConsts.REDDIT_PASSWORD)
       
@@ -101,10 +101,21 @@ class CrossmodSubredditMonitor():
                         f"A comment with permalink [{comment.permalink}] exceeded Crossmod's removal consensus threshold.", 
                         self.me)
   
-    @retry(wait=wait_exponential(multiplier=1, min=4, max=10))
+    def check_restart_conditions(self):
+        number_of_subreddits_now = self.number_of_subreddits()
+        if self.current_subreddits_count != number_of_subreddits_now:
+          print("\nSubreddit(s) added! Restarting subreddit monitor..\n")
+          self.current_subreddits_count = number_of_subreddits_now
+          self.monitor()
+    
+    #@retry(wait=wait_exponential(multiplier=1, min=4, max=10))
     def monitor(self):
+      # Wait for subreddits to be added if there are none in the table
+      while self.number_of_subreddits() == 0:
+            time.sleep(1.0)
       # PRAW interface used to stream comments from subreddits
       self.current_subreddits_count = self.number_of_subreddits()
+
       subreddits_listener = self.reddit.subreddit("+".join([row.subreddit for row in self.db.database_session.query(SubredditSettingsTable.subreddit).all()]))
 
       print("Crossmod started monitoring at:", (datetime.datetime.now(pytz.timezone('EST'))).strftime('%Y-%m-%d %H:%M:%S'), "EST")
@@ -138,6 +149,8 @@ class CrossmodSubredditMonitor():
                           banned_at_utc = None,
                           agreement_score = -1.0,
                           norm_violation_score = -1.0)
+            print("______________________________________________\n")
+            self.check_restart_conditions()
             continue	
 
         removal_consensus = self.find_removal_consensus(comment.body, subreddit_name)
@@ -174,8 +187,9 @@ class CrossmodSubredditMonitor():
         print("Processing time for comment:", end - start, "seconds")
         print("______________________________________________\n") 
 
-        number_of_subreddits_now = self.number_of_subreddits()
-        if self.current_subreddits_count != number_of_subreddits_now:
-          print("\nSubreddit(s) added! Restarting subreddit monitor..\n")
-          self.current_subreddits_count = number_of_subreddits_now
-          self.monitor()
+        # number_of_subreddits_now = self.number_of_subreddits()
+        # if self.current_subreddits_count != number_of_subreddits_now:
+        #   print("\nSubreddit(s) added! Restarting subreddit monitor..\n")
+        #   self.current_subreddits_count = number_of_subreddits_now
+        #   self.monitor()
+        self.check_restart_conditions()
