@@ -1,13 +1,13 @@
-from crossmod.helpers.consts import CrossmodConsts
 from crossmod.db.interface import CrossmodDB
-from crossmod.db.tables.data import DataTable
-from crossmod.db.tables.update_status import UpdateStatusTable
+from crossmod.environments.consts import CrossmodConsts
+from crossmod.db.tables import DataTable
+from crossmod.db.tables import UpdateStatusTable
 import datetime
 import praw
 import sys
 import click
 
-class CrossmodDBUpdater:
+class CrossmodDataTableUpdater:
     def __init__(self):
         self.REMOVED = "[removed]"
         self.DELETED = "[deleted]"
@@ -18,12 +18,13 @@ class CrossmodDBUpdater:
 
         #setup the Reddit bot
         self.reddit = praw.Reddit(user_agent = CrossmodConsts.REDDIT_USER_AGENT,
-                                  client_id = CrossmodConsts.REDDIT_CLIENT_ID, 
-                                  client_secret = CrossmodConsts.REDDIT_CLIENT_SECRET,
+                                  client_id = CrossmodConsts.UPDATER_REDDIT_CLIENT_ID, 
+                                  client_secret = CrossmodConsts.UPDATER_REDDIT_CLIENT_SECRET,
                                   username = CrossmodConsts.REDDIT_USERNAME, 
                                   password = CrossmodConsts.REDDIT_PASSWORD)
 
     def update_database_values(self):
+        print("Starting data table update!")
         status_count = self.session.query(UpdateStatusTable).count()
         if(status_count == 0):
             rows = self.session.query(DataTable)
@@ -59,10 +60,3 @@ class CrossmodDBUpdater:
 
             if count % 20 == 0:
                 self.db.database_session.commit()
-
-def main():
-    updater = CrossmodDBUpdater()
-    updater.update_database_values()
-    
-if __name__ == "__main__":
-    main()

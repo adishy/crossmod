@@ -1,48 +1,33 @@
 from crossmod.db.interface import CrossmodDB
-from crossmod.db.tables import ActiveSubredditsTable
 from crossmod.db.tables import SubredditSettingsTable
-from crossmod.helpers.consts import CrossmodConsts
+from crossmod.environments.consts import CrossmodConsts
+
 
 def add_subreddit_to_monitor(db, 
                              subreddit_name, 
-                             moderators_list, 
                              perform_action = False,
                              subreddit_classifiers = CrossmodConsts.SUBREDDIT_LIST, 
                              norm_classifiers = CrossmodConsts.NORM_LIST):
     db.write(SubredditSettingsTable,
             subreddit = subreddit_name,
-            moderator_list = ",".join(moderators_list),
             subreddit_classifiers = ",".join(subreddit_classifiers),
-            norm_classifiers = ",".join(norm_classifiers))
-
-    db.write(ActiveSubredditsTable, 
-             subreddit = subreddit_name,
-             perform_action = perform_action)
+            norm_classifiers = ",".join(norm_classifiers),
+            perform_action = perform_action)
     
     print(f"{subreddit_name} will be monitored")
+
 
 def main():
     db = CrossmodDB()
 
-    add_subreddit_to_monitor(db,
-                             "modbot_staging", 
-                             ["thebiglebowskiii"], 
-                             True)
+    subreddits = [("modbot_staging", True),
+                  ("Futurology", False),
+                  ("Coronavirus", False),
+                  ("China_Flu", False)]
 
-    add_subreddit_to_monitor(db,
-                             "Futurology",
-                             ["thebiglebowskiii", 
-                              "AutoModerator", 
-                              "TransPlanetInjection", 
-                              "Xenophon1", 
-                              "ion-tom", 
-                              "mind_bomber",
-                              "Gobi_The_Mansoe",
-                              "multi-mod",
-                              "Buck-Nasty",
-                              "Yosarian2",
-                              "ImLivingAmongYou",
-                              "lughnasadh"])
+    for subreddit in subreddits:
+        add_subreddit_to_monitor(db, subreddit[0], subreddit[1])
+
 
 if __name__=="__main__":
     main()

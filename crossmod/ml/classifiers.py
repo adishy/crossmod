@@ -1,4 +1,4 @@
-from crossmod.helpers.consts import *
+from crossmod.environments.consts import CrossmodConsts
 from crossmod.helpers.filters import *
 import fasttext
 import pandas as pd

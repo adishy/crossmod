@@ -1,8 +1,9 @@
-from crossmod.helpers.consts import CrossmodConsts
+from crossmod.environments.consts import CrossmodConsts
 from crossmod.db.base import Base
 from crossmod.db.tables import DataTable
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session
 import datetime
 
 
@@ -13,8 +14,7 @@ class CrossmodDB:
         self.database = create_engine(self.database_uri, connect_args={'timeout': 15})
         Base.metadata.bind = self.database
         Base.metadata.create_all(self.database)
-        self.DatabaseSession= sessionmaker(bind = self.database)
-        self.database_session = self.DatabaseSession()
+        self.database_session = scoped_session(sessionmaker(bind = self.database))
         
     def write(self, table_type, commit = True, **kwargs):
         try:

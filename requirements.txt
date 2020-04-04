@@ -1,9 +1,0 @@
-pandas
-praw
-google-api-python-client
-flask
-sqlalchemy
-fasttext
-seaborn
-tenacity
-click
