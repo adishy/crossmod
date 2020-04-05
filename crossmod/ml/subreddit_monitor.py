@@ -33,7 +33,7 @@ class CrossmodSubredditMonitor():
                                 username = CrossmodConsts.REDDIT_USERNAME, 
                                 password = CrossmodConsts.REDDIT_PASSWORD)
       
-      # Who am I? I am Spider-Man.
+      # Who am I?
       self.me = self.reddit.user.me()
 
       # Keeps track of how many subreddits are currently being monitored
@@ -108,7 +108,7 @@ class CrossmodSubredditMonitor():
           self.current_subreddits_count = number_of_subreddits_now
           self.monitor()
     
-    #@retry(wait=wait_exponential(multiplier=1, min=4, max=10))
+    @retry(wait=wait_exponential(multiplier=1, min=4, max=10))
     def monitor(self):
       # Wait for subreddits to be added if there are none in the table
       while self.number_of_subreddits() == 0:
@@ -186,10 +186,4 @@ class CrossmodSubredditMonitor():
 
         print("Processing time for comment:", end - start, "seconds")
         print("______________________________________________\n") 
-
-        # number_of_subreddits_now = self.number_of_subreddits()
-        # if self.current_subreddits_count != number_of_subreddits_now:
-        #   print("\nSubreddit(s) added! Restarting subreddit monitor..\n")
-        #   self.current_subreddits_count = number_of_subreddits_now
-        #   self.monitor()
         self.check_restart_conditions()
