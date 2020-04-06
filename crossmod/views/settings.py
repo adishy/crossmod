@@ -57,12 +57,16 @@ def settings():
             if row is not None:
                 row.admin = True
                 db.database_session.commit()
+            
         # PRG Pattern: https://en.wikipedia.org/wiki/Post/Redirect/Get
         return flask.redirect(flask.url_for('settings'))
 
+    admin = False
+    if 'email' in flask.session:
+        admin = admin_user(db, flask.session['email'])
     subreddits = [row for row in db.database_session.query(SubredditSettingsTable).all()]
     context = { 'subreddits': subreddits, 
-                'admin_user': admin_user(db, flask.session['email']),
+                'admin_user': admin,
                 'non_admin_users': db.database_session.query(UsersTable).filter(UsersTable.admin == False).all()
                 }
     return flask.render_template('settings.html', **context)
