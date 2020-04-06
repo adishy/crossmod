@@ -12,8 +12,8 @@ services:
             - .:/crossmod
 
     redis:
-        image: redis:4.0.5-alpine
-        command: ["redis-server", "--appendonly", "yes"]
+        image: redis:5-buster
+        command: ["redis-server"]
         hostname: redis
         networks:
             - default
@@ -25,4 +25,4 @@ networks:
         driver: "bridge"
 
 volumes:
-    redis-data:
+    redis-data: {}

@@ -23,13 +23,6 @@ limiter = Limiter(
     default_limits=["10 per minute", "600 per hour"]
 )
 
-app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
-
-celery = Celery(app.name, broker = app.config['CELERY_BROKER_URL'])
-celery.conf.timezone = 'EST'
-import crossmod.tasks
-
 # Tell our app about views and model.  This is dangerously close to a
 # circular import, which is naughty, but Flask was designed that way.
 # (Reference http://flask.pocoo.org/docs/patterns/packages/)  We're
@@ -42,11 +35,15 @@ import crossmod.api # noqa: E402  pylint: disable=wrong-import-position
 
 clf_ensemble = None
 
-
 from crossmod.db.interface import CrossmodDB
-
 db_interface = CrossmodDB()
-
 @crossmod.app.teardown_appcontext
 def cleanup(resp_or_exc):
     crossmod.db_interface.database_session.remove()
+
+from crossmod.environments.consts import CrossmodConsts
+app.config['CELERY_BROKER_URL'] = f'redis://{CrossmodConsts.REDIS_SERVER}:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = f'redis://{CrossmodConsts.REDIS_SERVER}:6379/0'
+celery = Celery(app.name, broker = app.config['CELERY_BROKER_URL'])
+celery.conf.timezone = 'EST'
+import crossmod.tasks

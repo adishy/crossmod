@@ -37,6 +37,7 @@ class CrossmodConsts:
     CLIENT_API_ENDPOINT = "http://localhost/api/v1/get-prediction-scores"
     CLIENT_API_SUPER_KEY = "ABCDEFG"
 
+    REDIS_SERVER = os.environ['REDIS_SERVER']
     
     @staticmethod
     def get_norms_classifier(norm):
