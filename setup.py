@@ -25,7 +25,8 @@ setup(
         'redis',
         'seaborn',  
         'SQLAlchemy',
-        'tenacity'
+        'tenacity',
+        'StringGenerator'
     ],
     entry_points={
         'console_scripts': [

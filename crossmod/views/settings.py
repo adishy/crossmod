@@ -2,8 +2,18 @@ import crossmod
 from crossmod.environments.consts import CrossmodConsts
 from crossmod.db import CrossmodDB
 from crossmod.db.tables import SubredditSettingsTable
+from crossmod.db.tables import ApiKeyTable
+
 import flask
 from flask import request
+
+from sqlalchemy import select
+import strgen  # For generating new API KEY
+from string import Template
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 @crossmod.app.route('/settings/', methods=['GET', 'POST'])
 def settings():
@@ -47,10 +57,42 @@ def settings():
             db.database_session.query(SubredditSettingsTable).filter(SubredditSettingsTable.subreddit == subreddit).delete()
             db.database_session.commit()
 
-        elif 'add_key' in request.form:
-            print("Adding a key to api table")
-            #db.write()
-        # PRG Pattern: https://en.wikipedia.org/wiki/Post/Redirect/Get
+        elif 'generate_key' in request.form:
+            input_email = request.form['email']
+            
+            new_key = strgen.StringGenerator("[\w\d]{40}").render()
+            print(f"Generating new API key associated under '{input_email}' and adding to ApiKeyTable:")
+            print(f"New Key: {new_key}")
+            db.write(ApiKeyTable,
+                     email = input_email,
+                     api_key = new_key,
+                     access_level = 0)
+        
+            data = db.database_session.execute(select('*').select_from(ApiKeyTable)).fetchall()
+            for row in data:
+                print(row)
+
+            # Send Email
+            with open('/home/ubuntu/crossmod-dev/crossmod-updating-api/crossmod/views/key_gen_email_template.txt', 'r', encoding='utf-8') as template_file:
+                template_file_content = template_file.read()
+            message_template = Template(template_file_content)
+
+            s = smtplib.SMTP('smtp.gmail.com', 587)
+            s.starttls()
+            s.login('crossmoderator@gmail.com', 'Crossmoderator12345')
+            msg = MIMEMultipart()
+            message = message_template.substitute(API_KEY=new_key)
+            msg['From']='crossmoderator@gmail.comm'
+            msg['To']=email
+            msg['Subject']="Your Crossmod API Key"
+
+            msg.attach(MIMEText(message, 'plain'))
+            s.send_message(msg)
+            del msg
+
+            s.quit() 
+        # PRG Pattern: https://en.wikipedia.org/wiki/Post/Redirect/Geti
+
         return flask.redirect(flask.url_for('settings'))
 
     subreddits = [row for row in db.database_session.query(SubredditSettingsTable).all()]

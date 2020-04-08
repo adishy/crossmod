@@ -81,9 +81,12 @@
 
             <input type="submit" name="add_subreddit" value="Add Subreddit"/>
         </form>
-
-        <form method="POST" action="/settings">
-          <input type="button">    
+        
+        <h1>API</h1>
+        <h2>Generate Key</h2>
+        <form method="POST" action="/settings/">
+          <input type="text" name="email" placeholder="Enter an email associated with the key"/>
+          <input type="submit" name="generate_key" value="Generate Key"/>    
         </form>
     </body>
 </html>
