@@ -76,9 +76,7 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#flask-outdated">Flask (Outdated)</a></li>
-        
-            <li><a class="toctree-l4" href="#gunicorn-outdated">Gunicorn (Outdated)</a></li>
+            <li><a class="toctree-l4" href="#running-a-local-instance">Running a local instance</a></li>
         
         </ul>
     
@@ -96,6 +94,9 @@
     
 
     <li class="toctree-l3"><a href="#local-instance-dependencies">Local Instance Dependencies</a></li>
+    
+
+    <li class="toctree-l3"><a href="#list-of-classifiers">List of Classifiers</a></li>
     
 
     <li class="toctree-l3"><a href="#troubleshooting">Troubleshooting</a></li>
@@ -164,10 +165,12 @@
             <div class="section">
               
                 <h2 id="quick-start">Quick Start</h2>
-<p>### Running a local instance
-* Clone Crossmoderator repository
-    * <a href="https://github.com/ceshwar/crossmod">https://github.com/ceshwar/crossmod</a>
-* Install dependencies</p>
+<h3 id="running-a-local-instance">Running a local instance</h3>
+<ul>
+<li>Clone Crossmoderator repository</li>
+<li><a href="https://github.com/ceshwar/crossmod">https://github.com/ceshwar/crossmod</a></li>
+<li>Install dependencies</li>
+</ul>
 <pre><code>./bin/crossmod_flask_run.sh
 </code></pre>
 
@@ -206,6 +209,7 @@ $ flask run --host=0.0.0.0 -p 6000
 <li><code>key</code>: string used for authentication.
         * currently, for debugging, key is set to <code>ABCDEFG</code></li>
 </ul>
+<p>For the full list of available subreddit classifiers and macro norm classifiers, see <strong>List of Classifiers</strong> below.</p>
 <h3 id="sample-api-requests">Sample API Requests</h3>
 <p>Examples of API requests made through command line with cURL:</p>
 <p><sub>Rating comments with all classifiers and no macro norms</sub></p>
@@ -225,7 +229,7 @@ $ flask run --host=0.0.0.0 -p 6000
 <ul>
 <li>The API response is an array of JSON objects, where the index of each JSON object  corresponds to the index of the original comment in the request.</li>
 </ul>
-<p><code>[
+<pre><code>    [
         {
             'agreement_score': AGREEMENT_SCORE,
             'norm_violation_score': NORM_VIOLATION_SCORE,
@@ -233,11 +237,15 @@ $ flask run --host=0.0.0.0 -p 6000
             'norms_violated': [ norm1, norm2, ... ]
         },
         ....
-    ]</code>
- * <code>agreement_score:</code> prediction score from subreddit classifiers. If no classifiers were used, is a <code>NULL</code> value.
-  * <code>norm_violation_score:</code> prediction score from macro norms. If no macro norms were used, is a <code>NULL</code> value.
-   * <code>subreddits_that_remove:</code> list of classifiers that voted to removed the comment. If no classifiers were used, is an <code>empty</code> list.
-    * <code>norms_violated:</code> list of norms that were violated by the comment. If no macro norms were used, is an <code>empty</code> list.</p>
+    ]
+</code></pre>
+
+<ul>
+<li><code>agreement_score:</code> prediction score from subreddit classifiers. If no classifiers were used, is a <code>NULL</code> value.</li>
+<li><code>norm_violation_score:</code> prediction score from macro norms. If no macro norms were used, is a <code>NULL</code> value.</li>
+<li><code>subreddits_that_remove:</code> list of classifiers that voted to removed the comment. If no classifiers were used, is an <code>empty</code> list.</li>
+<li><code>norms_violated:</code> list of norms that were violated by the comment. If no macro norms were used, is an <code>empty</code> list.</li>
+</ul>
 <h2 id="local-instance-dependencies">Local Instance Dependencies</h2>
 <p>Again, if you run a local instance of the API, a virtual environment is recommended.</p>
 <pre><code> crossmodclassifiers.py
@@ -252,6 +260,124 @@ $ flask run --host=0.0.0.0 -p 6000
  gunicorn3
 </code></pre>
 
+<h2 id="list-of-classifiers">List of Classifiers</h2>
+<p>Crossmod currently has 100 Subreddit Classifiers and Macro Norms.
+<details><summary><strong>Subreddit Classifiers</strong></summary>
+<p>
+The_Donald
+politics
+AskReddit
+science
+worldnews
+news
+explainlikeimfive
+relationships
+TwoXChromosomes
+gonewild
+hillaryclinton
+askscience
+leagueoflegends
+AskHistorians
+Games
+PoliticalDiscussion
+personalfinance
+aww
+photoshopbattles
+syriancivilwar
+nosleep
+CFB
+pcmasterrace
+pics
+pokemongo
+funny
+GlobalOffensive
+Futurology
+SandersForPresident
+MMA
+europe
+nfl
+EnoughTrumpSpam
+BlackPeopleTwitter
+pokemontrades
+legaladvice
+history
+videos
+AskWomen
+sex
+GlobalOffensiveTrade
+LateStageCapitalism
+gaming
+whatisthisthing
+Showerthoughts
+DIY
+Android
+OutOfTheLoop
+atheism
+UpliftingNews
+Incels
+gifs
+food
+movies
+india
+books
+depression
+hiphopheads
+pokemon
+philosophy
+nba
+Christianity
+anime
+2007scape
+fantasyfootball
+Overwatch
+tifu
+churning
+changemyview
+space
+conspiracy
+ShitRedditSays
+canada
+socialism
+soccerstreams
+CanadaPolitics
+nottheonion
+gameofthrones
+OldSchoolCool
+AskTrumpSupporters
+creepyPMs
+SuicideWatch
+wow
+LifeProTips
+SubredditDrama
+technology
+TheSilphRoad
+hearthstone
+spacex
+me_irl
+IAmA
+DestinyTheGame
+television
+dataisbeautiful
+NSFW_GIF
+PurplePillDebate
+GetMotivated
+asoiaf
+NeutralPolitics
+jailbreak
+</p>
+</details>
+<details><summary>Macro Norms</summary>
+<p>
+misogynistic-slurs
+verbal-attacks-on-Reddit
+hatespeech-racist-homophobic
+porno-links
+abusing-and-criticisizing-mods
+namecalling-claiming-other-too-sensitive
+personal-attacks
+opposing-political-views-trump
+</p>
+</details></p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p><strong>If an API response contains:</strong></p>
 <pre><code>[Errno 12] Cannot allocate memory
