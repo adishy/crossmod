@@ -10,3 +10,4 @@ class SubredditSettingsTable(Base):
       subreddit_classifiers = Column(UnicodeText)
       norm_classifiers = Column(UnicodeText)
       perform_action = Column(Boolean, default = False)
+      removal_config = Column(UnicodeText, default = '{ "agreement_score_threshold": 0.85, "norm_violation_score_threshold": 0.85  }')

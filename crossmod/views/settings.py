@@ -62,7 +62,8 @@ def settings():
         return flask.redirect(flask.url_for('settings'))
 
     admin = False
-    if 'email' in flask.session:
+    if 'email' in flask.session and len(flask.session['email']) > 0: 
+        print("Email in session", flask.session['email'])
         admin = admin_user(db, flask.session['email'])
     subreddits = [row for row in db.database_session.query(SubredditSettingsTable).all()]
     context = { 'subreddits': subreddits, 

@@ -10,6 +10,7 @@ from datetime import datetime
 from sqlalchemy import func
 from tenacity import retry, wait_exponential
 import requests
+import json
 import praw
 import sys
 import datetime
@@ -49,7 +50,17 @@ class CrossmodSubredditMonitor():
         row = self.db.database_session.query(SubredditSettingsTable.perform_action).filter(SubredditSettingsTable.subreddit == subreddit).one()
         return row.perform_action
 
+    def process_removal_config(self, removal_config, removal_consensus):
+      removal_config = json.loads(removal_config)
+      action = "EMPTY"
+      if removal_consensus['agreement_score'] >= removal_config['agreement_score_threshold']:
+            action = "report"
+      return action
 
+    def check_removal_config(self, subreddit, removal_consensus):
+      row = self.db.database_session.query(SubredditSettingsTable.removal_config).filter(SubredditSettingsTable.subreddit == subreddit).one()
+      return self.process_removal_config(row.removal_config, removal_consensus)
+  
     def find_removal_consensus(self, comment, subreddit_name):
       """Finds removal consensus querying Crossmod's API."""
       subreddit_settings = self.db.database_session \
@@ -160,7 +171,7 @@ class CrossmodSubredditMonitor():
         print("Agreement score from Crossmod API:", agreement_score)
         print("Norm violation score from Crossmod API:", norm_violation_score)
 
-        action = check_config(removal_consensus)
+        action = self.check_removal_config(removal_consensus)
 
         ### Write to CrossmodDB
         self.db.write(DataTable, 
