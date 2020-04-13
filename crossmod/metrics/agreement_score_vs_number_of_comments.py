@@ -1,57 +1,55 @@
 import pandas
 import seaborn
+import os
+import datetime
 import numpy as np
 import matplotlib.pyplot as plt
+from crossmod.environments import CrossmodConsts
 from crossmod.db.interface import CrossmodDB 
 from crossmod.db import DataTable
 
 class AgreementScoreVsComments:
     def __init__(self, subreddit):
         self.db = CrossmodDB()
-        self.axises = {'x': 'agreement_score',
-                       'y': 'number_of_comments'}
+        self.axises = {'x': 'number_of_comments',
+                       'y': 'agreement_score'}
         self.subreddit = subreddit
         self.agreement_score_vs_numbers = self.read_agreement_score_vs_numbers()
-
+        self.output_directory = os.path.join(CrossmodConsts.METRICS_OUTPUT_DIRECTORY, "agreement_score_vs_comments")
+        os.makedirs(self.output_directory, exist_ok=True)
+        self.output_format = "png"
 
     def get_number_of_comments(self, current_agreement_score):
         comments = self.db.database_session.query(DataTable).filter(DataTable.subreddit == self.subreddit, DataTable.agreement_score >= current_agreement_score).count()
-
+        print(f"{comments} comments for agreement_score: {current_agreement_score}")
         return comments
 
-    def read_agreement_score_vs_numbers(self):
-        agreement_scores = []
-        number_of_comments = []
+    def read_agreement_score_vs_numbers(self, agreement_score_start = 50, agreement_score_end = 100, delta = 5):
+        agreement_scores = [i * 0.01 for i in range(agreement_score_start, agreement_score_end, delta)]
+        number_of_comments = [self.get_number_of_comments(i) for i in agreement_scores]
 
-        current_agreement_score = 0.51
-        maximum_agreement_score = 1.0
+        return {self.axises['x']: number_of_comments, 
+                self.axises['y']: agreement_scores}
 
-        while(current_agreement_score <= maximum_agreement_score):
-            agreement_scores.append(current_agreement_score)
-            current_agreement_score += 0.01
-
-        for agreement_score in agreement_scores:
-            number_of_comments.append(self.get_number_of_comments(agreement_score))
-
-        return {self.axises['x']: agreement_scores, 
-                self.axises['y']: number_of_comments}
-
-    def show_plot(self):
-
+    def create_plot(self):
         agreement_score_vs_numbers = pandas.DataFrame(self.agreement_score_vs_numbers,
                                                       columns = list(self.axises.values()))
-
-        number_of_comments = self.agreement_score_vs_numbers['number_of_comments']
-
         seaborn.set_style("darkgrid")
         line_plot = seaborn.lineplot(x = self.axises['x'], 
                                      y = self.axises['y'], 
                                      data = agreement_score_vs_numbers)
-
+        line_plot.set_title(f'Number of Comments vs. Crossmod Agreement Score for r/{self.subreddit}')
         line_plot.set_xlabel('Crossmod Agreement Score')
         line_plot.set_ylabel('Number of Comments')
 
-        plt.yticks(np.arange(min(number_of_comments), max(number_of_comments) + 1, 400.0))
+        return line_plot
+
+    def show_plot(self):
+        line_plot = self.create_plot()
         plt.show()
 
-AgreementScoreVsComments("Futurology").show_plot()
+    def save_plot(self):
+        line_plot = self.create_plot()
+        plt.savefig(os.path.join(self.output_directory, f"{datetime.datetime.now()}.{self.output_format}"),  dpi=600)
+
+AgreementScoreVsComments("Futurology").save_plot()

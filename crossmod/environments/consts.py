@@ -30,6 +30,8 @@ class CrossmodConsts:
     # Full list of norm classifiers
     NORM_LIST = [path.replace("model_", "").replace(".vec", "") for path in os.listdir(os.path.join(os.environ['MODELS_DIRECTORY'], "norm-clfs")) if path.endswith(".vec")]
 
+    METRICS_OUTPUT_DIRECTORY = os.environ['METRICS_OUTPUT_DIRECTORY']
+
     SUBREDDIT_CLASSIFIERS = "subreddit"
     NORM_CLASSIFIERS = "norm"
 
