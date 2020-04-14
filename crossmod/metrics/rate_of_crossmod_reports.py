@@ -58,4 +58,4 @@ class RateOfCrossmodReports:
         line_plot = self.create_plot()
         plt.savefig(os.path.join(self.output_directory, f"{datetime.datetime.now()}.{self.output_format}"),  dpi=600)
 
-RateOfCrossmodReports("Futurology").show_plot()
+RateOfCrossmodReports("Futurology").save_plot()
