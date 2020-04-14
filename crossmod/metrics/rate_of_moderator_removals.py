@@ -10,7 +10,7 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 
-class RateOfCrossmodReports:
+class RateOfModeratorRemovals:
     def __init__(self, subreddit):
         self.db = CrossmodDB()
         self.axises = {'x': 'date',
@@ -58,4 +58,4 @@ class RateOfCrossmodReports:
         line_plot = self.create_plot()
         plt.savefig(os.path.join(self.output_directory, f"{datetime.datetime.now()}.{self.output_format}"),  dpi=600)
 
-RateOfCrossmodReports("Futurology").save_plot()
+RateOfModeratorRemovals("Futurology").save_plot()
