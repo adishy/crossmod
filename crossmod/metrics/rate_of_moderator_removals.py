@@ -42,8 +42,9 @@ class RateOfModeratorRemovals:
                                               columns = list(self.axises.values()))
         seaborn.set_style("darkgrid")
         line_plot = seaborn.lineplot(x = self.axises['x'], 
-                                     y = self.axises['y'], 
-                                     data = number_of_reports)
+                                     y = 'value',
+                                     hue = 'variable',
+                                     data = pandas.melt(number_of_reports, [self.axises['x']]))
         line_plot.set_title(f'Number of Removals made by Moderators each day since {self.start.strftime("%b %d %Y")} for r/{self.subreddit}')
         line_plot.set_xlabel(f'Days since {self.start.strftime("%b %d %Y")}')
         line_plot.set_ylabel('Number of Comments')
