@@ -88,5 +88,17 @@
           <input type="text" name="email" placeholder="Enter an email associated with the key"/>
           <input type="submit" name="generate_key" value="Generate Key"/>    
         </form>
+        <table>
+          <tr>
+            <th>Email</th>
+            <th>API Key</th>
+          </tr>
+          {% for api_key in api_keys %}
+          <tr>
+            <td>{{ api_key.email }}</td>
+            <td>{{ api_key.api_key }}</td>
+          </tr>
+         {% endfor %}
+        </table>
     </body>
 </html>

@@ -96,5 +96,7 @@ def settings():
         return flask.redirect(flask.url_for('settings'))
 
     subreddits = [row for row in db.database_session.query(SubredditSettingsTable).all()]
-    context = { 'subreddits': subreddits }
+    api_keys = [row for row in db.database_session.query(ApiKeyTable).all()]
+    context = { 'subreddits': subreddits,
+                'api_keys': api_keys }
     return flask.render_template('settings.html', **context)
