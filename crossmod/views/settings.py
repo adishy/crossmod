@@ -7,12 +7,12 @@ from crossmod.db.tables import ApiKeyTable
 import flask
 from flask import request
 
-from sqlalchemy import select
-import strgen  # For generating new API KEY
 from string import Template
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from sqlalchemy import select
+import strgen  # For generating new API KEY
 
 
 @crossmod.app.route('/settings/', methods=['GET', 'POST'])
@@ -76,21 +76,21 @@ def settings():
             with open('/home/ubuntu/crossmod-dev/crossmod-updating-api/crossmod/views/key_gen_email_template.txt', 'r', encoding='utf-8') as template_file:
                 template_file_content = template_file.read()
             message_template = Template(template_file_content)
-
-            s = smtplib.SMTP('smtp.gmail.com', 587)
+            s = smtplib.SMTP(host='smtp.gmail.com', port=587)
             s.starttls()
             s.login('crossmoderator@gmail.com', 'Crossmoderator12345')
             msg = MIMEMultipart()
             message = message_template.substitute(API_KEY=new_key)
             msg['From']='crossmoderator@gmail.comm'
-            msg['To']=email
+            msg['To']=input_email
             msg['Subject']="Your Crossmod API Key"
-
             msg.attach(MIMEText(message, 'plain'))
             s.send_message(msg)
             del msg
+            s.quit()
 
-            s.quit() 
+            # Print all emails and keys onto the html file
+             
         # PRG Pattern: https://en.wikipedia.org/wiki/Post/Redirect/Geti
 
         return flask.redirect(flask.url_for('settings'))

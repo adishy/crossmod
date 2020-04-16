@@ -19,8 +19,10 @@ from crossmod.ml.classifiers import CrossmodClassifiers
 from crossmod.environments.consts import *
 from crossmod.db.interface import CrossmodDB
 from crossmod.db import ApiKeyTable
+from crossmod.db import ApiCallTable
 
 from flask import request, jsonify, make_response
+from flask_limiter import Limiter
 import crossmod
 import pandas as pd
 import traceback
@@ -30,6 +32,7 @@ from datetime import datetime
 auth_key = "ABCDEFG"
 db = CrossmodDB() #Set up the database
 subreddits_limit = 100
+
 
 
 ### REQUEST: JSON Object ###
@@ -95,7 +98,7 @@ def get_prediction_scores():
         # Check that the key is valid and exists in the api_keys database
         # Record the key's access level
         # Comment out, find acc_lvl
-        if db.session.query(ApiKeyTable).filter(api_key==key).first() == None:
+        if db.database_session.query(ApiKeyTable).filter(ApiKeyTable.api_key==key).first() == None:
             return jsonify({'exception': "invalid api key " + key})
 
         '''
@@ -163,8 +166,8 @@ def get_prediction_scores():
         '''
         WRITE to DB
         '''
-        db.write(api_key = key,
-                 access_level = acc_lvl,
+        db.write(ApiCallTable,
+                api_key = key,
                  num_of_queries = len(comments),
                  call_received_utc = time_received,
                  call_returned_utc = datetime.now())
@@ -179,3 +182,10 @@ def get_prediction_scores():
         HANDLE errors
         '''
         return jsonify({'trace': traceback.format_exc()})
+
+
+# Admin Route (No Rate Limit)
+#@crossmod.app.route('/api/v1/admin/get-prediction-scores', methods=['POST', 'GET'])
+#@crossmod.limiter.exempt
+#def get_prediction_scores_no_limit():
+

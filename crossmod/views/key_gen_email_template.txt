@@ -1,0 +1,10 @@
+Hi,
+
+Your API Key for Crossmoderator is:
+
+${API_KEY}
+
+Have a great day!
+
+
+-The Crossmoderator Team
