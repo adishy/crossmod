@@ -33,31 +33,7 @@ auth_key = "ABCDEFG"
 db = CrossmodDB() #Set up the database
 subreddits_limit = 100
 
-
-
-### REQUEST: JSON Object ###
-"""
-{
-    "comments": [ comment1, comment2, ... ],
-    "subreddit_list": [ classifier1, classifier2, ... ],
-    "macro_norm_list": [ norm1, norm2, ... ],
-    "key": KEY
-}
-"""
-### RESPONSE: JSON Array ###
-"""
-[
-    {
-        'agreement_score': AGREEMENT_SCORE,
-        'norm_violation_score': NORM_VIOLATION_SCORE,
-        'subreddits_that_remove': [ subreddit1, subreddit2, ... ],
-        'norms_violated': [ norm1, norm2, ... ]
-    },
-    ....
-]
-"""
-@crossmod.app.route('/api/v1/get-prediction-scores', methods=['POST', 'GET'])
-def get_prediction_scores():
+def get_prediction_scores_helper():
     time_received = datetime.now() # For database purposes
     print("Request:", request, "Method:", request.method)
     if request.method == 'GET':
@@ -184,8 +160,33 @@ def get_prediction_scores():
         return jsonify({'trace': traceback.format_exc()})
 
 
-# Admin Route (No Rate Limit)
-#@crossmod.app.route('/api/v1/admin/get-prediction-scores', methods=['POST', 'GET'])
-#@crossmod.limiter.exempt
-#def get_prediction_scores_no_limit():
 
+### REQUEST: JSON Object ###
+"""
+{
+    "comments": [ comment1, comment2, ... ],
+    "subreddit_list": [ classifier1, classifier2, ... ],
+    "macro_norm_list": [ norm1, norm2, ... ],
+    "key": KEY
+}
+"""
+### RESPONSE: JSON Array ###
+"""
+[
+    {
+        'agreement_score': AGREEMENT_SCORE,
+        'norm_violation_score': NORM_VIOLATION_SCORE,
+        'subreddits_that_remove': [ subreddit1, subreddit2, ... ],
+        'norms_violated': [ norm1, norm2, ... ]
+    },
+    ....
+]
+"""
+@crossmod.app.route('/api/v1/get-prediction-scores', methods=['POST', 'GET'])
+def get_prediction_scores():
+    return get_prediction_scores_helper()
+# Admin Route (No Rate Limit)
+@crossmod.app.route('/api/v1/admin/get-prediction-scores', methods=['POST', 'GET'])
+@crossmod.limiter.exempt
+def get_prediction_scores_no_limit():
+    return get_prediction_scores_helper();
