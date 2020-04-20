@@ -62,9 +62,10 @@ def settings():
         elif 'update_removal_config' in request.form:
             print("Updating Removal Config")
             agreement_score_threshold = float(flask.escape(request.form.get('agreement_score_threshold')))
-            norm_violation_score_threshold = float(flask.escape(request.form.get('agreement_score_threshold')))
+            norm_violation_score_threshold = float(flask.escape(request.form.get('norm_violation_score_threshold')))
             updated_config = { "agreement_score_threshold": agreement_score_threshold, 
                                "norm_violation_score_threshold": norm_violation_score_threshold}
+            subreddit = flask.escape(request.form.get('subreddit'))
             row = db.database_session.query(SubredditSettingsTable).filter(SubredditSettingsTable.subreddit == subreddit).one_or_none()
             if row is not None:
                 row.removal_config = json.dumps(updated_config)
