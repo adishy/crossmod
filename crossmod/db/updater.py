@@ -47,6 +47,7 @@ class CrossmodDataTableUpdater:
         if rows_updated > 0:
             self.db.write(UpdateStatusTable, 
                           id = status_count + 1,
+                          update_start_utc = update_start_utc,
                           update_end_utc = update_end_utc,
                           rows_updated = rows_updated,
                           last_row_id = last_row_id)

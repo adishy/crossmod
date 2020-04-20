@@ -1,10 +1,11 @@
-import crossmod
 from crossmod.environments.consts import CrossmodConsts
 from crossmod.db import CrossmodDB
-from crossmod.db.tables import SubredditSettingsTable, UsersTable
+from crossmod.db.tables import SubredditSettingsTable, UsersTable, UpdateStatusTable
 from crossmod.helpers.authenticate_helper import admin_user
-import flask
 from flask import request
+import flask
+import json
+import crossmod
 
 @crossmod.app.route('/settings/', methods=['GET', 'POST'])
 def settings():
@@ -57,7 +58,18 @@ def settings():
             if row is not None:
                 row.admin = True
                 db.database_session.commit()
-            
+        
+        elif 'update_removal_config' in request.form:
+            print("Updating Removal Config")
+            agreement_score_threshold = float(flask.escape(request.form.get('agreement_score_threshold')))
+            norm_violation_score_threshold = float(flask.escape(request.form.get('agreement_score_threshold')))
+            updated_config = { "agreement_score_threshold": agreement_score_threshold, 
+                               "norm_violation_score_threshold": norm_violation_score_threshold}
+            row = db.database_session.query(SubredditSettingsTable).filter(SubredditSettingsTable.subreddit == subreddit).one_or_none()
+            if row is not None:
+                row.removal_config = json.dumps(updated_config)
+                db.database_session.commit() 
+        
         # PRG Pattern: https://en.wikipedia.org/wiki/Post/Redirect/Get
         return flask.redirect(flask.url_for('settings'))
 
@@ -65,9 +77,10 @@ def settings():
     if 'email' in flask.session and len(flask.session['email']) > 0: 
         print("Email in session", flask.session['email'])
         admin = admin_user(db, flask.session['email'])
-    subreddits = [row for row in db.database_session.query(SubredditSettingsTable).all()]
-    context = { 'subreddits': subreddits, 
+
+    context = { 'subreddits': db.database_session.query(SubredditSettingsTable).all(), 
                 'admin_user': admin,
-                'non_admin_users': db.database_session.query(UsersTable).filter(UsersTable.admin == False).all()
+                'non_admin_users': db.database_session.query(UsersTable).filter(UsersTable.admin == False).all(),
+                'db_update_status': db.database_session.query(UpdateStatusTable).all()
                 }
     return flask.render_template('settings.html', **context)

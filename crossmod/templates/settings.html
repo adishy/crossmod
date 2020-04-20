@@ -6,6 +6,22 @@
             body{
                 font-family: 'Roboto', sans-serif;
             }
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+                max-width: 800px;
+            }
+                
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+            
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
         </style>
     </head>
     <body>
@@ -32,12 +48,30 @@
                         </form>
                     {% endif %}
                     <h3>Subreddit classifiers: </h3>
-                    <p>{{ subreddit.subreddit_classifiers }}</p>
+                    <p>{{ " ".join(subreddit.subreddit_classifiers.split(',')) }}</p>
                     <h3>Norm classifiers: </h3>
-                    <p>{{ subreddit.norm_classifiers }}</p>
+                    <p>{{ " ".join(subreddit.norm_classifiers.split(',')) }}</p>
                     <form action="{{ url_for('settings') }}" method="POST">
                         <input type="hidden" name="subreddit" value="{{ subreddit.subreddit }}"/>
                         <input type="submit" name="remove_subreddit" value="Remove Subreddit"/>
+                    </form>
+
+                    <h4>Removal Threshold</h4>
+                    <form action="{{ url_for('settings') }}" method="POST">
+                        <input type="hidden" name="subreddit" value="{{ subreddit.subreddit }}"/>
+                        <label>
+                            Agreement Score Threshold
+                            <input type="text" name="agreement_score_threshold" value="{{ (subreddit.removal_config|parse_removal_config)['agreement_score_threshold'] }}"/>
+                        </label>
+                        <br>
+                        <br>
+                        <label>
+                            Norm Violation Score Threshold (not currently used for moderation)
+                            <input type="text" name="norm_violation_score_threshold" value="{{ (subreddit.removal_config|parse_removal_config)['norm_violation_score_threshold'] }}"/>
+                        </label>
+                        <br>
+                        <br>
+                        <input type="submit" name="update_removal_config" value="Update Removal Config"/>
                     </form>
                 </li>
                 <hr>
@@ -107,6 +141,23 @@
         <p>You need to be an admin user to view this page!</p>
         {% endif %}
 
+        <h2>Requeries</h2>
+        <table>
+            <tr>
+                <th>Started At</th>
+                <th>Ended At</th>
+                <th>Last Comment ID Updated</th>
+                <th>Number of Comments Updated</th>
+            </tr>
 
+            {% for row in db_update_status %}
+            <tr>
+                <td>{{ row.update_start_utc }}</td>
+                <td>{{ row.update_end_utc.strftime("%d %b %Y, %H:%M:%S") }}</td>
+                <td>{{ row.last_row_id }}</td>
+                <td>{{ row.rows_updated }}</td>
+            </tr>
+            {% endfor%}
+        </table>
     </body>
 </html>
