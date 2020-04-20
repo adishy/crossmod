@@ -21,7 +21,6 @@ class AgreementScoreVsComments:
 
     def get_number_of_comments(self, current_agreement_score):
         comments = self.db.database_session.query(DataTable).filter(DataTable.subreddit == self.subreddit, DataTable.agreement_score >= current_agreement_score).count()
-        print(f"{comments} comments for agreement_score: {current_agreement_score}")
         return comments
 
     def read_agreement_score_vs_numbers(self, agreement_score_start = 50, agreement_score_end = 100, delta = 5):
@@ -51,5 +50,3 @@ class AgreementScoreVsComments:
     def save_plot(self):
         line_plot = self.create_plot()
         plt.savefig(os.path.join(self.output_directory, f"{datetime.datetime.now()}.{self.output_format}"),  dpi=600)
-
-AgreementScoreVsComments("Futurology").save_plot()

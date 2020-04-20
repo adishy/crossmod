@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h3>Available Metrics:</h3>
+        {% for metric in metrics %}
+        <div>
+            <p><b>URL:</b> <a href="{{ metric['url'] }}">{{ metric['url'] }}</a></p>
+            <p><b>Description:</b> {{ metric['description'] }}</p>
+        </div>
+        {% endfor %}
+    </body>
+</html>
