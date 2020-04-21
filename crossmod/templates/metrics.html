@@ -2,11 +2,21 @@
 <html>
     <body>
         <h3>Available Metrics:</h3>
-        {% for metric in metrics %}
-        <div>
-            <p><b>URL:</b> <a href="{{ metric['url'] }}">{{ metric['url'] }}</a></p>
-            <p><b>Description:</b> {{ metric['description'] }}</p>
-        </div>
-        {% endfor %}
+        <form action="/metrics/" method="POST">
+            <select name="subreddit_to_change_to">
+                {% for subreddit in all_subreddits %}
+                <option value ="{{ subreddit }}">{{ subreddit }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" name="change_current_subreddit" value="Change Subreddit">
+        </form>
+        <ul>
+            {% for metric in metrics %}
+            <li>
+                <p><b>URL:</b> <a href="{{ metric['url'] }}">{{ metric['url'] }}</a></p>
+                <p><b>Description:</b> {{ metric['description'] }}</p>
+            </li>
+            {% endfor %}
+        </ul>
     </body>
 </html>
