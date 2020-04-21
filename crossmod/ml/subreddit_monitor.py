@@ -119,7 +119,7 @@ class CrossmodSubredditMonitor():
           self.current_subreddits_count = number_of_subreddits_now
           self.monitor()
     
-    @retry(wait=wait_exponential(multiplier=1, min=4, max=10))
+    #@retry(wait=wait_exponential(multiplier=1, min=4, max=10))
     def monitor(self):
       # Wait for subreddits to be added if there are none in the table
       while self.number_of_subreddits() == 0:
@@ -171,7 +171,7 @@ class CrossmodSubredditMonitor():
         print("Agreement score from Crossmod API:", agreement_score)
         print("Norm violation score from Crossmod API:", norm_violation_score)
 
-        action = self.check_removal_config(removal_consensus)
+        action = self.check_removal_config(subreddit_name, removal_consensus)
 
         ### Write to CrossmodDB
         self.db.write(DataTable, 
