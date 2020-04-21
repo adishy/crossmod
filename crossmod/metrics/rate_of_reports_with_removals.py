@@ -19,7 +19,7 @@ class RateOfReportsWithRemovals:
         self.subreddit = subreddit
         self.start = self.db.database_session.query(func.min(DataTable.created_utc)).scalar()
         self.number_of_reports = self.read_number_of_comments()
-        self.output_directory = os.path.join(CrossmodConsts.METRICS_OUTPUT_DIRECTORY, "rate_of_report_with_removals")
+        self.output_directory = os.path.join(CrossmodConsts.METRICS_OUTPUT_DIRECTORY, "rate_of_reports_with_removals")
         os.makedirs(self.output_directory, exist_ok=True)
         self.output_format = "png"
 
