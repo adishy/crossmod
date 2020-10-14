@@ -28,7 +28,6 @@ class DataTable(Base):
       ingested_utc = Column(DateTime)
       id = Column(String(50), primary_key = True)
       body = Column(UnicodeText)
-      toxicity_score = Column(Float)
       crossmod_action = Column(String(50))
       author = Column(String(100))
       subreddit = Column(String(50))

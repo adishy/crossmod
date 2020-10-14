@@ -57,7 +57,7 @@ function show_result(data, comments){
 
 function get_result(){
     var comments = comment_input.value.split(";")
-    fetch('http://crossmod.ml/api/v1/get-prediction-scores', {
+    fetch('/api/v1/get-prediction-scores', {
         method: 'POST',
         mode: 'cors', 
         cache: 'no-cache', 

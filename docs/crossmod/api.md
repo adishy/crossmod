@@ -1,9 +1,9 @@
 
 
 ## Quick Start
- ### Running a local instance
+### Running a local instance
 * Clone Crossmoderator repository
-	* [https://github.com/ceshwar/crossmod](https://github.com/ceshwar/crossmod)
+* [https://github.com/ceshwar/crossmod](https://github.com/ceshwar/crossmod)
 * Install dependencies
 
 ```
@@ -46,6 +46,8 @@ The API call request is a JSON object with the following fields:
 * `key`: string used for authentication.
         * currently, for debugging, key is set to `ABCDEFG`
 
+For the full list of available subreddit classifiers and macro norm classifiers, see **List of Classifiers** below.
+
 ### Sample API Requests
 Examples of API requests made through command line with cURL:
 
@@ -69,7 +71,7 @@ For examples of making API calls through Python, see `api_demo.py`.
 
 * The API response is an array of JSON objects, where the index of each JSON object  corresponds to the index of the original comment in the request.
 
-  ```
+```
     [
         {
             'agreement_score': AGREEMENT_SCORE,
@@ -79,11 +81,11 @@ For examples of making API calls through Python, see `api_demo.py`.
         },
         ....
     ]
-   ```
- * `agreement_score:` prediction score from subreddit classifiers. If no classifiers were used, is a `NULL` value.
-  * `norm_violation_score: ` prediction score from macro norms. If no macro norms were used, is a `NULL` value.
-   * `subreddits_that_remove: ` list of classifiers that voted to removed the comment. If no classifiers were used, is an `empty` list.
-    * `norms_violated: ` list of norms that were violated by the comment. If no macro norms were used, is an `empty` list.
+```
+* `agreement_score:` prediction score from subreddit classifiers. If no classifiers were used, is a `NULL` value.
+* `norm_violation_score: ` prediction score from macro norms. If no macro norms were used, is a `NULL` value.
+* `subreddits_that_remove: ` list of classifiers that voted to removed the comment. If no classifiers were used, is an `empty` list.
+* `norms_violated: ` list of norms that were violated by the comment. If no macro norms were used, is an `empty` list.
 
 
 
@@ -102,6 +104,129 @@ Again, if you run a local instance of the API, a virtual environment is recommen
  wsgi.py
  gunicorn3
 ```
+
+
+## List of Classifiers
+Crossmod currently has 100 Subreddit Classifiers and Macro Norms.
+<details>
+<summary>**Subreddit Classifiers**</summary>
+```
+The_Donald
+politics
+AskReddit
+science
+worldnews
+news
+explainlikeimfive
+relationships
+TwoXChromosomes
+gonewild
+hillaryclinton
+askscience
+leagueoflegends
+AskHistorians
+Games
+PoliticalDiscussion
+personalfinance
+aww
+photoshopbattles
+syriancivilwar
+nosleep
+CFB
+pcmasterrace
+pics
+pokemongo
+funny
+GlobalOffensive
+Futurology
+SandersForPresident
+MMA
+europe
+nfl
+EnoughTrumpSpam
+BlackPeopleTwitter
+pokemontrades
+legaladvice
+history
+videos
+AskWomen
+sex
+GlobalOffensiveTrade
+LateStageCapitalism
+gaming
+whatisthisthing
+Showerthoughts
+DIY
+Android
+OutOfTheLoop
+atheism
+UpliftingNews
+Incels
+gifs
+food
+movies
+india
+books
+depression
+hiphopheads
+pokemon
+philosophy
+nba
+Christianity
+anime
+2007scape
+fantasyfootball
+Overwatch
+tifu
+churning
+changemyview
+space
+conspiracy
+ShitRedditSays
+canada
+socialism
+soccerstreams
+CanadaPolitics
+nottheonion
+gameofthrones
+OldSchoolCool
+AskTrumpSupporters
+creepyPMs
+SuicideWatch
+wow
+LifeProTips
+SubredditDrama
+technology
+TheSilphRoad
+hearthstone
+spacex
+me_irl
+IAmA
+DestinyTheGame
+television
+dataisbeautiful
+NSFW_GIF
+PurplePillDebate
+GetMotivated
+asoiaf
+NeutralPolitics
+jailbreak
+```
+</details>
+<details>
+<summary>**Macro Norms**</summary>
+```
+misogynistic-slurs
+verbal-attacks-on-Reddit
+hatespeech-racist-homophobic
+porno-links
+abusing-and-criticisizing-mods
+namecalling-claiming-other-too-sensitive
+personal-attacks
+opposing-political-views-trump
+```
+</details>
+
 
 ## Troubleshooting
  **If an API response contains:**
