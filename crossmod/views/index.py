@@ -14,3 +14,7 @@ def db_monitor():
 def notebooks():
     return redirect("https://crossmod.ml:8888", code=302)
 
+@crossmod.app.route('/notebook_metrics/<path:filename>', methods=['GET'])
+def notebook_metrics(filename):
+    return crossmod.app.send_static_file(filename)
+
