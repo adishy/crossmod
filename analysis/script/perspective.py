@@ -55,8 +55,6 @@ def main():
 
     size = 100
     list_of_dfs = [df.loc[i:i+size-1,:] for i in range(0, len(df), size)]
-    for data in list_of_dfs:
-        print(data.shape)
 
     for i in range(len(list_of_dfs)):
         data = list_of_dfs[i]
@@ -86,8 +84,19 @@ def main():
                 p_sexually_scores.append(-1)
                 p_filtration_scores.append(-1)
 
-        print(i)
-        data.to_csv('pilot.csv', mode='a', header=False)
+        print(i * 100)
+        data["p_toxicity_score"] = p_toxicity_scores
+        data["p_severe_toxicity_score"] = p_severe_toxicity_scores
+        data["p_fast_toxicity_score"] = p_fast_toxicity_scores
+        data["p_identity_attack_score"] = p_identity_attack_scores
+        data["p_insult_score"] = p_insult_scores
+        data["p_profanity_score"] = p_profanity_scores
+        data["p_threat_score"] = p_threat_scores
+        data["p_sexually_score"] = p_sexually_scores
+        data["p_filtration_score"] = p_filtration_scores
+
+        data.to_csv('my_csv.csv', mode='w+', header=False)
+
 
 if __name__ == "__main__":
     main()
