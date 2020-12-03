@@ -58,7 +58,8 @@ def main():
     for data in list_of_dfs:
         print(data.shape)
 
-    for data in list_of_dfs:
+    for i in range(len(list_of_dfs)):
+        data = list_of_dfs[i]
         for index, row in data.iterrows():
             response_dict = get_api_score(row)
             try:
@@ -85,10 +86,8 @@ def main():
                 p_sexually_scores.append(-1)
                 p_filtration_scores.append(-1)
 
-            if index % 100 == 0:
-                print(index)
-
-        df.to_csv('my_csv.csv', mode='w+', header=False)
+        print(i)
+        data.to_csv('pilot.csv', mode='a', header=False)
 
 if __name__ == "__main__":
     main()
