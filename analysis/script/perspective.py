@@ -42,22 +42,24 @@ def main():
     # big_query_file = "/data/databases/big_query_control_data_sept_2019_to_dec_2019.csv"
     # data = pd.read_csv(big_query_file)
 
-    p_toxicity_scores = []
-    p_severe_toxicity_scores = []
-    p_fast_toxicity_scores = []
-    p_identity_attack_scores = []
-    p_insult_scores = []
-    p_profanity_scores = []
-    p_threat_scores = []
-    p_sexually_scores = []
-    p_filtration_scores = []
+    
     error_row = []
 
     size = 100
     list_of_dfs = [df.loc[i:i+size-1,:] for i in range(0, len(df), size)]
 
     for i in range(len(list_of_dfs)):
-        data = list_of_dfs[i]
+        data = list_of_dfs[i].copy()
+        p_toxicity_scores = []
+        p_severe_toxicity_scores = []
+        p_fast_toxicity_scores = []
+        p_identity_attack_scores = []
+        p_insult_scores = []
+        p_profanity_scores = []
+        p_threat_scores = []
+        p_sexually_scores = []
+        p_filtration_scores = []
+
         for index, row in data.iterrows():
             response_dict = get_api_score(row)
             try:
