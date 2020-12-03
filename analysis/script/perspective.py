@@ -58,7 +58,7 @@ def main():
     for data in list_of_dfs:
         print(data.shape)
 
-    for data in df:
+    for data in list_of_dfs:
         for index, row in data.iterrows():
             response_dict = get_api_score(row)
             try:
