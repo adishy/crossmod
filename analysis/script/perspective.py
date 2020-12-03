@@ -56,7 +56,7 @@ def main():
     size = 100
     list_of_dfs = [df.loc[i:i+size-1,:] for i in range(0, len(df), size)]
 
-    for i in len(range(list_of_dfs)):
+    for i in range(len(list_of_dfs)):
         data = list_of_dfs[i]
         for index, row in data.iterrows():
             response_dict = get_api_score(row)
@@ -95,7 +95,10 @@ def main():
         data["p_sexually_score"] = p_sexually_scores
         data["p_filtration_score"] = p_filtration_scores
 
-        data.to_csv('my_csv.csv', mode='w+', header=False)
+        if i == 0:
+            data.to_csv('pilot.csv', mode='w+', header=True)
+        else:
+            data.to_csv('pilot.csv', mode='a', header=False)
 
 if __name__ == "__main__":
     main()
