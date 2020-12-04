@@ -33,14 +33,15 @@ def get_api_score(row):
     return response_dict
 
 def main():
-    pilot_study_file = "/data/databases/pilot_data.csv"
-    df = pd.read_csv(pilot_study_file)
+    input_file = "/data/databases/reporting_experiment.csv"
+    output_file = "reporting_experiment.csv"
+    df = pd.read_csv(input_file)
+
+    # TODO
+    # pilot_study_file = "/data/databases/pilot_data.csv"
     # reporting_experiment_file = "/data/databases/reporting_experiment.csv"
-    # data = pd.read_csv(reporting_experiment_file)
     # erroneous_file = "/data/databases/erroneous_reporting_experiment_data.csv"
-    # data = pd.read_csv(erroneous_file)
     # big_query_file = "/data/databases/big_query_control_data_sept_2019_to_dec_2019.csv"
-    # data = pd.read_csv(big_query_file)
 
     
     error_row = []
@@ -98,9 +99,9 @@ def main():
         data["p_filtration_score"] = p_filtration_scores
 
         if i == 0:
-            data.to_csv('pilot.csv', mode='w+', header=True)
+            data.to_csv(output_file, mode='w+', header=True)
         else:
-            data.to_csv('pilot.csv', mode='a', header=False)
+            data.to_csv(output_file, mode='a', header=False)
 
 if __name__ == "__main__":
     main()
