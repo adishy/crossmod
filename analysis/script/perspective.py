@@ -103,5 +103,10 @@ def main():
         else:
             data.to_csv(output_file, mode='a', header=False)
 
+    print("done")
+    with open('error.txt', 'a') as f:
+        for item in error_row:
+            f.write("%s\n" % item)
+
 if __name__ == "__main__":
     main()
