@@ -11,7 +11,7 @@ url = ('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze' +
         '?key=' + api_key)
 
 def get_api_score(row):
-    time.sleep(random.uniform(1, 1.5))
+    time.sleep(random.uniform(1.01, 1.2))
     text = row["body"]
     data_dict = {
         'comment': {'text': text},
@@ -33,10 +33,10 @@ def get_api_score(row):
     return response_dict
 
 def main():
-    input_file = "/data/databases/reporting_experiment.csv"
-    output_file = "reporting_experiment.csv"
+    input_file = "/data/databases/big_query_control_data_sept_2019_to_dec_2019.csv"
+    output_file = "big_query.csv"
     df = pd.read_csv(input_file)
-
+    print(df.shape)
     # TODO
     # pilot_study_file = "/data/databases/pilot_data.csv"
     # reporting_experiment_file = "/data/databases/reporting_experiment.csv"
@@ -97,8 +97,9 @@ def main():
         data["p_threat_score"] = p_threat_scores
         data["p_sexually_score"] = p_sexually_scores
         data["p_filtration_score"] = p_filtration_scores
+        
 
-        if i == 0:
+        if not os.path.exists(output_file):
             data.to_csv(output_file, mode='w+', header=True)
         else:
             data.to_csv(output_file, mode='a', header=False)
