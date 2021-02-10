@@ -37,8 +37,6 @@ class CrossmodClassifiers:
 
         start = time.time()
       
-        sys.stderr = StringIO()
-
         # Load subreddit classifiers
         if len(self.subreddit_clfs_ids) > 0:
             for clfs_id in ChargingBar('Loading Subreddit Classifiers:', max = 100).iter(self.subreddit_clfs_ids):
@@ -52,8 +50,6 @@ class CrossmodClassifiers:
                 if clfs_id not in CrossmodClassifiers.norm_clfs:
                     CrossmodClassifiers.norm_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_norms_classifier(clfs_id))
                     norm_count += 1
-
-        sys.stderr = sys.__stderr__
 
         end = time.time()
         print("Loaded classifiers: ", int(round(end - start)), "s") 
