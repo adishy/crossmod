@@ -1,1 +1,1 @@
-web: python crossmod/__main__.py api
+web: python crossmod/__main__.py 

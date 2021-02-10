@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import flask
+import sys
 
 # app is a single object used by all the code modules in this package
 app = flask.Flask(__name__)  # pylint: disable=invalid-name
@@ -45,6 +46,9 @@ clf_ensemble = None
 from crossmod.db.interface import CrossmodDB
 
 db_interface = CrossmodDB()
+  
+sys.stdout.flush()
+sys.stderr.flush()
 
 @crossmod.app.teardown_appcontext
 def cleanup(resp_or_exc):
