@@ -1,11 +1,6 @@
 import os
 
 class CrossmodConsts:
-    if os.environ.get("DOWNLOAD_MODELS"):
-        print("Downloading models!")
-        from crossmod.b2_model_store import b2_download_models
-        b2_download_models()
-
     # Reddit account used to run Crossmod
     REDDIT_PASSWORD = os.environ['REDDIT_PASSWORD']
     REDDIT_USERNAME = os.environ['REDDIT_USERNAME']

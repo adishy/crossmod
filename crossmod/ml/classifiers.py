@@ -9,6 +9,7 @@ import time
 from progress.bar import ChargingBar
 import sys
 from io import StringIO
+import os
 
 class CrossmodClassifiers:    
     UNREMOVED_COMMENT = "__label__unremoved"
@@ -20,6 +21,11 @@ class CrossmodClassifiers:
     ## { 'agreement_score': 0.95, 'norm_violations_score': 5, 'subreddits_that_remove': ["science", "space"], 'norms_violated': ["violence"] }
     ## input_comment, clfs_type, clfs_ids
     def __init__(self, **kwargs):
+        if os.environ.get("DOWNLOAD_MODELS"):
+            print("Downloading models!")
+            from crossmod.b2_model_store import b2_download_models
+            b2_download_models()
+
         subreddit_count = 0
         norm_count = 0
 

@@ -11,6 +11,7 @@ setup(
     packages=['crossmod'],
     include_package_data=True,
     install_requires=[
+        'b2sdk',
         'click',
         'celery',
         'fasttext',  
