@@ -59,8 +59,8 @@ def get_prediction_scores():
     print("Request data:", request.get_json(force=True))
     ## JSON REQUEST FIELDS ##
     comments = []
-    subreddit_list = CrossmodConsts.SUBREDDIT_LIST     #by default, use all classifiers
-    macro_norm_list = CrossmodConsts.NORM_LIST   #by default, use all macro norms
+    subreddit_list = CrossmodConsts.subreddit_list()     #by default, use all classifiers
+    macro_norm_list = CrossmodConsts.norm_list()   #by default, use all macro norms
     key = ""
 
     try:
@@ -144,10 +144,12 @@ def get_prediction_scores():
 
             ## Console debug statements ##
             print("COMMENT:", comments[i][0:100], "...", sep="")
-            print("# of classifiers removing comment = ", agreement_score, "/", number_of_classifiers)
+            if number_of_classifiers != 0:
+                print("# of classifiers removing comment = ", agreement_score, "/", number_of_classifiers)
             print("agreement_score = ", json_comment["agreement_score"])
             print("--")
-            print("# of macro norms violated = ", norm_violation_score, "/", number_of_macro_norms)
+            if number_of_macro_norms != 0:
+                print("# of macro norms violated = ", norm_violation_score, "/", number_of_macro_norms)
             print("norm violation score = ", json_comment["norm_violation_score"])
             print("________________________")
 

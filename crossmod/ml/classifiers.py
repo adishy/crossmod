@@ -27,29 +27,31 @@ class CrossmodClassifiers:
         if 'subreddits' in kwargs:
             self.subreddit_clfs_ids = kwargs['subreddits']
         else:
-            self.subreddit_clfs_ids = CrossmodConsts.SUBREDDIT_LIST
+            self.subreddit_clfs_ids = CrossmodConsts.subreddit_list()
         
         # List of norm classifiers
         if 'norms' in kwargs:
             self.norm_clfs_ids = kwargs['norms']
         else:
-            self.norm_clfs_ids = CrossmodConsts.NORM_LIST
+            self.norm_clfs_ids = CrossmodConsts.norm_list()
 
         start = time.time()
       
         sys.stderr = StringIO()
 
         # Load subreddit classifiers
-        for clfs_id in ChargingBar('Loading Subreddit Classifiers:', max = 100).iter(self.subreddit_clfs_ids):
-            if clfs_id not in CrossmodClassifiers.subreddit_clfs:
-                CrossmodClassifiers.subreddit_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_subreddit_classifier(clfs_id))
-                subreddit_count += 1
+        if len(self.subreddit_clfs_ids) > 0:
+            for clfs_id in ChargingBar('Loading Subreddit Classifiers:', max = 100).iter(self.subreddit_clfs_ids):
+                if clfs_id not in CrossmodClassifiers.subreddit_clfs:
+                    CrossmodClassifiers.subreddit_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_subreddit_classifier(clfs_id))
+                    subreddit_count += 1
 
         # Load norm classifiers
-        for clfs_id in ChargingBar('Loading Norm Violation Classifiers:', max = 8).iter(self.norm_clfs_ids):
-            if clfs_id not in CrossmodClassifiers.norm_clfs:
-                CrossmodClassifiers.norm_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_norms_classifier(clfs_id))
-                norm_count += 1
+        if len(self.norm_clfs_ids) > 0:
+            for clfs_id in ChargingBar('Loading Norm Violation Classifiers:', max = 8).iter(self.norm_clfs_ids):
+                if clfs_id not in CrossmodClassifiers.norm_clfs:
+                    CrossmodClassifiers.norm_clfs[clfs_id] = fasttext.load_model(CrossmodConsts.get_norms_classifier(clfs_id))
+                    norm_count += 1
 
         sys.stderr = sys.__stderr__
 
@@ -135,7 +137,10 @@ class CrossmodClassifiers:
             else:
                 result['prediction_' + clfs_prediction['clfs_id']] = False
 
-        result['agreement_score'] /=  len(self.subreddit_clfs_ids)
-        result['norm_violation_score'] /= len(self.norm_clfs_ids)
+        if len(self.subreddit_clfs_ids) > 0:
+            result['agreement_score'] /=  len(self.subreddit_clfs_ids)
+
+        if len(self.norm_clfs_ids) > 0:
+            result['norm_violation_score'] /= len(self.norm_clfs_ids)
         
         return result

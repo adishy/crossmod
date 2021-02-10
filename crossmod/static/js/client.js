@@ -5,24 +5,14 @@ const results_container = document.querySelector(".result_container")
 function show_result(data, comments){
     results_container.innerHTML = "";
     let count = 0;
+    console.log(data);
     data.forEach((comment_result) => {
         comment_result.comment_body = comments[count];
         count++;
-        let allowed_subreddits = ["politics", 
-                                  "AskReddit", 
+        let allowed_subreddits = [
+                                  "Futurology", 
                                   "science", 
-                                  "worldnews", 
-                                  "news", 
-                                  "explainlikeimfive", 
-                                  "relationships", 
-                                  "TwoXChromosomes", 
-                                  "askscience", 
-                                  "leagueoflegends", 
-                                  "AskHistorians", 
-                                  "Games", 
-                                  "PoliticalDiscussion", 
-                                  "aww", 
-                                  "photoshopbattles"]
+                                 ]
         comment_result.subreddits_that_remove = comment_result.subreddits_that_remove.filter((subreddit) => { return allowed_subreddits.indexOf(subreddit) != -1 });
 
         let result_display = `<div class="result">
@@ -31,9 +21,6 @@ function show_result(data, comments){
                                 <p class="result_category_description">Proportion of subreddits that would remove the comment</p>
                                 <p class="result_value"><b>${comment_result.agreement_score} / 1.0</b></p>
                                 
-                                <p class="result_category">Norm Violation Score:</p> 
-                                <p class="result_category_description">Likelihood that the comment violates macro norms on Reddit</p>
-                                <p class="result_value"><b>${comment_result.norm_violation_score} / 1.0</b></p>
                                 ${
                                     comment_result.subreddits_that_remove.length ? 
 

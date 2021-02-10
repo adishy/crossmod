@@ -6,8 +6,8 @@ from crossmod.environments.consts import CrossmodConsts
 def add_subreddit_to_monitor(db, 
                              subreddit_name, 
                              perform_action = False,
-                             subreddit_classifiers = CrossmodConsts.SUBREDDIT_LIST, 
-                             norm_classifiers = CrossmodConsts.NORM_LIST):
+                             subreddit_classifiers = CrossmodConsts.subreddit_list(), 
+                             norm_classifiers = CrossmodConsts.norm_list()):
     db.write(SubredditSettingsTable,
             subreddit = subreddit_name,
             subreddit_classifiers = ",".join(subreddit_classifiers),

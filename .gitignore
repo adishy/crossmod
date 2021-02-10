@@ -1,5 +1,6 @@
 code/__pycache__/*
 models/*
+tmp/*
 crossmod_credentials.sh
 crossmod.celery
 .venv/*

@@ -31,10 +31,10 @@ def settings():
             subreddit = flask.escape(request.form['subreddit'])
             subreddit_classifiers = flask.escape(request.form['subreddit_classifiers'])
             if subreddit_classifiers == "":
-                subreddit_classifiers = ",".join(CrossmodConsts.SUBREDDIT_LIST)
+                subreddit_classifiers = ",".join(CrossmodConsts.subreddit_list())
             norm_classifiers = flask.escape(request.form['norm_classifiers'])
             if norm_classifiers == "":
-                norm_classifiers = ",".join(CrossmodConsts.NORM_LIST)
+                norm_classifiers = ",".join(CrossmodConsts.norm_list())
             perform_action = False
             if request.form.get('perform_action'):
                 perform_action = True

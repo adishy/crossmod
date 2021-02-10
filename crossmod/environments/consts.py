@@ -1,6 +1,11 @@
 import os
 
 class CrossmodConsts:
+    if os.environ.get("DOWNLOAD_MODELS"):
+        print("Downloading models!")
+        from crossmod.b2_model_store import b2_download_models
+        b2_download_models()
+
     # Reddit account used to run Crossmod
     REDDIT_PASSWORD = os.environ['REDDIT_PASSWORD']
     REDDIT_USERNAME = os.environ['REDDIT_USERNAME']
@@ -25,10 +30,10 @@ class CrossmodConsts:
     MODELS_DIRECTORY = os.environ['MODELS_DIRECTORY']
 
     # Full list of subreddit classifiers
-    SUBREDDIT_LIST = [path.replace("model_", "").replace(".vec", "") for path in os.listdir(os.path.join(os.environ['MODELS_DIRECTORY'], "subreddit-clfs")) if path.endswith(".vec")]
+    #SUBREDDIT_LIST = CrossmodConsts.subreddit_list()()
     
     # Full list of norm classifiers
-    NORM_LIST = [path.replace("model_", "").replace(".vec", "") for path in os.listdir(os.path.join(os.environ['MODELS_DIRECTORY'], "norm-clfs")) if path.endswith(".vec")]
+    #NORM_LIST = CrossmodConsts.norm_list()()
 
     SUBREDDIT_CLASSIFIERS = "subreddit"
     NORM_CLASSIFIERS = "norm"
@@ -37,6 +42,21 @@ class CrossmodConsts:
     CLIENT_API_ENDPOINT = "http://localhost/api/v1/get-prediction-scores"
     CLIENT_API_SUPER_KEY = "ABCDEFG"
 
+    @staticmethod
+    def model_list(model_type):
+        models_dir = os.path.join(os.environ['MODELS_DIRECTORY'], model_type)
+        if not os.path.exists(models_dir):
+            os.makedirs(models_dir)
+        return [ path.replace("model_", "").replace(".vec", "") \
+                 for path in os.listdir(os.path.join(os.environ['MODELS_DIRECTORY'], model_type)) if path.endswith(".vec")]
+    
+    @staticmethod
+    def subreddit_list():
+        return CrossmodConsts.model_list("subreddit-clfs")
+    
+    @staticmethod
+    def norm_list():
+        return CrossmodConsts.model_list("norm-clfs")
     
     @staticmethod
     def get_norms_classifier(norm):
